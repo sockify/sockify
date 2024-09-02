@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	APIPort    string
 	DBName     string
 	DBUser     string
 	DBPassword string
@@ -21,6 +22,7 @@ func initConfig() Config {
 	godotenv.Load()
 
 	return Config{
+		APIPort:    getEnv("API_PORT", "8080"),
 		DBName:     getEnv("DB_NAME", "sockify"),
 		DBUser:     getEnv("DB_USER", "postgres"),
 		DBPassword: getEnv("DB_PASSWORD", "password"),

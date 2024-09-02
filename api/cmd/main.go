@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/sockify/sockify/cmd/api"
 	"github.com/sockify/sockify/internal/config"
 	"github.com/sockify/sockify/internal/database"
 )
@@ -18,6 +19,11 @@ func main() {
 		log.Fatal(err)
 	}
 	initStorage(db)
+
+	server := api.NewServer(":"+config.Envs.APIPort, db)
+	if err = server.Run(); err != nil {
+		log.Fatal("Unable to start the HTTP server: ", err)
+	}
 }
 
 func initStorage(db *sql.DB) {
@@ -25,6 +31,5 @@ func initStorage(db *sql.DB) {
 	if err != nil {
 		log.Fatal("Unable to ping the database: ", err)
 	}
-
-	log.Println("Successfully connected to the database!")
+	log.Println("Successfully connected to the database")
 }
