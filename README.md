@@ -5,8 +5,11 @@ An e-commerce web app to sell custom socks.
 ## Getting started
 
 1. Clone the repository locally: `git clone https://github.com/sockify/sockify`
+2. Make sure you have the latest version of [Docker Desktop](https://docs.docker.com/engine/install/) installed
+3. Run and build the app: `docker compose up --watch`
+   1. As changes are detected, the Docker images will be rebuilt automatically
 
-TODO(sebastian-nunez): add run script for the app
+**Note:** to _manually_ build the app, you can run `docker compose up --build`
 
 ## Tech stack
 
