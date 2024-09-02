@@ -1,18 +1,15 @@
-FROM golang:1.23-alpine
+FROM golang:1.23-alpine AS builder
 
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
-
+ARG CGO_ENABLED=0
 WORKDIR /app
 
 COPY go.mod go.sum ./
-
 RUN go mod download
-
 COPY . .
 
-RUN go build -o main ./cmd/main.go
+RUN go build -o /app/server ./cmd/main.go
 
-EXPOSE 8080
+FROM scratch
+COPY --from=builder /app/server /server
 
-CMD ["./main"]
+CMD ["/server"]
