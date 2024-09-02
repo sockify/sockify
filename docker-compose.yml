@@ -12,6 +12,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
 
@@ -28,6 +30,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  migrate:
+    # Reference: https://stackoverflow.com/questions/55779979/how-to-run-golang-migrate-with-docker-compose
+    image: migrate/migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./api/cmd/migrate/migrations:/migrations # Path to migrations folder aliased as "/migrations"
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://postgres:password@postgres:5432/sockify?sslmode=disable",
+        "up"
+      ]
 
   redis:
     image: redis:alpine
