@@ -2,7 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"time"
 )
 
 type UserStore interface {
@@ -18,13 +17,36 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetUsers() ([]User, error) {
-	// TODO(sebastian-nunez): replace with an actual SQL call
-	mockUsers := make([]User, 0)
-	mockUsers = append(mockUsers, User{
-		Username:  "johndoe",
-		Password:  "1234",
-		CreatedAt: time.Now(),
-		Role:      "admin",
-	})
-	return mockUsers, nil
+	rows, err := s.db.Query("SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+
+	users := make([]User, 0)
+	for rows.Next() {
+		user, err := scanRowsIntoUser(rows)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, *user)
+	}
+
+	return users, nil
+}
+
+func scanRowsIntoUser(rows *sql.Rows) (*User, error) {
+	user := new(User)
+	err := rows.Scan(
+		&user.ID,
+		&user.Username,
+		&user.Password,
+		&user.Role,
+		&user.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
