@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/sockify/sockify/internal/routes"
 )
 
@@ -23,6 +24,12 @@ func NewServer(addr string, db *sql.DB) *Server {
 func (s *Server) Run() error {
 	router := routes.Router(s.db)
 
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:5173"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+	)(router)
+
 	log.Println("Server listening on port", s.addr)
-	return http.ListenAndServe(s.addr, router)
+	return http.ListenAndServe(s.addr, corsHandler)
 }
