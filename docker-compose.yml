@@ -1,12 +1,26 @@
 services:
+  web-client:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    depends_on:
+      - api
+    develop:
+      watch:
+        - action: sync
+          path: ./web-client
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
   api:
     build:
       context: ./api
       dockerfile: Dockerfile
-    develop:
-      watch:
-        - action: rebuild
-          path: ./api
     ports:
       - 8080:8080
     depends_on:
@@ -16,6 +30,10 @@ services:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./api
 
   postgres:
     image: postgres:alpine
