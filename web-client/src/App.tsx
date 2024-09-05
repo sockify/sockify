@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios, { HttpStatusCode } from "axios";
 import { Button } from "./components/ui/button";
 import { Users } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 
 interface User {
   id: string;
@@ -22,6 +23,7 @@ export default function App() {
           setError("Unable to fetch users -> " + statusText);
           return;
         }
+        toast.success("Successfully retrieved users!");
         setUsers(data);
       } catch (err) {
         setError((err as Error).message);
@@ -52,6 +54,8 @@ export default function App() {
           <p>No users found.</p>
         )}
       </ul>
+
+      <Toaster position="top-right" />
     </>
   );
 }
