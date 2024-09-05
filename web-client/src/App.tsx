@@ -3,13 +3,23 @@ import axios, { HttpStatusCode } from "axios";
 import { Button } from "./components/ui/button";
 import { Users } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { z } from "zod";
 
-interface User {
-  id: string;
-  username: string;
-  role: string;
-  createdAt: string;
-}
+// interface User {
+//   id: string;
+//   username: string;
+//   role: "admin" | "member"
+//   createdAt: string;
+// }
+
+const userSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  role: z.enum(["admin", "member"]),
+  createdAt: z.date()
+});
+
+type User = z.infer<typeof userSchema>;
 
 export default function App() {
   const [users, setUsers] = useState<User[] | undefined>(undefined);
@@ -23,7 +33,18 @@ export default function App() {
           setError("Unable to fetch users -> " + statusText);
           return;
         }
-        toast.success("Successfully retrieved users!");
+
+        const users: User[] = [];
+        for (const user in data) {
+          const { success, data } = userSchema.safeParse(user);
+          if (success) {
+            users.push(data);
+          } else {
+            toast.error("Invalid user: " + data);
+          }
+        }
+
+        toast.success("Successfully retrieved all users!");
         setUsers(data);
       } catch (err) {
         setError((err as Error).message);
