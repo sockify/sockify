@@ -25,7 +25,7 @@ export default function App() {
         {isLoading ? (
           <p>Loading...</p>
         ) : users && users.length > 0 ? (
-          users.map(user => (
+          users.map((user) => (
             <p key={user.id}>
               {user.username} ({user.id})
             </p>

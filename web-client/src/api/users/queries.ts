@@ -8,7 +8,7 @@ export function useGetUsersOptions(enabled = true) {
   return queryOptions({
     queryKey: ["users"],
     queryFn: userService.getUsers,
-    enabled
+    enabled,
   });
 }
 
