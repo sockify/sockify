@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios, { HttpStatusCode } from "axios";
+import { Button } from "./components/ui/button";
 
 interface User {
   id: string;
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <>
       <h1 className="text-3xl font-bold underline">Users</h1>
+      <Button>Get users</Button>
       <ul>
         {users && users.length > 0 ? (
           users.map(user => (
