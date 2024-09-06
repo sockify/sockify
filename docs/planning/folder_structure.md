@@ -61,28 +61,27 @@ repo-root/
 │   ├── /middleware
 │   │   └── auth.go
 │   │
-│   ├── /internal
-│   │   ├── /auth
-│   │   │   ├── jwt.go
-│   │   │   └── password.go
-│   │   │
-│   │   ├── /config
-│   │   │   └── env.go
-│   │   │
-│   │   ├── /routes
-│   │   │   └── routes.go
-│   │   │
-│   │   ├── /database
-│   │   │   └── db.go
-│   │   │
-│   │   ├── /logger
-│   │   │   └── logger.go
-│   │   │
-│   │   └── /utils
-│   │       └── helpers.go
+│   ├── /auth
+│   │   ├── jwt.go
+│   │   └── password.go
 │   │
-│   ├── Dockerfile
-│   └── go.mod
+│   ├── /config
+│   │   └── env.go
+│   │
+│   ├── /routes
+│   │   └── routes.go
+│   │
+│   ├── /database
+│   │   └── db.go
+│   │
+│   ├── /logger
+│   │   └── logger.go
+│   │
+│   └── /utils
+│       └── helpers.go
+│
+├── Dockerfile
+└── go.mod
 │
 ├── /web-client
 │   ├── /src
