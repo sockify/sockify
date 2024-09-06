@@ -85,4 +85,4 @@ A commit message follows this format:
 To maintain code quality and consistency, consider installing the following tools:
 
 - **Code editor:** `vscode`
-- **Auto-formatters:** `prettier`.
+- **Auto-formatting & liting:** To autoformat, you can run `npm run prettier:fix` and to lint, `npm run lint:fix`

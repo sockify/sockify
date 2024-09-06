@@ -1,0 +1,75 @@
+services:
+  web-client:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    depends_on:
+      - api
+    develop:
+      watch:
+        - action: sync
+          path: ./web-client
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./api
+
+  postgres:
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=sockify
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    # Reference: https://stackoverflow.com/questions/55779979/how-to-run-golang-migrate-with-docker-compose
+    image: migrate/migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./api/cmd/migrate/migrations:/migrations # Path to migrations folder aliased as "/migrations"
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://postgres:password@postgres:5432/sockify?sslmode=disable",
+        "up"
+      ]
+
+  redis:
+    image: redis:alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
