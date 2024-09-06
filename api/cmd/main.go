@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 
 	"github.com/sockify/sockify/cmd/api"
 	"github.com/sockify/sockify/internal/config"
 	"github.com/sockify/sockify/internal/database"
+	"github.com/sockify/sockify/internal/utils"
 )
 
 func main() {
@@ -20,10 +23,22 @@ func main() {
 	}
 	initStorage(db)
 
-	server := api.NewServer(":"+config.Envs.APIPort, db)
-	if err = server.Run(); err != nil {
-		log.Fatal("Unable to start the HTTP server: ", err)
-	}
+	httpLogger := utils.NewAsyncHTTPLogger()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+
+	server := api.NewServer(":"+config.Envs.APIPort, db, httpLogger)
+	go func() {
+		if err = server.Run(); err != nil {
+			log.Fatal("Unable to start the HTTP server: ", err)
+		}
+	}()
+
+	<-quit
+	log.Println("Shutting down server...")
+	httpLogger.Close()
+
+	log.Println("Server gracefully stopped.")
 }
 
 func initStorage(db *sql.DB) {
