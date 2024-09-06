@@ -7,12 +7,13 @@ import (
 )
 
 type Config struct {
-	APIPort    string
-	DBName     string
-	DBUser     string
-	DBPassword string
-	DBHost     string
-	DBPort     string
+	WebClientURL string
+	APIPort      string
+	DBName       string
+	DBUser       string
+	DBPassword   string
+	DBHost       string
+	DBPort       string
 }
 
 // Envs is the global configuration for the application.
@@ -22,12 +23,13 @@ func initConfig() Config {
 	godotenv.Load()
 
 	return Config{
-		APIPort:    getEnv("API_PORT", "8080"),
-		DBName:     getEnv("DB_NAME", "sockify"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "password"),
-		DBHost:     getEnv("DB_HOST", "host.docker.internal"), // Analogous to "localhost"
-		DBPort:     getEnv("DB_PORT", "5432"),
+		WebClientURL: getEnv("WEB_CLIENT_URL", "http://localhost:5173"),
+		APIPort:      getEnv("API_PORT", "8080"),
+		DBName:       getEnv("DB_NAME", "sockify"),
+		DBUser:       getEnv("DB_USER", "postgres"),
+		DBPassword:   getEnv("DB_PASSWORD", "password"),
+		DBHost:       getEnv("DB_HOST", "host.docker.internal"), // Analogous to "localhost"
+		DBPort:       getEnv("DB_PORT", "5432"),
 	}
 }
 

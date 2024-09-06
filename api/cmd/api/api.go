@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/handlers"
+	"github.com/sockify/sockify/config"
 	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/routes"
 	"github.com/sockify/sockify/utils/logging"
@@ -31,7 +32,7 @@ func (s *Server) Run() error {
 	// Middleware
 	loggedRouter := middleware.BasicHTTPLogging(s.httpLogger, router)
 	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{"http://localhost:5173"}),
+		handlers.AllowedOrigins([]string{config.Envs.WebClientURL}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
 	)(loggedRouter)
