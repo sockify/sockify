@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { User, usersSchema } from "./model";
 
 export interface UserService {

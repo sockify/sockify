@@ -1,7 +1,8 @@
-import { Button } from "./components/ui/button";
 import { Users } from "lucide-react";
-import { useGetUsers } from "./api/users/queries";
 import toast, { Toaster } from "react-hot-toast";
+
+import { useGetUsers } from "./api/users/queries";
+import { Button } from "./components/ui/button";
 
 export default function App() {
   const { data: users, isLoading, error, refetch } = useGetUsers(false);

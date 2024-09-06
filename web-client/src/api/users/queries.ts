@@ -1,6 +1,7 @@
-import { queryOptions, useQuery, UseQueryResult } from "@tanstack/react-query";
-import { HttpUserService } from "./service";
+import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
+
 import { User } from "./model";
+import { HttpUserService } from "./service";
 
 const userService = new HttpUserService();
 
