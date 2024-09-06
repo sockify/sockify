@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/sockify/sockify/internal/utils/logging"
+	"github.com/sockify/sockify/utils/logging"
 )
 
 // BasicHTTPLogging logs details about each incoming request.

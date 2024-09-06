@@ -8,9 +8,9 @@ import (
 	"os/signal"
 
 	"github.com/sockify/sockify/cmd/api"
-	"github.com/sockify/sockify/internal/config"
-	"github.com/sockify/sockify/internal/database"
-	"github.com/sockify/sockify/internal/utils/logging"
+	"github.com/sockify/sockify/config"
+	"github.com/sockify/sockify/database"
+	"github.com/sockify/sockify/utils/logging"
 )
 
 func main() {

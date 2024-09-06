@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/sockify/sockify/internal/utils"
+	"github.com/sockify/sockify/utils"
 )
 
 type Handler struct {

@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/handlers"
-	"github.com/sockify/sockify/internal/middleware"
-	"github.com/sockify/sockify/internal/routes"
-	"github.com/sockify/sockify/internal/utils/logging"
+	"github.com/sockify/sockify/middleware"
+	"github.com/sockify/sockify/routes"
+	"github.com/sockify/sockify/utils/logging"
 )
 
 type Server struct {
