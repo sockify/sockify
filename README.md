@@ -1,6 +1,18 @@
-# Sockify
+# Sockify <!-- omit in toc -->
 
 An e-commerce web app to sell custom socks.
+
+**Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
+
+## Table of contents <!-- omit in toc -->
+
+- [Tech stack](#tech-stack)
+- [Getting started](#getting-started)
+  - [Running locally](#running-locally)
+  - [Database migrations](#database-migrations)
+    - [Create a migration](#create-a-migration)
+    - [Applying all database migration](#applying-all-database-migration)
+    - [Turning down database migrations](#turning-down-database-migrations)
 
 ## Tech stack
 
