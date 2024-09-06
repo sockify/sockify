@@ -10,7 +10,7 @@ import (
 	"github.com/sockify/sockify/cmd/api"
 	"github.com/sockify/sockify/internal/config"
 	"github.com/sockify/sockify/internal/database"
-	"github.com/sockify/sockify/internal/utils"
+	"github.com/sockify/sockify/internal/utils/logging"
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 	}
 	initStorage(db)
 
-	httpLogger := utils.NewAsyncHTTPLogger()
+	httpLogger := logging.NewAsyncHTTPLogger()
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 

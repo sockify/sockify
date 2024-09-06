@@ -8,16 +8,16 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/sockify/sockify/internal/middleware"
 	"github.com/sockify/sockify/internal/routes"
-	"github.com/sockify/sockify/internal/utils"
+	"github.com/sockify/sockify/internal/utils/logging"
 )
 
 type Server struct {
 	addr       string
 	db         *sql.DB
-	httpLogger *utils.AsyncHTTPLogger
+	httpLogger *logging.AsyncHTTPLogger
 }
 
-func NewServer(addr string, db *sql.DB, httpLogger *utils.AsyncHTTPLogger) *Server {
+func NewServer(addr string, db *sql.DB, httpLogger *logging.AsyncHTTPLogger) *Server {
 	return &Server{
 		addr:       addr,
 		db:         db,
