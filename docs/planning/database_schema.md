@@ -6,13 +6,15 @@
 
 Store user information for admins who manage the store.
 
-| Column          | Type         | Constrains                          |
-| --------------- | ------------ | ----------------------------------- |
-| `admin_id`      | SERIAL       | PRIMARY KEY                         |
-| `email`         | VARCHAR(100) | UNIQUE, NOT NULL                    |
-| `username`      | VARCHAR(32)  | UNIQUE, NOT NULL                    |
-| `password_hash` | VARCHAR(255) | NOT NULL                            |
-| `created_at`    | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
+| Column             | Type         | Constrains                          |
+| ------------------ | ------------ | ----------------------------------- |
+| `admin_id`         | SERIAL       | PRIMARY KEY                         |
+| `firstname`        | VARCHAR(32)  | NOT NULL                            |
+| `lastname_initial` | CHAR(1)      | NOT NULL                            |
+| `email`            | VARCHAR(100) | UNIQUE, NOT NULL                    |
+| `username`         | VARCHAR(32)  | UNIQUE, NOT NULL                    |
+| `password_hash`    | VARCHAR(255) | NOT NULL                            |
+| `created_at`       | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
 
 ### `socks`
 
@@ -57,7 +59,7 @@ Track user purchases and order details.
 | `phone`          | VARCHAR(16)    |                                                  |
 | `street`         | VARCHAR(100)   | NOT NULL                                         |
 | `apt_unit`       | VARCHAR(16)    |                                                  |
-| `state`          | VARCHAR(2)     | CHECK IN ENUM('FL', 'OH', etc.), NOT NULL        |
+| `state`          | CHAR(2)        | CHECK IN ENUM('FL', 'OH', etc.), NOT NULL        |
 | `zipcode`        | VARCHAR(10)    | NOT NULL                                         |
 | `created_at`     | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP              |
 

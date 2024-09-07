@@ -4,6 +4,8 @@
 erDiagram
     admins {
         SERIAL admin_id PK "Primary Key"
+        VARCHAR firstname "NOT NULL"
+        CHAR lastname_initial "NOT NULL"
         VARCHAR email "Unique, NOT NULL"
         VARCHAR username "Unique, NOT NULL"
         VARCHAR password_hash "NOT NULL"
@@ -38,7 +40,7 @@ erDiagram
         VARCHAR phone
         VARCHAR street "NOT NULL"
         VARCHAR apt_unit
-        VARCHAR state "Check IN ('FL', 'OH', etc.), NOT NULL"
+        CHAR state "Check IN ('FL', 'OH', etc.), NOT NULL"
         VARCHAR zipcode "NOT NULL"
         TIMESTAMP created_at "NOT NULL, Default CURRENT_TIMESTAMP"
     }
