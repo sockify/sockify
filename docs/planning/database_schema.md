@@ -9,8 +9,8 @@ Store user information for admins who manage the store.
 | Column          | Type         | Constrains                          |
 | --------------- | ------------ | ----------------------------------- |
 | `admin_id`      | SERIAL       | PRIMARY KEY                         |
-| `email`         | VARCHAR(255) | UNIQUE, NOT NULL                    |
-| `username`      | VARCHAR(255) | UNIQUE, NOT NULL                    |
+| `email`         | VARCHAR(100) | UNIQUE, NOT NULL                    |
+| `username`      | VARCHAR(32)  | UNIQUE, NOT NULL                    |
 | `password_hash` | VARCHAR(255) | NOT NULL                            |
 | `created_at`    | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
 
@@ -21,10 +21,10 @@ Store customer information including personal details and address.
 | Column        | Type         | Constraints                           |
 | ------------- | ------------ | ------------------------------------- |
 | `customer_id` | SERIAL       | PRIMARY KEY                           |
-| `firstname`   | VARCHAR(50)  | NOT NULL                              |
-| `lastname`    | VARCHAR(50)  | NOT NULL                              |
-| `email`       | VARCHAR(255) | UNIQUE, NOT NULL                      |
-| `phone`       | VARCHAR(15)  |                                       |
+| `firstname`   | VARCHAR(32)  | NOT NULL                              |
+| `lastname`    | VARCHAR(32)  | NOT NULL                              |
+| `email`       | VARCHAR(100) | UNIQUE, NOT NULL                      |
+| `phone`       | VARCHAR(16)  |                                       |
 | `street`      | VARCHAR(100) | NOT NULL                              |
 | `apt_unit`    | VARCHAR(16)  |                                       |
 | `state`       | VARCHAR(2)   | CHECK IN ('FL', 'OH', etc.), NOT NULL |
@@ -35,13 +35,13 @@ Store customer information including personal details and address.
 
 Store general information about the socks.
 
-| Column              | Type         | Constraints                         |
-| ------------------- | ------------ | ----------------------------------- |
-| `sock_id`           | SERIAL       | PRIMARY KEY, ON DELETE CASCADE      |
-| `name`              | VARCHAR(50)  | NOT NULL                            |
-| `description`       | VARCHAR(255) |                                     |
-| `preview_image_url` | TEXT         | NOT NULL                            |
-| `created_at`        | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
+| Column              | Type        | Constraints                         |
+| ------------------- | ----------- | ----------------------------------- |
+| `sock_id`           | SERIAL      | PRIMARY KEY, ON DELETE CASCADE      |
+| `name`              | VARCHAR(64) | NOT NULL                            |
+| `description`       | TEXT        |                                     |
+| `preview_image_url` | TEXT        | NOT NULL                            |
+| `created_at`        | TIMESTAMP   | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
 
 ### `sock_variants`
 
