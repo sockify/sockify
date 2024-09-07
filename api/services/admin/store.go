@@ -17,7 +17,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetAdmins() ([]Admin, error) {
-	rows, err := s.db.Query("SELECT * FROM admins")
+	rows, err := s.db.Query("SELECT * FROM admins;")
 	if err != nil {
 		return nil, err
 	}
@@ -39,6 +39,8 @@ func scanRowsIntoAdmin(rows *sql.Rows) (*Admin, error) {
 	admin := new(Admin)
 	err := rows.Scan(
 		&admin.ID,
+		&admin.FirstName,
+		&admin.LastName,
 		&admin.Email,
 		&admin.Username,
 		&admin.PasswordHash,
