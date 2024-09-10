@@ -33,15 +33,15 @@ Store general information about the socks.
 Store specific sock sizes, their prices, and stock levels.
 This is needed since each sock can have multiple sizes and each size has its own price and stock.
 
-| Column            | Type           | Constraints                                |
-| ----------------- | -------------- | ------------------------------------------ |
-| `sock_variant_id` | SERIAL         | PRIMARY KEY                                |
-| `sock_id`         | INTEGER        | FOREIGN KEY on `socks`, ON DELETE CASCADE  |
-| `size`            | INTEGER        | In range [1, 24] , NOT NULL                |
-| `price`           | DECIMAL(12, 2) | In range [0.01, +inf], NOT NULL            |
-| `stock`           | INTEGER        | In range [0, +inf], NOT NULL               |
-| `created_at`      | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP        |
-| **Unique**        | Constraint     | `sock_id` and `size` combination is unique |
+| Column            | Type           | Constraints                                   |
+| ----------------- | -------------- | --------------------------------------------- |
+| `sock_variant_id` | SERIAL         | PRIMARY KEY                                   |
+| `sock_id`         | INTEGER        | FOREIGN KEY on `socks`, ON DELETE CASCADE     |
+| `size`            | VARCHAR(2)     | CHECK IN ENUM('S', 'M', 'LG', 'XL'), NOT NULL |
+| `price`           | DECIMAL(12, 2) | In range [0.01, +inf], NOT NULL               |
+| `stock`           | INTEGER        | In range [0, +inf], NOT NULL                  |
+| `created_at`      | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP           |
+| **Unique**        | Constraint     | `sock_id` and `size` combination is unique    |
 
 ### `orders`
 
