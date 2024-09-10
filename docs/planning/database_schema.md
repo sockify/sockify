@@ -23,7 +23,7 @@ Store general information about the socks.
 | Column              | Type        | Constraints                         |
 | ------------------- | ----------- | ----------------------------------- |
 | `sock_id`           | SERIAL      | PRIMARY KEY                         |
-| `name`              | VARCHAR(64) | NOT NULL                            |
+| `name`              | VARCHAR(64) | UNIQUE, NOT NULL                    |
 | `description`       | TEXT        |                                     |
 | `preview_image_url` | TEXT        | NOT NULL                            |
 | `created_at`        | TIMESTAMP   | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
@@ -39,7 +39,7 @@ This is needed since each sock can have multiple sizes and each size has its own
 | `sock_id`         | INTEGER        | FOREIGN KEY on `socks`, ON DELETE CASCADE     |
 | `size`            | VARCHAR(2)     | CHECK IN ENUM('S', 'M', 'LG', 'XL'), NOT NULL |
 | `price`           | DECIMAL(12, 2) | In range [0.01, +inf], NOT NULL               |
-| `stock`           | INTEGER        | In range [0, +inf], NOT NULL                  |
+| `quantity`        | INTEGER        | In range [0, +inf], NOT NULL                  |
 | `created_at`      | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP           |
 | **Unique**        | Constraint     | `sock_id` and `size` combination is unique    |
 
