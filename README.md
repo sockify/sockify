@@ -95,4 +95,12 @@ Whenever changes are made to API, we have to re-build the API specification.
 
 We are using [Swaggo](https://github.com/swaggo/swag?tab=readme-ov-file) to automatically generate an [OpenAPI](https://www.openapis.org/) spec.
 
-Run the following command within the `/api` directory: `swag init -g ./cmd/main.go -o ./docs`
+1. To use the `swag` CLI command, make sure your Go is in your system path (inside your `~/.bashrc` or `~/.zshrc` file for UNIX):
+
+   ```bash
+   export PATH=$(go env GOPATH)/bin:$PATH
+   ```
+
+   Otherwise, you will probably see an error like: `zsh: command not found: swag`
+
+2. Run the following command within the `/api` directory: `swag init -g ./cmd/main.go -o ./docs`
