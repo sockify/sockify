@@ -1,5 +1,19 @@
 # Database schema
 
+These the all the major tables we will need for our MVP.
+
+## Indexes
+
+Columns that are marked as **INDEXED** should have an PostgreSQL index associated with them. This is needed to speed up queries for certain columns.
+
+- To create an index: `CREATE INDEX IF NOT EXISTS {tablename}_{column}_idx ON tablename(column);`
+
+- To create a _unique_ index: `CREATE UNIQUE INDEX IF NOT EXISTS {tablename}_{column}_idx ON tablename(column);`
+
+- You can view all indexes of a table by running: `SELECT * FROM pg_indexes WHERE tablename = '{tablename}';`
+
+A good article about index name conventions [here](https://dum80409.medium.com/postgres-index-naming-a19e30f1a237).
+
 ## Tables
 
 ### `admins`
