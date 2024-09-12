@@ -4,6 +4,10 @@
         "description": "API for the Sockify e-commerce store.",
         "title": "Sockify API",
         "contact": {},
+        "license": {
+            "name": "MIT",
+            "url": "https://github.com/sockify/sockify/blob/main/LICENSE"
+        },
         "version": "1.0"
     },
     "host": "localhost:8080",
@@ -52,6 +56,13 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

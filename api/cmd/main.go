@@ -19,6 +19,12 @@ import (
 
 // @host      localhost:8080
 // @BasePath  /api/v1
+// @license.name MIT
+// @license.url https://github.com/sockify/sockify/blob/main/LICENSE
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable TimeZone=UTC connect_timeout=10",
 		config.Envs.DBUser, config.Envs.DBPassword, config.Envs.DBName, config.Envs.DBHost, config.Envs.DBPort,

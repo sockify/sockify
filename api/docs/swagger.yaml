@@ -19,6 +19,9 @@ host: localhost:8080
 info:
   contact: {}
   description: API for the Sockify e-commerce store.
+  license:
+    name: MIT
+    url: https://github.com/sockify/sockify/blob/main/LICENSE
   title: Sockify API
   version: "1.0"
 paths:
@@ -34,4 +37,9 @@ paths:
             items:
               $ref: '#/definitions/admin.Admin'
             type: array
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
