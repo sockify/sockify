@@ -64,7 +64,7 @@ Track user purchases and order details.
 | Column           | Type           | Constrains                                       |
 | ---------------- | -------------- | ------------------------------------------------ |
 | `order_id`       | SERIAL         | PRIMARY KEY                                      |
-| `invoice_number` | TEXT (UUID)    | UNIQUE, NOT NULL, **UNIQUE INDEXED**             |
+| `invoice_number` | VARCHAR(36)    | UNIQUE, NOT NULL, **UNIQUE INDEXED**             |
 | `total_price`    | DECIMAL(12, 2) | NOT NULL                                         |
 | `status`         | ENUM           | received, shipped, delivered, canceled, returned |
 | `firstname`      | VARCHAR(32)    | NOT NULL                                         |
