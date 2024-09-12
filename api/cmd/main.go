@@ -13,6 +13,12 @@ import (
 	"github.com/sockify/sockify/utils/logging"
 )
 
+// @title           Sockify API
+// @version         1.0
+// @description     API for the Sockify e-commerce store.
+
+// @host      localhost:8080
+// @BasePath  /api/v1
 func main() {
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable TimeZone=UTC connect_timeout=10",
 		config.Envs.DBUser, config.Envs.DBPassword, config.Envs.DBName, config.Envs.DBHost, config.Envs.DBPort,

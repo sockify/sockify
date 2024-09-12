@@ -20,6 +20,10 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/admins", h.handleGetAdmins).Methods(http.MethodGet)
 }
 
+// @Description Retrieves a list of all admins.
+// @Produce json
+// @Success 200 {array} Admin
+// @Router /admins [get]
 func (h *Handler) handleGetAdmins(w http.ResponseWriter, r *http.Request) {
 	admins, err := h.store.GetAdmins()
 	if err != nil {
