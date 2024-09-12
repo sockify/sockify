@@ -33,7 +33,7 @@ func (s *Server) Run() error {
 
 	// Swagger UI
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+		httpSwagger.URL("http://localhost:"+config.Envs.APIPort+"/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("list"),
 		httpSwagger.DomID("swagger-ui"),
