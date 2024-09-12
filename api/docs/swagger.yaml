@@ -1,0 +1,37 @@
+basePath: /api/v1
+definitions:
+  admin.Admin:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for the Sockify e-commerce store.
+  title: Sockify API
+  version: "1.0"
+paths:
+  /admins:
+    get:
+      description: Retrieves a list of all admins.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/admin.Admin'
+            type: array
+swagger: "2.0"

@@ -7,9 +7,11 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/sockify/sockify/config"
+	_ "github.com/sockify/sockify/docs"
 	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/routes"
 	"github.com/sockify/sockify/utils/logging"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Server struct {
@@ -28,6 +30,14 @@ func NewServer(addr string, db *sql.DB, httpLogger *logging.AsyncHTTPLogger) *Se
 
 func (s *Server) Run() error {
 	router := routes.Router(s.db)
+
+	// Swagger UI
+	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("list"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods(http.MethodGet)
 
 	// Middleware
 	loggedRouter := middleware.BasicHTTPLogging(s.httpLogger, router)
