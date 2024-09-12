@@ -20,7 +20,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/admins", h.handleGetAdmins).Methods(http.MethodGet)
 }
 
+// @Summary Get all admins.
 // @Description Retrieves a list of all admins.
+// @Tags Admins
 // @Produce json
 // @Success 200 {array} Admin
 // @Router /admins [get]

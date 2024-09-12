@@ -37,6 +37,9 @@ paths:
             items:
               $ref: '#/definitions/admin.Admin'
             type: array
+      summary: Get all admins.
+      tags:
+      - Admins
 securityDefinitions:
   ApiKeyAuth:
     in: header

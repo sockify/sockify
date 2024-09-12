@@ -25,6 +25,10 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Get all admins.",
                 "responses": {
                     "200": {
                         "description": "OK",

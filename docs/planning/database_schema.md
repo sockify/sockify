@@ -20,15 +20,15 @@ A good article about index name conventions [here](https://dum80409.medium.com/p
 
 Store user information for admins who manage the store.
 
-| Column             | Type         | Constrains                          |
-| ------------------ | ------------ | ----------------------------------- |
-| `admin_id`         | SERIAL       | PRIMARY KEY                         |
-| `firstname`        | VARCHAR(32)  | NOT NULL                            |
-| `lastname_initial` | CHAR(1)      | NOT NULL                            |
-| `email`            | VARCHAR(100) | UNIQUE, NOT NULL                    |
-| `username`         | VARCHAR(32)  | UNIQUE, NOT NULL, **INDEXED**       |
-| `password_hash`    | VARCHAR(255) | NOT NULL                            |
-| `created_at`       | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
+| Column             | Type         | Constrains                           |
+| ------------------ | ------------ | ------------------------------------ |
+| `admin_id`         | SERIAL       | PRIMARY KEY                          |
+| `firstname`        | VARCHAR(32)  | NOT NULL                             |
+| `lastname_initial` | CHAR(1)      | NOT NULL                             |
+| `email`            | VARCHAR(100) | UNIQUE, NOT NULL                     |
+| `username`         | VARCHAR(32)  | UNIQUE, NOT NULL, **UNIQUE INDEXED** |
+| `password_hash`    | VARCHAR(255) | NOT NULL                             |
+| `created_at`       | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP  |
 
 ### `socks`
 
@@ -64,7 +64,7 @@ Track user purchases and order details.
 | Column           | Type           | Constrains                                       |
 | ---------------- | -------------- | ------------------------------------------------ |
 | `order_id`       | SERIAL         | PRIMARY KEY                                      |
-| `invoice_number` | TEXT (UUID)    | UNIQUE, NOT NULL, **INDEXED**                    |
+| `invoice_number` | TEXT (UUID)    | UNIQUE, NOT NULL, **UNIQUE INDEXED**             |
 | `total_price`    | DECIMAL(12, 2) | NOT NULL                                         |
 | `status`         | ENUM           | received, shipped, delivered, canceled, returned |
 | `firstname`      | VARCHAR(32)    | NOT NULL                                         |
@@ -83,13 +83,13 @@ Store the specific item variants and quantities ordered.
 
 We are ensuring to "lock" the price at the time of the order.
 
-| Column            | Type           | Constrains                                           |
-| ----------------- | -------------- | ---------------------------------------------------- |
-| `order_item_id`   | SERIAL         | PRIMARY KEY                                          |
-| `order_id`        | INTEGER        | FOREIGN KEY on `orders`, DELETE CASCADE, **INDEXED** |
-| `sock_variant_id` | INTEGER        | FOREIGN KEY on `sock_variants`                       |
-| `quantity`        | INTEGER        | In range [1, +inf]                                   |
-| `price`           | DECIMAL(12, 2) | In range [0.01, +inf]                                |
+| Column            | Type           | Constrains                              |
+| ----------------- | -------------- | --------------------------------------- |
+| `order_item_id`   | SERIAL         | PRIMARY KEY                             |
+| `order_id`        | INTEGER        | FOREIGN KEY on `orders`, DELETE CASCADE |
+| `sock_variant_id` | INTEGER        | FOREIGN KEY on `sock_variants`          |
+| `quantity`        | INTEGER        | In range [1, +inf]                      |
+| `price`           | DECIMAL(12, 2) | In range [0.01, +inf]                   |
 
 ### `order_updates`
 
