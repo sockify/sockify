@@ -9,6 +9,7 @@ An e-commerce web app to sell custom socks.
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
   - [Running locally](#running-locally)
+    - [Good to know](#good-to-know)
   - [Database migrations](#database-migrations)
     - [Create a migration](#create-a-migration)
     - [Applying all database migration](#applying-all-database-migration)
@@ -51,22 +52,26 @@ An e-commerce web app to sell custom socks.
 - You can access the web UI: http://localhost:5173/
 - You can acccess the Swagger UI (API): http://localhost:8080/swagger/index.html
 - To lint (`npm run lint:fix`) and format (`npm run prettier:fix`) the `web-client`, you have to first `cd web-client`, then run `npm install`.
-- To _manually_ build the app, you can run `docker compose up --build`
-- If you run into issues with the Docker build, open Docker Desktop, then stop all the services, then delete all the containers, and lastly, delete all the volumes.
+- If you run into issues with the Docker build: open Docker Desktop, then stop all the services, then delete all the containers, and lastly, delete all the volumes and try again.
 
 ### Database migrations
 
-We are using [golang-migrate](https://github.com/golang-migrate/migrate/tree/master) to ease all database migrations.
+We are using [golang-migrate](https://github.com/golang-migrate/migrate/tree/master) to ease all database migrations in the API. To use the commands below, make sure to:
+
+1. Download the migration CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)
+2. Make your current working directory (CWD) is `/api`: `cd api`
 
 #### Create a migration
 
 To create a new database migration, run:
 
 ```bash
-make migration <migration-name>
+make migration <migration-name-separated-by-underscores>
 ```
 
-Then, you can find the create (up) and teardown (down) scripts in `/cmd/migrate/migrations`.
+You can find the newly created migration scripts at `./api/cmd/migrate/migrations`.
+
+_Make sure to include the **"up"** (creation) and **"down"** (teardown) scripts!_
 
 #### Applying all database migration
 
@@ -94,7 +99,7 @@ You can open the local API docs at http://localhost:8080/swagger/index.html
 
 Whenever changes are made to API, we have to re-build the API specification.
 
-We are using [Swaggo](https://github.com/swaggo/swag?tab=readme-ov-file) to automatically generate an [OpenAPI](https://www.openapis.org/) spec.
+We are using [Swaggo](https://github.com/swaggo/swag?tab=readme-ov-file) to automatically generate an [OpenAPI](https://www.openapis.org/) spec. These are the steps needed:
 
 1. Install the `swag` CLI: `go install github.com/swaggo/swag/cmd/swag@latest`
 2. To use the CLI command, make sure Go is in your system path (inside your `~/.bashrc` or `~/.zshrc` file for UNIX):
