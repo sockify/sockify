@@ -13,7 +13,7 @@ These are the major tasks that we will need to work on during the MVP run.
 
 ## Backend
 
-### Admin login
+### Admin / Auth
 
 #### [API] Create `POST /admins/login` endpoint to handle admin login (JWT-based)
 
@@ -30,8 +30,8 @@ Example payload:
 
 ```json
 {
-  "username": "",
-  "password": ""
+  "username": "jdoe",
+  "password": "password1234"
 }
 ```
 
@@ -42,6 +42,10 @@ JSON response:
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNjgyNTUzNzY5LCJleHBpIjoxNjgyNTU3MzY5fQ.s5bBb2j6aRvJ76h6kh9JhRzZjRpIMdRBB3Fl5rQpAdg"
 }
 ```
+
+#### [API] Create a `WithJWTAuth` middleware to safeguard sensitive API endpoints
+
+- Will need to read the `Authorization` header
 
 ### Manage products
 
@@ -65,16 +69,19 @@ JSON response:
 Example payload:
 
 ```json
-{
- name: ...
- description:...
- // the rest of the expected fields for a sock
- variants: [
-     {size: 'LG', price: 60, quantity: 5},
-     {size: 'XL', price: 65, quantity: 10},
-     ...
- ]
-}
+[
+  {
+    "name": "Sketchies",
+    "description": "Super comfy!",
+    // The rest of the expected fields for a sock...
+    "variants": [
+      { "size": "LG", "price": 60.0, "quantity": 5 },
+      { "size": "XL", "price": 65.0, "quantity": 10 }
+      // More variants...
+    ]
+  }
+  // More socks...
+]
 ```
 
 #### [API] Create `PATCH /socks/:sock_id` to update product details
@@ -90,13 +97,10 @@ Example payload:
 
 ```json
 {
- name: ...
- description:...
- // the rest of the expected fields for a sock
- variants: [
-     {size: 'XL', price: 65, quantity: 10},
-     ...
- ]
+  "name": "Sketchies",
+  "description": "Super comfy!",
+  // The rest of the expected fields for a sock...
+  "variants": [{ "size": "LG", "price": 60.0, "quantity": 5 }]
 }
 ```
 
@@ -137,9 +141,9 @@ Example payload:
 
 ```json
 {
-    street: ...,
-    unit: ...,
-    // the rest of the fields for an address
+  "street": "123 Street Blvd",
+  "unit": ""
+  // The rest of the fields for an address
 }
 ```
 
@@ -154,9 +158,9 @@ Example payload:
 
 ```json
 {
-    name: ...,
-    email: ...,
-    phone: ...
+  "name": "John D.",
+  "email": "jdoe@gmail.com",
+  "phone": "765-434-3232"
 }
 ```
 
