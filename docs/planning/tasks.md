@@ -15,11 +15,45 @@ These are the major tasks that we will need to work on during the MVP run.
 
 ### Admin / Auth
 
+#### [API] Create a `WithJWTAuth` middleware to safeguard sensitive API endpoints
+
+- Will need to read the `Authorization` header and get the JWT token
+- Validate JWT token
+  - Extract the `expiredAt` and make sure it hasn't expired
+  - Extract the `userID` and make sure it exists in the DB
+- Before forwarding to the next handler, attach the `userID` through Go `context` API.
+  - Create a new context with the value: `context.WithValue`
+  - Attach the context to the incoming request: `r.WithContext`
+
+#### [API] Create `POST /admins/register` endpoint to create new admin credentials
+
+- Endpoint is guarded. Only logged-in (or with `token`), admins can access.
+  - **Note:** with this logic, we will always need at least 1 admin account. This account will have to be created directly within the database.
+- Returns signed JWT token with a `OK` status when successfully created the new credentials
+- Password/pass phrase requirements:
+  - Length must be in range [8, 16] characters
+  - At least 2 numbers
+  - At least 1 special character
+- Returns a `BAD_REQUEST` HTTP status given bad payload formatting, or bad password
+
+Example payload:
+
+```json
+{
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "jdoe@gmail.com",
+  "username": "jdoe",
+  "password": "password1234"
+}
+```
+
 #### [API] Create `POST /admins/login` endpoint to handle admin login (JWT-based)
 
 - Generate and return a signed JWT token with:
   - `userId`
   - `expiredAt` (could be like 8 hours using UNIX time)
+- Only admins can access this endpoint
 - Implement error handling for invalid credentials.
 - Ensure passwords are stored securely (hashed).
 - Returns signed JWT token with a `OK` status when successfully logged in
@@ -43,10 +77,6 @@ JSON response:
 }
 ```
 
-#### [API] Create a `WithJWTAuth` middleware to safeguard sensitive API endpoints
-
-- Will need to read the `Authorization` header
-
 ### Manage products
 
 #### [API] Create `GET /socks` endpoint to fetch all products
@@ -61,7 +91,7 @@ JSON response:
 - Include variant data (sizes, price, stock) with `OK` HTTP status
 - Returns a `NOT_FOUND` HTTP code for invalid `sock_id`
 
-#### [API] Create `POST /socks` to add new socks
+#### [API] Create `POST /socks` to add a new sock
 
 - Returns a `CREATED` HTTP status when successful
 - Returns a `BAD_REQUEST` HTTP status given bad payload formatting
@@ -69,19 +99,16 @@ JSON response:
 Example payload:
 
 ```json
-[
-  {
-    "name": "Sketchies",
-    "description": "Super comfy!",
-    // The rest of the expected fields for a sock...
-    "variants": [
-      { "size": "LG", "price": 60.0, "quantity": 5 },
-      { "size": "XL", "price": 65.0, "quantity": 10 }
-      // More variants...
-    ]
-  }
-  // More socks...
-]
+{
+  "name": "Sketchies",
+  "description": "Super comfy!",
+  // The rest of the expected fields for a sock...
+  "variants": [
+    { "size": "LG", "price": 60.0, "quantity": 5 },
+    { "size": "XL", "price": 65.0, "quantity": 10 }
+    // More variants...
+  ]
+}
 ```
 
 #### [API] Create `PATCH /socks/:sock_id` to update product details
