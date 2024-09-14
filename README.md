@@ -7,15 +7,11 @@ An e-commerce web app to sell custom socks.
 ## Table of contents <!-- omit in toc -->
 
 - [Tech stack](#tech-stack)
+- [Project board](#project-board)
 - [Getting started](#getting-started)
   - [Running locally](#running-locally)
-    - [Good to know](#good-to-know)
   - [Database migrations](#database-migrations)
-    - [Create a migration](#create-a-migration)
-    - [Applying all database migration](#applying-all-database-migration)
-    - [Turning down database migrations](#turning-down-database-migrations)
   - [Swagger UI](#swagger-ui)
-    - [Generating the docs](#generating-the-docs)
 
 ## Tech stack
 
@@ -38,6 +34,14 @@ An e-commerce web app to sell custom socks.
 - **Hosting:** [Railway](https://railway.app/), [Docker Compose](https://docs.docker.com/compose/)
 - **Design:** [Figma](https://figma.com/)
 
+## Project board
+
+We are tracking our progress, working items, and milestones through the [Sockify MVP](https://github.com/orgs/sockify/projects/1/views/1) GitHub project board.
+
+![project board](./docs/assets/github_project_board.png)
+
+![project board capacity](./docs/assets/github_project_board_capacity.png)
+
 ## Getting started
 
 ### Running locally
@@ -47,7 +51,7 @@ An e-commerce web app to sell custom socks.
 3. Run and build the app: `docker compose up --build --watch`
    1. As changes are detected, the Docker images will be rebuilt automatically
 
-#### Good to know
+#### Good to know <!-- omit in toc -->
 
 - You can access the web UI: http://localhost:5173/
 - You can acccess the Swagger UI (API): http://localhost:8080/swagger/index.html
@@ -61,7 +65,7 @@ We are using [golang-migrate](https://github.com/golang-migrate/migrate/tree/mas
 1. Download the migration CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)
 2. Make your current working directory (CWD) is `/api`: `cd api`
 
-#### Create a migration
+#### Create a migration <!-- omit in toc -->
 
 To create a new database migration, run:
 
@@ -73,7 +77,7 @@ You can find the newly created migration scripts at `./api/cmd/migrate/migration
 
 _Make sure to include the **"up"** (creation) and **"down"** (teardown) scripts!_
 
-#### Applying all database migration
+#### Applying all database migration <!-- omit in toc -->
 
 To apply all existing database migrations, run:
 
@@ -81,7 +85,7 @@ To apply all existing database migrations, run:
 make migrate-up
 ```
 
-#### Turning down database migrations
+#### Turning down database migrations <!-- omit in toc -->
 
 To remove all database migrations, run:
 
@@ -95,7 +99,7 @@ We are using [Swagger UI](https://swagger.io/tools/swagger-ui/) to access our AP
 
 You can open the local API docs at http://localhost:8080/swagger/index.html
 
-#### Generating the docs
+#### Generating the docs <!-- omit in toc -->
 
 Whenever changes are made to API, we have to re-build the API specification.
 
