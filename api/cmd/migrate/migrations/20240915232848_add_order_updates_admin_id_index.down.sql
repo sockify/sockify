@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS order_updates_admin_id_idx;
