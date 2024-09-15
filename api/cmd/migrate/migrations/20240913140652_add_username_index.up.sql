@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS admins_username_idx ON admins(username);

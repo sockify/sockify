@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS admins_username_idx;

@@ -1,20 +1,34 @@
 # Database schema
 
+These the all the major tables we will need for our MVP.
+
+## Indexes
+
+Columns that are marked as **INDEXED** should have an PostgreSQL index associated with them. This is needed to speed up queries for certain columns.
+
+- To create an index: `CREATE INDEX IF NOT EXISTS {tablename}_{column}_idx ON tablename(column);`
+
+- To create a _unique_ index: `CREATE UNIQUE INDEX IF NOT EXISTS {tablename}_{column}_idx ON tablename(column);`
+
+- You can view all indexes of a table by running: `SELECT * FROM pg_indexes WHERE tablename = '{tablename}';`
+
+A good article about index name conventions [here](https://dum80409.medium.com/postgres-index-naming-a19e30f1a237).
+
 ## Tables
 
 ### `admins`
 
 Store user information for admins who manage the store.
 
-| Column             | Type         | Constrains                          |
-| ------------------ | ------------ | ----------------------------------- |
-| `admin_id`         | SERIAL       | PRIMARY KEY                         |
-| `firstname`        | VARCHAR(32)  | NOT NULL                            |
-| `lastname_initial` | CHAR(1)      | NOT NULL                            |
-| `email`            | VARCHAR(100) | UNIQUE, NOT NULL                    |
-| `username`         | VARCHAR(32)  | UNIQUE, NOT NULL                    |
-| `password_hash`    | VARCHAR(255) | NOT NULL                            |
-| `created_at`       | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
+| Column             | Type         | Constrains                           |
+| ------------------ | ------------ | ------------------------------------ |
+| `admin_id`         | SERIAL       | PRIMARY KEY                          |
+| `firstname`        | VARCHAR(32)  | NOT NULL                             |
+| `lastname_initial` | CHAR(1)      | NOT NULL                             |
+| `email`            | VARCHAR(100) | UNIQUE, NOT NULL                     |
+| `username`         | VARCHAR(32)  | UNIQUE, NOT NULL, **UNIQUE INDEXED** |
+| `password_hash`    | VARCHAR(255) | NOT NULL                             |
+| `created_at`       | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP  |
 
 ### `socks`
 
@@ -23,7 +37,7 @@ Store general information about the socks.
 | Column              | Type        | Constraints                         |
 | ------------------- | ----------- | ----------------------------------- |
 | `sock_id`           | SERIAL      | PRIMARY KEY                         |
-| `name`              | VARCHAR(64) | NOT NULL                            |
+| `name`              | VARCHAR(64) | UNIQUE, NOT NULL                    |
 | `description`       | TEXT        |                                     |
 | `preview_image_url` | TEXT        | NOT NULL                            |
 | `created_at`        | TIMESTAMP   | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
@@ -33,15 +47,15 @@ Store general information about the socks.
 Store specific sock sizes, their prices, and stock levels.
 This is needed since each sock can have multiple sizes and each size has its own price and stock.
 
-| Column            | Type           | Constraints                                   |
-| ----------------- | -------------- | --------------------------------------------- |
-| `sock_variant_id` | SERIAL         | PRIMARY KEY                                   |
-| `sock_id`         | INTEGER        | FOREIGN KEY on `socks`, ON DELETE CASCADE     |
-| `size`            | VARCHAR(2)     | CHECK IN ENUM('S', 'M', 'LG', 'XL'), NOT NULL |
-| `price`           | DECIMAL(12, 2) | In range [0.01, +inf], NOT NULL               |
-| `stock`           | INTEGER        | In range [0, +inf], NOT NULL                  |
-| `created_at`      | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP           |
-| **Unique**        | Constraint     | `sock_id` and `size` combination is unique    |
+| Column            | Type           | Constraints                                            |
+| ----------------- | -------------- | ------------------------------------------------------ |
+| `sock_variant_id` | SERIAL         | PRIMARY KEY                                            |
+| `sock_id`         | INTEGER        | FOREIGN KEY on `socks`, ON DELETE CASCADE, **INDEXED** |
+| `size`            | VARCHAR(2)     | CHECK IN ENUM('S', 'M', 'LG', 'XL'), NOT NULL          |
+| `price`           | DECIMAL(12, 2) | In range [0.01, +inf], NOT NULL                        |
+| `quantity`        | INTEGER        | In range [0, +inf], NOT NULL                           |
+| `created_at`      | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP                    |
+| **Unique**        | Constraint     | `sock_id` and `size` combination is unique             |
 
 ### `orders`
 
@@ -50,7 +64,7 @@ Track user purchases and order details.
 | Column           | Type           | Constrains                                       |
 | ---------------- | -------------- | ------------------------------------------------ |
 | `order_id`       | SERIAL         | PRIMARY KEY                                      |
-| `invoice_number` | TEXT (UUID)    | NOT NULL, **INDEXED**                            |
+| `invoice_number` | VARCHAR(36)    | UNIQUE, NOT NULL, **UNIQUE INDEXED**             |
 | `total_price`    | DECIMAL(12, 2) | NOT NULL                                         |
 | `status`         | ENUM           | received, shipped, delivered, canceled, returned |
 | `firstname`      | VARCHAR(32)    | NOT NULL                                         |

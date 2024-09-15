@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS sock_variant_id_idx;

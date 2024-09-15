@@ -14,7 +14,7 @@ erDiagram
 
     socks {
         SERIAL sock_id PK "Primary Key"
-        VARCHAR name "NOT NULL"
+        VARCHAR name "UNIQUE, NOT NULL"
         VARCHAR description
         TEXT preview_image_url "NOT NULL"
         TIMESTAMP created_at "NOT NULL, Default CURRENT_TIMESTAMP"
@@ -23,9 +23,9 @@ erDiagram
     sock_variants {
         SERIAL variant_id PK "Primary Key"
         INTEGER sock_id FK "Foreign Key, References SOCKS, ON DELETE CASCADE"
-        INTEGER size "In range [1, 24], NOT NULL"
+        VARCHAR size "ENUM('S', 'MD', etc.), NOT NULL"
         DECIMAL price "In range [1, 100], NOT NULL"
-        INTEGER stock "In range [0, +inf], NOT NULL"
+        INTEGER quantity "In range [0, +inf], NOT NULL"
         TIMESTAMP created_at "NOT NULL, Default CURRENT_TIMESTAMP"
     }
 
