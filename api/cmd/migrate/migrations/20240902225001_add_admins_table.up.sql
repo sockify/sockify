@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS admins (
-    id SERIAL PRIMARY KEY,
+    admin_id SERIAL PRIMARY KEY,
     firstname VARCHAR(32) NOT NULL,
     lastname VARCHAR(32) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,

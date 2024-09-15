@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS order_id_idx;
