@@ -30,5 +30,5 @@ func WriteJson(w http.ResponseWriter, status HttpStatus, payload any) error {
 
 // WriteError writes a HTTP error as a JSON response.
 func WriteError(w http.ResponseWriter, status HttpStatus, err error) {
-	WriteJson(w, status, map[string]string{"error": err.Error()})
+	WriteJson(w, status, map[string]string{"message": err.Error()})
 }

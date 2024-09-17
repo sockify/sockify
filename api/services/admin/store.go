@@ -2,11 +2,10 @@ package admin
 
 import (
 	"database/sql"
-)
+	"fmt"
 
-type AdminStore interface {
-	GetAdmins() ([]Admin, error)
-}
+	"github.com/sockify/sockify/types"
+)
 
 type Store struct {
 	db *sql.DB
@@ -16,13 +15,13 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) GetAdmins() ([]Admin, error) {
-	rows, err := s.db.Query("SELECT * FROM admins;")
+func (s *Store) GetAdmins() ([]types.Admin, error) {
+	rows, err := s.db.Query("SELECT * FROM admins")
 	if err != nil {
 		return nil, err
 	}
 
-	admins := make([]Admin, 0)
+	admins := make([]types.Admin, 0)
 	for rows.Next() {
 		admin, err := scanRowsIntoAdmin(rows)
 		if err != nil {
@@ -35,8 +34,54 @@ func (s *Store) GetAdmins() ([]Admin, error) {
 	return admins, nil
 }
 
-func scanRowsIntoAdmin(rows *sql.Rows) (*Admin, error) {
-	admin := new(Admin)
+func (s *Store) GetAdminByID(id int) (*types.Admin, error) {
+	rows, err := s.db.Query("SELECT * FROM admins WHERE admin_id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	admin := &types.Admin{}
+	found := false
+	for rows.Next() {
+		admin, err = scanRowsIntoAdmin(rows)
+		if err != nil {
+			return nil, err
+		}
+		found = true
+	}
+
+	if !found {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return admin, nil
+}
+
+func (s *Store) GetAdminByUsername(username string) (*types.Admin, error) {
+	rows, err := s.db.Query("SELECT * FROM admins WHERE username = $1", username)
+	if err != nil {
+		return nil, err
+	}
+
+	admin := &types.Admin{}
+	found := false
+	for rows.Next() {
+		admin, err = scanRowsIntoAdmin(rows)
+		if err != nil {
+			return nil, err
+		}
+		found = true
+	}
+
+	if !found {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return admin, nil
+}
+
+func scanRowsIntoAdmin(rows *sql.Rows) (*types.Admin, error) {
+	admin := &types.Admin{}
 	err := rows.Scan(
 		&admin.ID,
 		&admin.FirstName,

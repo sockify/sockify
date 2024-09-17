@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  admin.Admin:
+  types.Admin:
     properties:
       createdAt:
         type: string
@@ -11,6 +11,18 @@ definitions:
       id:
         type: integer
       lastname:
+        type: string
+      username:
+        type: string
+    type: object
+  types.AuthToken:
+    properties:
+      token:
+        type: string
+    type: object
+  types.LoginAdminRequest:
+    properties:
+      password:
         type: string
       username:
         type: string
@@ -35,13 +47,39 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/admin.Admin'
+              $ref: '#/definitions/types.Admin'
             type: array
+      security:
+      - Bearer: []
       summary: Get all admins.
       tags:
       - Admins
+  /admins/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in an admin using username and password credentials.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.AuthToken'
+      summary: Logs in an admin.
+      tags:
+      - Admins
 securityDefinitions:
-  ApiKeyAuth:
+  Bearer:
+    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+      XXX"'
     in: header
     name: Authorization
     type: apiKey

@@ -1,4 +1,4 @@
-package admin
+package types
 
 import "time"
 
@@ -10,4 +10,8 @@ type Admin struct {
 	Username     string    `json:"username"`
 	PasswordHash string    `json:"-"`
 	CreatedAt    time.Time `json:"createdAt"`
+}
+
+type AuthToken struct {
+	Token string `json:"token"`
 }

@@ -21,6 +21,11 @@ const docTemplate = `{
     "paths": {
         "/admins": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Retrieves a list of all admins.",
                 "produces": [
                     "application/json"
@@ -35,8 +40,42 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/admin.Admin"
+                                "$ref": "#/definitions/types.Admin"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/admins/login": {
+            "post": {
+                "description": "Logs in an admin using username and password credentials.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Logs in an admin.",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.LoginAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.AuthToken"
                         }
                     }
                 }
@@ -44,7 +83,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "admin.Admin": {
+        "types.Admin": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -66,10 +105,30 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "types.AuthToken": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.LoginAdminRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {
-        "ApiKeyAuth": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token. Example: \"Bearer XXX\"",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
