@@ -21,6 +21,11 @@ const docTemplate = `{
     "paths": {
         "/admins": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Retrieves a list of all admins.",
                 "produces": [
                     "application/json"
@@ -29,14 +34,103 @@ const docTemplate = `{
                     "Admins"
                 ],
                 "summary": "Get all admins.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "Results per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Page number",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/admin.Admin"
+                                "$ref": "#/definitions/types.Admin"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/admins/login": {
+            "post": {
+                "description": "Logs in an admin using username and password credentials.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Logs in an admin.",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.LoginAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.AuthToken"
+                        }
+                    }
+                }
+            }
+        },
+        "/admins/register": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Creates a new set of admin credentials.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Registers new admin credentials.",
+                "parameters": [
+                    {
+                        "description": "Register credentials",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.RegisterAdminRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
                         }
                     }
                 }
@@ -44,7 +138,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "admin.Admin": {
+        "types.Admin": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -66,10 +160,77 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "types.AuthToken": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.LoginAdminRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.Message": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.RegisterAdminRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "firstname",
+                "lastname",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 2
+                },
+                "lastname": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 1
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 8
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 3
+                }
+            }
         }
     },
     "securityDefinitions": {
-        "ApiKeyAuth": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token. Example: \"Bearer XXX\"",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
