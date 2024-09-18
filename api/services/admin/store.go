@@ -15,8 +15,13 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) GetAdmins() ([]types.Admin, error) {
-	rows, err := s.db.Query("SELECT * FROM admins")
+func (s *Store) GetAdmins(limit int, offset int) ([]types.Admin, error) {
+	rows, err := s.db.Query(`
+    SELECT * FROM admins
+    ORDER BY firstname, lastname, username, email ASC
+    LIMIT $1
+    OFFSET $2
+  `, limit, offset)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,7 @@
 package types
 
 type AdminStore interface {
-	GetAdmins() ([]Admin, error)
+	GetAdmins(limit int, offset int) ([]Admin, error)
 	GetAdminByID(id int) (*Admin, error)
 	GetAdminByUsername(username string) (*Admin, error)
 	GetAdminByEmail(email string) (*Admin, error)

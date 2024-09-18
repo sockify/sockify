@@ -75,6 +75,17 @@ paths:
   /admins:
     get:
       description: Retrieves a list of all admins.
+      parameters:
+      - default: 50
+        description: Results per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Page number
+        in: query
+        name: offset
+        type: integer
       produces:
       - application/json
       responses:
