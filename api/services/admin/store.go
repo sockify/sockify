@@ -51,7 +51,7 @@ func (s *Store) GetAdminByID(id int) (*types.Admin, error) {
 	}
 
 	if !found {
-		return nil, fmt.Errorf("user not found")
+		return nil, fmt.Errorf("admin not found")
 	}
 
 	return admin, nil
@@ -74,10 +74,48 @@ func (s *Store) GetAdminByUsername(username string) (*types.Admin, error) {
 	}
 
 	if !found {
-		return nil, fmt.Errorf("user not found")
+		return nil, fmt.Errorf("admin not found")
 	}
 
 	return admin, nil
+}
+
+func (s *Store) GetAdminByEmail(email string) (*types.Admin, error) {
+	rows, err := s.db.Query("SELECT * FROM admins WHERE email = $1", email)
+	if err != nil {
+		return nil, err
+	}
+
+	admin := &types.Admin{}
+	found := false
+	for rows.Next() {
+		admin, err = scanRowsIntoAdmin(rows)
+		if err != nil {
+			return nil, err
+		}
+		found = true
+	}
+
+	if !found {
+		return nil, fmt.Errorf("admin not found")
+	}
+
+	return admin, nil
+}
+
+func (s *Store) CreateAdmin(firstname string, lastname string, email string, username string, passwordHash string) error {
+	_, err := s.db.Exec("INSERT INTO admins (firstname, lastname, email, username, password_hash) VALUES ($1, $2, $3, $4, $5)",
+		firstname,
+		lastname,
+		email,
+		username,
+		passwordHash,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func scanRowsIntoAdmin(rows *sql.Rows) (*types.Admin, error) {

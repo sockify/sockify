@@ -15,3 +15,7 @@ type Admin struct {
 type AuthToken struct {
 	Token string `json:"token"`
 }
+
+type Message struct {
+	Message string `json:"message"`
+}
