@@ -3,7 +3,6 @@ package admin
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -38,22 +37,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 // @Success 200 {array} types.Admin
 // @Router /admins [get]
 func (h *Handler) handleGetAdmins(w http.ResponseWriter, r *http.Request) {
-	limit := 50
-	offset := 0
-
-	if limitParam := r.URL.Query().Get("limit"); limitParam != "" {
-		parsedLimit, err := strconv.Atoi(limitParam)
-		if err == nil && parsedLimit > 0 {
-			limit = parsedLimit
-		}
-	}
-
-	if offsetParam := r.URL.Query().Get("offset"); offsetParam != "" {
-		parsedOffset, err := strconv.Atoi(offsetParam)
-		if err == nil && parsedOffset >= 0 {
-			offset = parsedOffset
-		}
-	}
+	limit, offset := utils.GetLimitOffset(r, 50, 0)
 
 	admins, err := h.store.GetAdmins(limit, offset)
 	if err != nil {
