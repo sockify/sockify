@@ -6,16 +6,16 @@ import (
 	"log"
 )
 
-type postgresSockStore struct {
+type SockStore struct {
 	db *sql.DB
 }
 
 func NewSockStore(db *sql.DB) types.SockStore {
-	return &postgresSockStore{db: db}
+	return &SockStore{db: db}
 }
 
 // CreateSock inserts a new sock and its variants into the database and returns generated ID
-func (s *postgresSockStore) CreateSock(sock types.Sock, variants []types.SockVariant) (int, error) {
+func (s *SockStore) CreateSock(sock types.Sock, variants []types.SockVariant) (int, error) {
 	var sockID int
 	err := s.db.QueryRow(`
 		INSERT INTO socks (name, description, preview_image_url) 
@@ -46,7 +46,7 @@ func (s *postgresSockStore) CreateSock(sock types.Sock, variants []types.SockVar
 }
 
 // SockExists checks if a sock with the same name already exists in the database
-func (s *postgresSockStore) SockExists(name string) (bool, error) {
+func (s *SockStore) SockExists(name string) (bool, error) {
     var exists bool
 
     query := `SELECT EXISTS (SELECT 1 FROM socks WHERE name = $1)`
