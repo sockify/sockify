@@ -21,7 +21,6 @@ type Message struct {
 }
 
 
-// Sock represents the main sock entity with necessary fields
 type Sock struct {
     ID              int       `json:"id,omitempty"`									                   
     Name            string    `json:"name" validate:"required"`		
@@ -30,8 +29,6 @@ type Sock struct {
     CreatedAt       time.Time `json:"createdAt,omitempty"`							
 }
 
-
-// SockVariant represents the variations of each sock
 type SockVariant struct {
     ID        int       `json:"id,omitempty"`											
     SockID    int       `json:"sockId,omitempty"`										

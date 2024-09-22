@@ -138,6 +138,11 @@ const docTemplate = `{
         },
         "/socks": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Adds a new sock to the store with its variants",
                 "consumes": [
                     "application/json"

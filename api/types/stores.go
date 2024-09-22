@@ -8,7 +8,6 @@ type AdminStore interface {
 	CreateAdmin(firstname string, lastname string, email string, username string, passwordHash string) error
 }
 
-// SockStore represents the interface for sock-related database operations
 type SockStore interface {
 	CreateSock(sock Sock, variants []SockVariant)(int,error)
 	SockExists(name string) (bool, error)

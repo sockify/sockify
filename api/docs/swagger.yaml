@@ -225,6 +225,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
       summary: Create a new sock
 securityDefinitions:
   Bearer:

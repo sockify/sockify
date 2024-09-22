@@ -10,14 +10,12 @@ type postgresSockStore struct {
 	db *sql.DB
 }
 
-// NewSockStore creates a new instance of SockStore
 func NewSockStore(db *sql.DB) types.SockStore {
 	return &postgresSockStore{db: db}
 }
 
-// CreateSock inserts a new sock and its variants into the database
+// CreateSock inserts a new sock and its variants into the database and returns generated ID
 func (s *postgresSockStore) CreateSock(sock types.Sock, variants []types.SockVariant) (int, error) {
-	// Insert the new sock and return the generated ID
 	var sockID int
 	err := s.db.QueryRow(`
 		INSERT INTO socks (name, description, preview_image_url, created_at) 
