@@ -15,6 +15,6 @@ type RegisterAdminRequest struct {
 
 // CreateSockRequest includes the sock and its variants as input for creating a sock
 type CreateSockRequest struct {
-    Sock     Sock          `json:"sock"`                           // Main Sock object
-    Variants []SockVariant `json:"variants" validate:"required,dive"` // Variants must be provided and validated
+    Sock     Sock          `json:"sock"`                           
+    Variants []SockVariant `json:"variants" validate:"required,dive"`
 }

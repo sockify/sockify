@@ -23,21 +23,21 @@ type Message struct {
 
 // Sock represents the main sock entity with necessary fields
 type Sock struct {
-    ID              int       `json:"id"`									// Automatically generated ID                   
-    Name            string    `json:"name" validate:"required,unique"`		// Unique, required field
-    Description     string    `json:"description,omitempty"`				// Optional descriotion
-    PreviewImageURL string    `json:"previewImageUrl" validate:"required"`	// Required image URL
-    CreatedAt       time.Time `json:"createdAt"`							// Timestamp of creation
+    ID              int       `json:"id,omitempty"`									                   
+    Name            string    `json:"name" validate:"required"`		
+    Description     string    `json:"description,omitempty"`				
+    PreviewImageURL string    `json:"previewImageUrl" validate:"required"`	
+    CreatedAt       time.Time `json:"createdAt,omitempty"`							
 }
 
 
 // SockVariant represents the variations of each sock
 type SockVariant struct {
-    ID        int       `json:"id"`											// Automatically generated ID
-    SockID    int       `json:"sockId"`										// Foreign Key referring to Sock
-    Size      string    `json:"size" validate:"required,oneof=S M L XL"`	// Required size, constrained to specific values
-    Price     float64   `json:"price" validate:"required,gt=0,lt=101"`		// Required price, within specified range
-    Quantity  int       `json:"quantity" validate:"required,gte=0"`			// Quantity should be non-negative
-    CreatedAt time.Time `json:"createdAt"`									// Timestamp of creation
+    ID        int       `json:"id,omitempty"`											
+    SockID    int       `json:"sockId,omitempty"`										
+    Size      string    `json:"size" validate:"required,oneof=S M LG XL"`	
+    Price     float64   `json:"price" validate:"required,gt=0,lt=101"`		
+    Quantity  int       `json:"quantity" validate:"required,gte=0"`	
+    CreatedAt time.Time `json:"createdAt,omitempty"`
 }
 
