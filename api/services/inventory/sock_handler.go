@@ -42,8 +42,6 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//req.Sock.CreatedAt = time.Now()
-
 	validate := validator.New()
 
 	// Check if the sock already exists before creating a new one
