@@ -8,7 +8,6 @@ import (
 	"github.com/sockify/sockify/middleware"
 	"github.com/gorilla/mux"
 	"errors"
-	"strconv"
 )
 
 type SockHandler struct{
@@ -77,5 +76,5 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// Respond with the created Sock ID
-	utils.WriteJson(w, http.StatusCreated, types.Message{Message: "sockID: " + strconv.Itoa(sockID)})
+	utils.WriteJson(w, http.StatusCreated, map[string]int{"sockId": sockID})
 }
