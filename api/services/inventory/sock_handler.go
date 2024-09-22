@@ -7,8 +7,8 @@ import (
 	"github.com/sockify/sockify/utils"
 	"github.com/sockify/sockify/middleware"
 	"github.com/gorilla/mux"
-	"time"
 	"errors"
+	"strconv"
 )
 
 type SockHandler struct{
@@ -43,7 +43,7 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req.Sock.CreatedAt = time.Now()
+	//req.Sock.CreatedAt = time.Now()
 
 	validate := validator.New()
 
@@ -77,5 +77,5 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// Respond with the created Sock ID
-	utils.WriteJson(w, http.StatusCreated, map[string]int{"sockId": sockID})
+	utils.WriteJson(w, http.StatusCreated, types.Message{Message: "sockID: " + strconv.Itoa(sockID)})
 }

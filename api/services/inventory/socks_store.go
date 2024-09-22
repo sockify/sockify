@@ -18,10 +18,10 @@ func NewSockStore(db *sql.DB) types.SockStore {
 func (s *postgresSockStore) CreateSock(sock types.Sock, variants []types.SockVariant) (int, error) {
 	var sockID int
 	err := s.db.QueryRow(`
-		INSERT INTO socks (name, description, preview_image_url, created_at) 
-		VALUES ($1, $2, $3, $4) 
+		INSERT INTO socks (name, description, preview_image_url) 
+		VALUES ($1, $2, $3) 
 		RETURNING sock_id`,
-		sock.Name, sock.Description, sock.PreviewImageURL, sock.CreatedAt).Scan(&sockID)
+		sock.Name, sock.Description, sock.PreviewImageURL).Scan(&sockID)
 	if err != nil {
 		log.Printf("Error inserting sock: %v", err)
 		return 0, err
