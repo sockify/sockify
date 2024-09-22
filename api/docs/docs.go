@@ -135,6 +135,54 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/socks": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Adds a new sock to the store with its variants",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create a new sock",
+                "parameters": [
+                    {
+                        "description": "Sock Data",
+                        "name": "sock",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateSockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -166,6 +214,23 @@ const docTemplate = `{
             "properties": {
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "types.CreateSockRequest": {
+            "type": "object",
+            "required": [
+                "variants"
+            ],
+            "properties": {
+                "sock": {
+                    "$ref": "#/definitions/types.Sock"
+                },
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SockVariant"
+                    }
                 }
             }
         },
@@ -224,6 +289,65 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 16,
                     "minLength": 3
+                }
+            }
+        },
+        "types.Sock": {
+            "type": "object",
+            "required": [
+                "name",
+                "previewImageUrl"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "previewImageUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.SockVariant": {
+            "type": "object",
+            "required": [
+                "price",
+                "quantity",
+                "size"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "size": {
+                    "type": "string",
+                    "enum": [
+                        "S",
+                        "M",
+                        "LG",
+                        "XL"
+                    ]
+                },
+                "sockId": {
+                    "type": "integer"
                 }
             }
         }

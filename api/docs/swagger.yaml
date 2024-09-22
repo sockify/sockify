@@ -20,6 +20,17 @@ definitions:
       token:
         type: string
     type: object
+  types.CreateSockRequest:
+    properties:
+      sock:
+        $ref: '#/definitions/types.Sock'
+      variants:
+        items:
+          $ref: '#/definitions/types.SockVariant'
+        type: array
+    required:
+    - variants
+    type: object
   types.LoginAdminRequest:
     properties:
       password:
@@ -61,6 +72,47 @@ definitions:
     - lastname
     - password
     - username
+    type: object
+  types.Sock:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      previewImageUrl:
+        type: string
+    required:
+    - name
+    - previewImageUrl
+    type: object
+  types.SockVariant:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      quantity:
+        minimum: 0
+        type: integer
+      size:
+        enum:
+        - S
+        - M
+        - LG
+        - XL
+        type: string
+      sockId:
+        type: integer
+    required:
+    - price
+    - quantity
+    - size
     type: object
 host: localhost:8080
 info:
@@ -146,6 +198,36 @@ paths:
       summary: Registers new admin credentials.
       tags:
       - Admins
+  /socks:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new sock to the store with its variants
+      parameters:
+      - description: Sock Data
+        in: body
+        name: sock
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateSockRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/types.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Create a new sock
 securityDefinitions:
   Bearer:
     description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer

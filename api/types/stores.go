@@ -7,3 +7,8 @@ type AdminStore interface {
 	GetAdminByEmail(email string) (*Admin, error)
 	CreateAdmin(firstname string, lastname string, email string, username string, passwordHash string) error
 }
+
+type SockStore interface {
+	CreateSock(sock Sock, variants []SockVariant)(int,error)
+	SockExists(name string) (bool, error)
+}

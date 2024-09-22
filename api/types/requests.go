@@ -12,3 +12,8 @@ type RegisterAdminRequest struct {
 	UserName  string `json:"username" validate:"required,min=3,max=16"`
 	Password  string `json:"password" validate:"required,min=8,max=16"`
 }
+
+type CreateSockRequest struct {
+    Sock     Sock          `json:"sock"`                           
+    Variants []SockVariant `json:"variants" validate:"required,dive"`
+}
