@@ -8,6 +8,7 @@ import (
 	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
+	"strconv"
 )
 
 type SockHandler struct {
@@ -20,6 +21,7 @@ func NewSockHandler(store types.SockStore) *SockHandler {
 
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.CreateSock)).Methods(http.MethodPost)
+	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.DeleteSock)).Methods(http.MethodDelete)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -98,4 +100,35 @@ func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
 		v[i] = toSockVariant(dto)
 	}
 	return v
+}
+
+// DeleteSock handles the HTTP request to delete a sock by its ID
+// @Summary Delete a sock
+// @Description Deletes a sock from the store by its ID
+// @Tags Inventory
+// @Security Bearer
+// @Param sock_id path int true "Sock ID"
+// @Success 200 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /socks/{sock_id} [delete]
+func (h *SockHandler) DeleteSock(w http.ResponseWriter, r *http.Request) {
+	// get the sock_id from the URL params
+	vars := mux.Vars(r)
+	sockIDstr := vars["sock_id"]
+	sockID, err := strconv.Atoi(sockIDstr)
+
+	// Call the DeleteSock method in the store
+	deleted, err := h.Store.DeleteSock(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if !deleted {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	// Respond with a success message
+	utils.WriteJson(w, http.StatusOK, map[string]string{"message": "Sock deleted successfully"})
 }
