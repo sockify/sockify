@@ -12,29 +12,19 @@ type Admin struct {
 	CreatedAt    time.Time `json:"createdAt"`
 }
 
-type AuthToken struct {
-	Token string `json:"token"`
-}
-
-type Message struct {
-	Message string `json:"message"`
-}
-
-
 type Sock struct {
-    ID              *int       `json:"id,omitempty"`									                   
-    Name            string    `json:"name" validate:"required"`		
-    Description     *string    `json:"description,omitempty"`				
-    PreviewImageURL string    `json:"previewImageUrl" validate:"required"`	
-    CreatedAt       *time.Time `json:"createdAt,omitempty"`							
+	ID              *int       `json:"id,omitempty"`
+	Name            string     `json:"name"`
+	Description     *string    `json:"description,omitempty"`
+	PreviewImageURL string     `json:"previewImageUrl"`
+	CreatedAt       *time.Time `json:"createdAt,omitempty"`
 }
 
 type SockVariant struct {
-    ID        *int       `json:"id,omitempty"`											
-    SockID    *int       `json:"sockId,omitempty"`										
-    Size      string    `json:"size" validate:"required,oneof=S M LG XL"`	
-    Price     float64   `json:"price" validate:"required,gt=0,lt=101"`		
-    Quantity  int       `json:"quantity" validate:"required,gte=0"`	
-    CreatedAt *time.Time `json:"createdAt,omitempty"`
+	ID        *int       `json:"id,omitempty"`
+	SockID    *int       `json:"sockId,omitempty"`
+	Size      string     `json:"size"`
+	Price     float64    `json:"price"`
+	Quantity  int        `json:"quantity"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
 }
-

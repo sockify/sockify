@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/sockify/sockify/types"
 )
 
 type HttpStatus int
@@ -32,7 +33,7 @@ func WriteJson(w http.ResponseWriter, status HttpStatus, payload any) error {
 
 // WriteError writes a HTTP error as a JSON response.
 func WriteError(w http.ResponseWriter, status HttpStatus, err error) {
-	WriteJson(w, status, map[string]string{"message": err.Error()})
+	WriteJson(w, status, types.Message{Message: err.Error()})
 }
 
 // GetLimitOffset returns the `limit` and `offset` values from the request's query params.

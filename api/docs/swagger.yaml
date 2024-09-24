@@ -15,21 +15,22 @@ definitions:
       username:
         type: string
     type: object
-  types.AuthToken:
-    properties:
-      token:
-        type: string
-    type: object
   types.CreateSockRequest:
     properties:
       sock:
-        $ref: '#/definitions/types.Sock'
+        $ref: '#/definitions/types.SockDTO'
       variants:
         items:
-          $ref: '#/definitions/types.SockVariant'
+          $ref: '#/definitions/types.SockVariantDTO'
         type: array
     required:
+    - sock
     - variants
+    type: object
+  types.CreateSockResponse:
+    properties:
+      sockId:
+        type: integer
     type: object
   types.LoginAdminRequest:
     properties:
@@ -40,6 +41,11 @@ definitions:
     required:
     - password
     - username
+    type: object
+  types.LoginAdminResponse:
+    properties:
+      token:
+        type: string
     type: object
   types.Message:
     properties:
@@ -73,14 +79,10 @@ definitions:
     - password
     - username
     type: object
-  types.Sock:
+  types.SockDTO:
     properties:
-      createdAt:
-        type: string
       description:
         type: string
-      id:
-        type: integer
       name:
         type: string
       previewImageUrl:
@@ -89,12 +91,8 @@ definitions:
     - name
     - previewImageUrl
     type: object
-  types.SockVariant:
+  types.SockVariantDTO:
     properties:
-      createdAt:
-        type: string
-      id:
-        type: integer
       price:
         type: number
       quantity:
@@ -107,8 +105,6 @@ definitions:
         - LG
         - XL
         type: string
-      sockId:
-        type: integer
     required:
     - price
     - quantity
@@ -170,7 +166,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.AuthToken'
+            $ref: '#/definitions/types.LoginAdminResponse'
       summary: Logs in an admin.
       tags:
       - Admins
@@ -216,18 +212,12 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/types.Message'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/types.Message'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/types.Message'
+            $ref: '#/definitions/types.CreateSockResponse'
       security:
       - Bearer: []
       summary: Create a new sock
+      tags:
+      - Inventory
 securityDefinitions:
   Bearer:
     description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer

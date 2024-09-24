@@ -1,16 +1,16 @@
 package inventory
 
 import (
+	"errors"
 	"net/http"
-	"github.com/go-playground/validator/v10"
+
+	"github.com/gorilla/mux"
+	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
-	"github.com/sockify/sockify/middleware"
-	"github.com/gorilla/mux"
-	"errors"
 )
 
-type SockHandler struct{
+type SockHandler struct {
 	Store types.SockStore
 }
 
@@ -25,13 +25,12 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 // CreateSock handles the HTTP request to create a new sock with its variants
 // @Summary Create a new sock
 // @Description Adds a new sock to the store with its variants
+// @Tags Inventory
 // @Accept json
 // @Produce json
 // @Security Bearer
 // @Param sock body types.CreateSockRequest true "Sock Data"
-// @Success 201 {object} types.Message
-// @Failure 400 {object} types.Message
-// @Failure 500 {object} types.Message
+// @Success 201 {object} types.CreateSockResponse
 // @Router /socks [post]
 func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 	// Parse the incoming JSON request into the CreateSockRequest struct
@@ -42,37 +41,61 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validate := validator.New()
-
 	// Check if the sock already exists before creating a new one
 	exists, err := h.Store.SockExists(req.Sock.Name)
 	if err != nil {
-    	utils.WriteError(w, http.StatusInternalServerError, err)
-    	return
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	if exists {
-    	utils.WriteError(w, http.StatusConflict, errors.New("sock already exists"))
-    	return
+		utils.WriteError(w, http.StatusConflict, errors.New("sock already exists"))
+		return
 	}
 
-	if err := validate.Struct(req.Sock); err != nil {
+	if err := utils.Validate.Struct(req.Sock); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if err := validate.Var(req.Variants, "dive"); err != nil {
+	if err := utils.Validate.Var(req.Variants, "dive"); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	// Insert the sock and its variants using the store's CreateSock method
-	sockID, err := h.Store.CreateSock(req.Sock, req.Variants)
+	sock := toSock(req.Sock)
+	variants := toSockVariantArray(req.Variants)
+	sockID, err := h.Store.CreateSock(sock, variants)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
-	
+
 	// Respond with the created Sock ID
-	utils.WriteJson(w, http.StatusCreated, map[string]int{"sockId": sockID})
+	utils.WriteJson(w, http.StatusCreated, types.CreateSockResponse{SockID: sockID})
+}
+
+func toSock(dto types.SockDTO) types.Sock {
+	return types.Sock{
+		Name:            dto.Name,
+		Description:     dto.Description,
+		PreviewImageURL: dto.PreviewImageURL,
+	}
+}
+
+func toSockVariant(dto types.SockVariantDTO) types.SockVariant {
+	return types.SockVariant{
+		Size:     dto.Size,
+		Price:    dto.Price,
+		Quantity: dto.Quantity,
+	}
+}
+
+func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
+	v := make([]types.SockVariant, len(dtos))
+	for i, dto := range dtos {
+		v[i] = toSockVariant(dto)
+	}
+	return v
 }
