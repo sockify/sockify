@@ -91,7 +91,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.AuthToken"
+                            "$ref": "#/definitions/types.LoginAdminResponse"
                         }
                     }
                 }
@@ -150,6 +150,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Inventory"
+                ],
                 "summary": "Create a new sock",
                 "parameters": [
                     {
@@ -166,19 +169,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/types.Message"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
+                            "$ref": "#/definitions/types.CreateSockResponse"
                         }
                     }
                 }
@@ -209,28 +200,29 @@ const docTemplate = `{
                 }
             }
         },
-        "types.AuthToken": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "types.CreateSockRequest": {
             "type": "object",
             "required": [
+                "sock",
                 "variants"
             ],
             "properties": {
                 "sock": {
-                    "$ref": "#/definitions/types.Sock"
+                    "$ref": "#/definitions/types.SockDTO"
                 },
                 "variants": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/types.SockVariant"
+                        "$ref": "#/definitions/types.SockVariantDTO"
                     }
+                }
+            }
+        },
+        "types.CreateSockResponse": {
+            "type": "object",
+            "properties": {
+                "sockId": {
+                    "type": "integer"
                 }
             }
         },
@@ -245,6 +237,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.LoginAdminResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
                     "type": "string"
                 }
             }
@@ -292,21 +292,15 @@ const docTemplate = `{
                 }
             }
         },
-        "types.Sock": {
+        "types.SockDTO": {
             "type": "object",
             "required": [
                 "name",
                 "previewImageUrl"
             ],
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -316,7 +310,7 @@ const docTemplate = `{
                 }
             }
         },
-        "types.SockVariant": {
+        "types.SockVariantDTO": {
             "type": "object",
             "required": [
                 "price",
@@ -324,12 +318,6 @@ const docTemplate = `{
                 "size"
             ],
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "price": {
                     "type": "number"
                 },
@@ -345,9 +333,6 @@ const docTemplate = `{
                         "LG",
                         "XL"
                     ]
-                },
-                "sockId": {
-                    "type": "integer"
                 }
             }
         }
