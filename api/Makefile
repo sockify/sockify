@@ -18,3 +18,6 @@ migrate-up:
 
 migrate-down:
 	@go run cmd/migrate/main.go down
+
+swag:
+	@swag init -g ./cmd/main.go -o ./docs
