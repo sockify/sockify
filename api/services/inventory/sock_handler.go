@@ -20,8 +20,8 @@ func NewSockHandler(store types.SockStore) *SockHandler {
 }
 
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
-	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.CreateSock)).Methods(http.MethodPost)
-	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.DeleteSock)).Methods(http.MethodDelete)
+	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.handleCreateSock)).Methods(http.MethodPost)
+	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleDeleteSock)).Methods(http.MethodDelete)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -34,7 +34,7 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 // @Param sock body types.CreateSockRequest true "Sock Data"
 // @Success 201 {object} types.CreateSockResponse
 // @Router /socks [post]
-func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
+func (h *SockHandler) handleCreateSock(w http.ResponseWriter, r *http.Request) {
 	var req types.CreateSockRequest
 
 	if err := utils.ParseJson(r, &req); err != nil {
@@ -105,7 +105,7 @@ func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
 // @Param sock_id path int true "Sock ID"
 // @Success 200 {object} types.Message
 // @Router /socks/{sock_id} [delete]
-func (h *SockHandler) DeleteSock(w http.ResponseWriter, r *http.Request) {
+func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sockIDstr := vars["sock_id"]
 	sockID, err := strconv.Atoi(sockIDstr)
