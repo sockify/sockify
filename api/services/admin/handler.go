@@ -34,18 +34,23 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 // @Security Bearer
 // @Param limit query int false "Results per page" default(50)
 // @Param offset query int false "Page number" default(0)
-// @Success 200 {array} types.Admin
+// @Success 200 {object} types.AdminsPaginatedResponse
 // @Router /admins [get]
 func (h *Handler) handleGetAdmins(w http.ResponseWriter, r *http.Request) {
 	limit, offset := utils.GetLimitOffset(r, 50, 0)
 
-	admins, err := h.store.GetAdmins(limit, offset)
+	admins, totalAdmins, err := h.store.GetAdmins(limit, offset)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	utils.WriteJson(w, http.StatusOK, admins)
+	utils.WriteJson(w, http.StatusOK, types.AdminsPaginatedResponse{
+		Items:  admins,
+		Total:  totalAdmins,
+		Limit:  limit,
+		Offset: offset,
+	})
 }
 
 // @Summary Logs in an admin.

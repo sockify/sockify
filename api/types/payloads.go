@@ -4,6 +4,13 @@ type Message struct {
 	Message string `json:"message"`
 }
 
+type AdminsPaginatedResponse struct {
+	Items  []Admin `json:"items"`
+	Total  int     `json:"total"`
+	Limit  int     `json:"limit"`
+	Offset int     `json:"offset"`
+}
+
 type LoginAdminRequest struct {
 	UserName string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required"`

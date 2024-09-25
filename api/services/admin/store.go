@@ -15,7 +15,13 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
-func (s *Store) GetAdmins(limit int, offset int) ([]types.Admin, error) {
+func (s *Store) GetAdmins(limit int, offset int) ([]types.Admin, int, error) {
+	var totalCount int
+	err := s.db.QueryRow("SELECT COUNT(*) FROM admins").Scan(&totalCount)
+	if err != nil {
+		return nil, 0, err
+	}
+
 	rows, err := s.db.Query(`
     SELECT * FROM admins
     ORDER BY firstname, lastname, username, email ASC
@@ -23,20 +29,20 @@ func (s *Store) GetAdmins(limit int, offset int) ([]types.Admin, error) {
     OFFSET $2
   `, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	admins := make([]types.Admin, 0)
 	for rows.Next() {
 		admin, err := scanRowsIntoAdmin(rows)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 
 		admins = append(admins, *admin)
 	}
 
-	return admins, nil
+	return admins, totalCount, nil
 }
 
 func (s *Store) GetAdminByID(id int) (*types.Admin, error) {
