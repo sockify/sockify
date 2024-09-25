@@ -231,15 +231,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/types.Message'
       security:
       - Bearer: []
       summary: Delete a sock

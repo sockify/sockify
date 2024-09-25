@@ -35,7 +35,6 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 // @Success 201 {object} types.CreateSockResponse
 // @Router /socks [post]
 func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
-	// Parse the incoming JSON request into the CreateSockRequest struct
 	var req types.CreateSockRequest
 
 	if err := utils.ParseJson(r, &req); err != nil {
@@ -43,7 +42,6 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if the sock already exists before creating a new one
 	exists, err := h.Store.SockExists(req.Sock.Name)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
@@ -65,7 +63,6 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert the sock and its variants using the store's CreateSock method
 	sock := toSock(req.Sock)
 	variants := toSockVariantArray(req.Variants)
 	sockID, err := h.Store.CreateSock(sock, variants)
@@ -74,7 +71,6 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Respond with the created Sock ID
 	utils.WriteJson(w, http.StatusCreated, types.CreateSockResponse{SockID: sockID})
 }
 
@@ -102,22 +98,23 @@ func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
 	return v
 }
 
-// DeleteSock handles the HTTP request to delete a sock by its ID
 // @Summary Delete a sock
 // @Description Deletes a sock from the store by its ID
 // @Tags Inventory
 // @Security Bearer
 // @Param sock_id path int true "Sock ID"
-// @Success 200 {object} map[string]string
-// @Failure 404 {object} map[string]string
+// @Success 200 {object} types.Message
 // @Router /socks/{sock_id} [delete]
 func (h *SockHandler) DeleteSock(w http.ResponseWriter, r *http.Request) {
-	// get the sock_id from the URL params
 	vars := mux.Vars(r)
 	sockIDstr := vars["sock_id"]
 	sockID, err := strconv.Atoi(sockIDstr)
 
-	// Call the DeleteSock method in the store
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
 	deleted, err := h.Store.DeleteSock(sockID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
@@ -129,6 +126,5 @@ func (h *SockHandler) DeleteSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Respond with a success message
-	utils.WriteJson(w, http.StatusOK, map[string]string{"message": "Sock deleted successfully"})
+	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Sock deleted successfully"})
 }
