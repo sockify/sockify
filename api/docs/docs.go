@@ -174,6 +174,37 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/socks/{sock_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Deletes a sock from the store by its ID",
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Delete a sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

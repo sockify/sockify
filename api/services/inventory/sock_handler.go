@@ -8,18 +8,20 @@ import (
 	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
+	"strconv"
 )
 
 type SockHandler struct {
-	Store types.SockStore
+	store types.SockStore
 }
 
 func NewSockHandler(store types.SockStore) *SockHandler {
-	return &SockHandler{Store: store}
+	return &SockHandler{store: store}
 }
 
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
-	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.CreateSock)).Methods(http.MethodPost)
+	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.handleCreateSock)).Methods(http.MethodPost)
+	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleDeleteSock)).Methods(http.MethodDelete)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -32,8 +34,7 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 // @Param sock body types.CreateSockRequest true "Sock Data"
 // @Success 201 {object} types.CreateSockResponse
 // @Router /socks [post]
-func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
-	// Parse the incoming JSON request into the CreateSockRequest struct
+func (h *SockHandler) handleCreateSock(w http.ResponseWriter, r *http.Request) {
 	var req types.CreateSockRequest
 
 	if err := utils.ParseJson(r, &req); err != nil {
@@ -41,8 +42,7 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if the sock already exists before creating a new one
-	exists, err := h.Store.SockExists(req.Sock.Name)
+	exists, err := h.store.SockExists(req.Sock.Name)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -63,16 +63,14 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert the sock and its variants using the store's CreateSock method
 	sock := toSock(req.Sock)
 	variants := toSockVariantArray(req.Variants)
-	sockID, err := h.Store.CreateSock(sock, variants)
+	sockID, err := h.store.CreateSock(sock, variants)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	// Respond with the created Sock ID
 	utils.WriteJson(w, http.StatusCreated, types.CreateSockResponse{SockID: sockID})
 }
 
@@ -98,4 +96,35 @@ func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
 		v[i] = toSockVariant(dto)
 	}
 	return v
+}
+
+// @Summary Delete a sock
+// @Description Deletes a sock from the store by its ID
+// @Tags Inventory
+// @Security Bearer
+// @Param sock_id path int true "Sock ID"
+// @Success 200 {object} types.Message
+// @Router /socks/{sock_id} [delete]
+func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sockIDstr := vars["sock_id"]
+	sockID, err := strconv.Atoi(sockIDstr)
+
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
+	deleted, err := h.store.DeleteSock(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if !deleted {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Sock deleted successfully"})
 }

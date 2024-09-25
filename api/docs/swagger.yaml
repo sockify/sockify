@@ -218,6 +218,25 @@ paths:
       summary: Create a new sock
       tags:
       - Inventory
+  /socks/{sock_id}:
+    delete:
+      description: Deletes a sock from the store by its ID
+      parameters:
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Delete a sock
+      tags:
+      - Inventory
 securityDefinitions:
   Bearer:
     description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer

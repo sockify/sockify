@@ -59,3 +59,25 @@ func (s *SockStore) SockExists(name string) (bool, error) {
 
 	return exists, nil
 }
+
+// Deletes a sock from the database by its sock_id
+func (s *SockStore) DeleteSock(sockID int) (bool, error) {
+    result, err := s.db.Exec(`DELETE FROM socks WHERE sock_id = $1`, sockID)
+    if err != nil {
+        log.Printf("Error deleting sock: %v", err)
+        return false, err
+    }
+
+	// Check how many rows were affected
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        log.Printf("Error fetching affected rows %v", err)
+        return false, err
+    }
+
+    if rowsAffected == 0 {
+        return false, nil
+    }
+
+    return true, nil
+}
