@@ -12,11 +12,11 @@ import (
 )
 
 type SockHandler struct {
-	Store types.SockStore
+	store types.SockStore
 }
 
 func NewSockHandler(store types.SockStore) *SockHandler {
-	return &SockHandler{Store: store}
+	return &SockHandler{store: store}
 }
 
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
@@ -42,7 +42,7 @@ func (h *SockHandler) handleCreateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exists, err := h.Store.SockExists(req.Sock.Name)
+	exists, err := h.store.SockExists(req.Sock.Name)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -65,7 +65,7 @@ func (h *SockHandler) handleCreateSock(w http.ResponseWriter, r *http.Request) {
 
 	sock := toSock(req.Sock)
 	variants := toSockVariantArray(req.Variants)
-	sockID, err := h.Store.CreateSock(sock, variants)
+	sockID, err := h.store.CreateSock(sock, variants)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -115,7 +115,7 @@ func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	deleted, err := h.Store.DeleteSock(sockID)
+	deleted, err := h.store.DeleteSock(sockID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
