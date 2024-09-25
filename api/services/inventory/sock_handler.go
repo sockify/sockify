@@ -4,11 +4,12 @@ import (
 	"errors"
 	"net/http"
 
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
-	"strconv"
 )
 
 type SockHandler struct {
@@ -74,30 +75,6 @@ func (h *SockHandler) handleCreateSock(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJson(w, http.StatusCreated, types.CreateSockResponse{SockID: sockID})
 }
 
-func toSock(dto types.SockDTO) types.Sock {
-	return types.Sock{
-		Name:            dto.Name,
-		Description:     dto.Description,
-		PreviewImageURL: dto.PreviewImageURL,
-	}
-}
-
-func toSockVariant(dto types.SockVariantDTO) types.SockVariant {
-	return types.SockVariant{
-		Size:     dto.Size,
-		Price:    dto.Price,
-		Quantity: dto.Quantity,
-	}
-}
-
-func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
-	v := make([]types.SockVariant, len(dtos))
-	for i, dto := range dtos {
-		v[i] = toSockVariant(dto)
-	}
-	return v
-}
-
 // @Summary Delete a sock
 // @Description Deletes a sock from the store by its ID
 // @Tags Inventory
@@ -127,4 +104,28 @@ func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Sock deleted successfully"})
+}
+
+func toSock(dto types.SockDTO) types.Sock {
+	return types.Sock{
+		Name:            dto.Name,
+		Description:     dto.Description,
+		PreviewImageURL: dto.PreviewImageURL,
+	}
+}
+
+func toSockVariant(dto types.SockVariantDTO) types.SockVariant {
+	return types.SockVariant{
+		Size:     dto.Size,
+		Price:    dto.Price,
+		Quantity: dto.Quantity,
+	}
+}
+
+func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
+	v := make([]types.SockVariant, len(dtos))
+	for i, dto := range dtos {
+		v[i] = toSockVariant(dto)
+	}
+	return v
 }
