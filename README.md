@@ -99,6 +99,8 @@ We are using [Swagger UI](https://swagger.io/tools/swagger-ui/) to access our AP
 
 You can open the local API docs at http://localhost:8080/swagger/index.html
 
+![swagger ui](./docs/assets/swagger_ui.png)
+
 #### Generating the docs <!-- omit in toc -->
 
 Whenever changes are made to API, we have to re-build the API specification.
