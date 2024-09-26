@@ -137,6 +137,44 @@ const docTemplate = `{
             }
         },
         "/socks": {
+            "get": {
+                "description": "Returns a list of socks with pagination and sorting options",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all socks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit the number of results",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.SockResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -313,6 +351,29 @@ const docTemplate = `{
                 },
                 "previewImageUrl": {
                     "type": "string"
+                }
+            }
+        },
+        "types.SockResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preview_image_url": {
+                    "type": "string"
+                },
+                "sock_id": {
+                    "type": "integer"
+                },
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SockVariant"
+                    }
                 }
             }
         },
