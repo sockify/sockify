@@ -9,6 +9,7 @@ type AdminStore interface {
 }
 
 type SockStore interface {
-	CreateSock(sock Sock, variants []SockVariant)(int,error)
+	CreateSock(sock Sock, variants []SockVariant) (int, error)
 	SockExists(name string) (bool, error)
+	GetSocks(limit, offset int) ([]SockResponse, error)
 }
