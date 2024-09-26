@@ -1,16 +1,17 @@
 package inventory
 
 import (
+	"errors"
 	"net/http"
+
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
+	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
-	"github.com/sockify/sockify/middleware"
-	"github.com/gorilla/mux"
-	"errors"
 )
 
-type SockHandler struct{
+type SockHandler struct {
 	Store types.SockStore
 }
 
@@ -20,6 +21,7 @@ func NewSockHandler(store types.SockStore) *SockHandler {
 
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.CreateSock)).Methods(http.MethodPost)
+	router.HandleFunc("/socks", h.GetSocks).Methods(http.MethodGet)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -47,13 +49,13 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 	// Check if the sock already exists before creating a new one
 	exists, err := h.Store.SockExists(req.Sock.Name)
 	if err != nil {
-    	utils.WriteError(w, http.StatusInternalServerError, err)
-    	return
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	if exists {
-    	utils.WriteError(w, http.StatusConflict, errors.New("sock already exists"))
-    	return
+		utils.WriteError(w, http.StatusConflict, errors.New("sock already exists"))
+		return
 	}
 
 	if err := validate.Struct(req.Sock); err != nil {
@@ -72,7 +74,28 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
-	
+
 	// Respond with the created Sock ID
 	utils.WriteJson(w, http.StatusCreated, map[string]int{"sockId": sockID})
+}
+
+// GetSocks handles the HTTP request to fetch all socks with pagination and sorting
+// @Summary Get all socks
+// @Description Returns a list of socks with pagination and sorting options
+// @Produce json
+// @Param limit query int false "Limit the number of results"
+// @Param offset query int false "Offset for pagination"
+// @Success 200 {array} types.SockResponse
+// @Failure 500 {object} types.Message
+// @Router /socks [get]
+func (h *SockHandler) GetSocks(w http.ResponseWriter, r *http.Request) {
+	limit, offset := utils.GetLimitOffset(r, 50, 0)
+
+	socks, err := h.Store.GetSocks(limit, offset)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, socks)
 }
