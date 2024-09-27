@@ -79,14 +79,13 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJson(w, http.StatusCreated, map[string]int{"sockId": sockID})
 }
 
-// handleGetAllSocks handles the HTTP request to fetch all socks with pagination and sorting
+
 // @Summary Get all socks
 // @Description Returns a list of socks with pagination and sorting options
 // @Produce json
 // @Param limit query int false "Limit the number of results"
 // @Param offset query int false "Offset for pagination"
 // @Success 200 {array} types.SockResponse
-// @Failure 500 {object} types.Message
 // @Router /socks [get]
 func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) {
 	limit, offset := utils.GetLimitOffset(r, 50, 0)
