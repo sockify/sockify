@@ -61,7 +61,7 @@ func (s *SockStore) SockExists(name string) (bool, error) {
 }
 
 // GetSocks retrieves socks from the database with pagination and sorted by created date
-func (s *SockStore) GetSocks(limit int, offset int) ([]types.SockResponse, error) {
+func (s *SockStore) handleGetAllSocks(limit int, offset int) ([]types.SockResponse, error) {
 	rows, err := s.db.Query(`
         SELECT sock_id, name, description, preview_image_url 
         FROM socks 
@@ -93,6 +93,18 @@ func (s *SockStore) GetSocks(limit int, offset int) ([]types.SockResponse, error
 
 	return socks, nil
 }
+
+// CountSocks returns the total number of socks in the database for pagination purposes.
+func (s *SockStore) CountSocks() (int, error) {
+    var count int
+    err := s.db.QueryRow(`SELECT COUNT(*) FROM socks`).Scan(&count)
+    if err != nil {
+        log.Printf("Error counting socks: %v", err)
+        return 0, err
+    }
+    return count, nil
+}
+
 
 // GetSockVariants retrieves the variants for a specific sock
 func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
