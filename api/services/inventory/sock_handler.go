@@ -95,6 +95,25 @@ func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) 
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+	
+	total, err := h.Store.CountSocks()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
 
-	utils.WriteJson(w, http.StatusOK, socks)
+	response := struct {
+		Items  []types.SockResponse `json:"items"`
+		Total  int                  `json:"total"`
+		Limit  int                  `json:"limit"`
+		Offset int                  `json:"offset"`
+	}{
+		Items:  socks,
+		Total:  total,
+		Limit:  limit,
+		Offset: offset,
+	}
+
+	utils.WriteJson(w, http.StatusOK, response)
 }
+
