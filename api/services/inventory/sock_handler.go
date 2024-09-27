@@ -21,7 +21,7 @@ func NewSockHandler(store types.SockStore) *SockHandler {
 
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.CreateSock)).Methods(http.MethodPost)
-	router.HandleFunc("/socks", h.GetSocks).Methods(http.MethodGet)
+	router.HandleFunc("/socks", h.handleGetAllSocks).Methods(http.MethodGet)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -79,7 +79,7 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJson(w, http.StatusCreated, map[string]int{"sockId": sockID})
 }
 
-// GetSocks handles the HTTP request to fetch all socks with pagination and sorting
+// handleGetAllSocks handles the HTTP request to fetch all socks with pagination and sorting
 // @Summary Get all socks
 // @Description Returns a list of socks with pagination and sorting options
 // @Produce json
@@ -88,10 +88,10 @@ func (h *SockHandler) CreateSock(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} types.SockResponse
 // @Failure 500 {object} types.Message
 // @Router /socks [get]
-func (h *SockHandler) GetSocks(w http.ResponseWriter, r *http.Request) {
+func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) {
 	limit, offset := utils.GetLimitOffset(r, 50, 0)
 
-	socks, err := h.Store.GetSocks(limit, offset)
+	socks, err := h.Store.handleGetAllSocks(limit, offset)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
