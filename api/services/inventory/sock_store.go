@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/sockify/sockify/types"
@@ -61,39 +62,47 @@ func (s *SockStore) SockExists(name string) (bool, error) {
 }
 
 // Deletes a sock from the database by its sock_id
-func (s *SockStore) DeleteSock(sockID int) (bool, error) {
+func (s *SockStore) DeleteSock(sockID int) error {
+	var isDeleted bool
+	err := s.db.QueryRow(`SELECT is_deleted FROM socks WHERE sock_id = $1`, sockID).Scan(&isDeleted)
+	if err != nil {
+		return fmt.Errorf("error checking sock status: %v", err)
+	}
+
+	if isDeleted {
+		return fmt.Errorf("sock with ID %d is already deleted", sockID)
+	}
+
 	result, err := s.db.Exec(`
     UPDATE socks
     SET is_deleted = true
     WHERE sock_id = $1
   `, sockID)
 	if err != nil {
-		log.Printf("Error deleting sock: %v", err)
-		return false, err
+		return fmt.Errorf("error deleting sock: %v", err)
 	}
 
-	// Check how many rows were affected
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		log.Printf("Error fetching affected rows %v", err)
-		return false, err
+		return fmt.Errorf("error fetching affected rows %v", err)
 	}
 
 	if rowsAffected == 0 {
-		return false, nil
+		return fmt.Errorf("no rows were affected")
 	}
 
-	return true, nil
+	return nil
 }
 
 // GetSocks retrieves socks from the database with pagination and sorted by created date
 func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 	rows, err := s.db.Query(`
-        SELECT sock_id, name, description, preview_image_url 
-        FROM socks
-        WHERE is_deleted = false
-        ORDER BY created_at DESC 
-        LIMIT $1 OFFSET $2`, limit, offset)
+    SELECT sock_id, name, description, preview_image_url 
+    FROM socks
+    WHERE is_deleted = false
+    ORDER BY created_at DESC
+    LIMIT $1 OFFSET $2
+  `, limit, offset)
 
 	if err != nil {
 		log.Printf("Error fetching socks: %v", err)

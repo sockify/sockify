@@ -86,21 +86,16 @@ func (h *SockHandler) handleCreateSock(w http.ResponseWriter, r *http.Request) {
 func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sockIDstr := vars["sock_id"]
-	sockID, err := strconv.Atoi(sockIDstr)
 
+	sockID, err := strconv.Atoi(sockIDstr)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
 		return
 	}
 
-	deleted, err := h.store.DeleteSock(sockID)
+	err = h.store.DeleteSock(sockID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if !deleted {
-		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
 		return
 	}
 
@@ -108,7 +103,7 @@ func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 }
 
 // @Summary Get all socks
-// @Description Returns a list of socks with pagination and sorting options
+// @Description Returns a list of paginated socks sorted in descending order by created date
 // @Tags Inventory
 // @Produce json
 // @Param limit query int false "Limit the number of results" default(50)

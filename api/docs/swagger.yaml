@@ -251,7 +251,8 @@ paths:
       - Admins
   /socks:
     get:
-      description: Returns a list of socks with pagination and sorting options
+      description: Returns a list of paginated socks sorted in descending order by
+        created date
       parameters:
       - default: 50
         description: Limit the number of results

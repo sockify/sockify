@@ -135,7 +135,7 @@ const docTemplate = `{
         },
         "/socks": {
             "get": {
-                "description": "Returns a list of socks with pagination and sorting options",
+                "description": "Returns a list of paginated socks sorted in descending order by created date",
                 "produces": [
                     "application/json"
                 ],
