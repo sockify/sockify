@@ -54,10 +54,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/types.Admin"
-                            }
+                            "$ref": "#/definitions/types.AdminsPaginatedResponse"
                         }
                     }
                 }
@@ -91,7 +88,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.AuthToken"
+                            "$ref": "#/definitions/types.LoginAdminResponse"
                         }
                     }
                 }
@@ -188,6 +185,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Inventory"
+                ],
                 "summary": "Create a new sock",
                 "parameters": [
                     {
@@ -204,17 +204,36 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/types.Message"
+                            "$ref": "#/definitions/types.CreateSockResponse"
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
+                    }
+                }
+            }
+        },
+        "/socks/{sock_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Deletes a sock from the store by its ID",
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Delete a sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/types.Message"
                         }
@@ -247,28 +266,49 @@ const docTemplate = `{
                 }
             }
         },
-        "types.AuthToken": {
+        "types.AdminsPaginatedResponse": {
             "type": "object",
             "properties": {
-                "token": {
-                    "type": "string"
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Admin"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
         "types.CreateSockRequest": {
             "type": "object",
             "required": [
+                "sock",
                 "variants"
             ],
             "properties": {
                 "sock": {
-                    "$ref": "#/definitions/types.Sock"
+                    "$ref": "#/definitions/types.SockDTO"
                 },
                 "variants": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/types.SockVariant"
+                        "$ref": "#/definitions/types.SockVariantDTO"
                     }
+                }
+            }
+        },
+        "types.CreateSockResponse": {
+            "type": "object",
+            "properties": {
+                "sockId": {
+                    "type": "integer"
                 }
             }
         },
@@ -283,6 +323,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.LoginAdminResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
                     "type": "string"
                 }
             }
@@ -330,21 +378,15 @@ const docTemplate = `{
                 }
             }
         },
-        "types.Sock": {
+        "types.SockDTO": {
             "type": "object",
             "required": [
                 "name",
                 "previewImageUrl"
             ],
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -377,7 +419,7 @@ const docTemplate = `{
                 }
             }
         },
-        "types.SockVariant": {
+        "types.SockVariantDTO": {
             "type": "object",
             "required": [
                 "price",
@@ -385,12 +427,6 @@ const docTemplate = `{
                 "size"
             ],
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "price": {
                     "type": "number"
                 },
@@ -406,9 +442,6 @@ const docTemplate = `{
                         "LG",
                         "XL"
                     ]
-                },
-                "sockId": {
-                    "type": "integer"
                 }
             }
         }

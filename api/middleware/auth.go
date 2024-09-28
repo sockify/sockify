@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/sockify/sockify/config"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
 	"github.com/sockify/sockify/utils/auth"
@@ -22,6 +23,12 @@ const UserKey Key = "userID"
 // WithJWTAuth retrieves the JWT token from the request `Authorization` header (or "token" query param) and validates it. If everything is OK, it will attach a `UserKey` context to the request.
 func WithJWTAuth(store types.AdminStore, nextHandler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if config.Envs.DisableAuth {
+			log.Println("Auth is disabled, proceeding without JWT check")
+			nextHandler(w, r)
+			return
+		}
+
 		tokenStr, err := getTokenFromRequest(r)
 		if err != nil {
 			log.Printf("unable to get token from request: %v", err)
