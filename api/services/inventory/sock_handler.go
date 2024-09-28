@@ -93,6 +93,16 @@ func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	exists, err := h.store.SockExistsByID(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if !exists {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("sock does not exist"))
+		return
+	}
+
 	err = h.store.DeleteSock(sockID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)

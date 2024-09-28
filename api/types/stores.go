@@ -11,6 +11,7 @@ type AdminStore interface {
 type SockStore interface {
 	CreateSock(sock Sock, variants []SockVariant) (int, error)
 	SockExists(name string) (bool, error)
+	SockExistsByID(id int) (bool, error)
 	GetSocks(limit, offset int) ([]Sock, error)
 	DeleteSock(sockID int) error
 	CountSocks() (int, error)

@@ -61,6 +61,20 @@ func (s *SockStore) SockExists(name string) (bool, error) {
 	return exists, nil
 }
 
+// SockExistsByID checks if a sock with the same sock_id already exists in the database
+func (s *SockStore) SockExistsByID(id int) (bool, error) {
+	var exists bool
+
+	query := `SELECT EXISTS (SELECT 1 FROM socks WHERE sock_id = $1)`
+	err := s.db.QueryRow(query, id).Scan(&exists)
+	if err != nil {
+		log.Printf("Error checking if sock exists: %v", err)
+		return false, err
+	}
+
+	return exists, nil
+}
+
 // Deletes a sock from the database by its sock_id
 func (s *SockStore) DeleteSock(sockID int) error {
 	var isDeleted bool
