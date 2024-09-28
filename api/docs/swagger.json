@@ -430,9 +430,6 @@
                 },
                 "size": {
                     "type": "string"
-                },
-                "sockId": {
-                    "type": "integer"
                 }
             }
         },

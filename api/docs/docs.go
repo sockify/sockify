@@ -436,9 +436,6 @@ const docTemplate = `{
                 },
                 "size": {
                     "type": "string"
-                },
-                "sockId": {
-                    "type": "integer"
                 }
             }
         },
