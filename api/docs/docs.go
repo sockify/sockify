@@ -139,16 +139,21 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Inventory"
+                ],
                 "summary": "Get all socks",
                 "parameters": [
                     {
                         "type": "integer",
+                        "default": 50,
                         "description": "Limit the number of results",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "integer",
+                        "default": 0,
                         "description": "Offset for pagination",
                         "name": "offset",
                         "in": "query"
@@ -158,16 +163,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/types.SockResponse"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
+                            "$ref": "#/definitions/types.SocksPaginatedResponse"
                         }
                     }
                 }
@@ -378,9 +374,36 @@ const docTemplate = `{
                 }
             }
         },
+        "types.Sock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "previewImageUrl": {
+                    "type": "string"
+                },
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SockVariant"
+                    }
+                }
+            }
+        },
         "types.SockDTO": {
             "type": "object",
             "required": [
+                "description",
                 "name",
                 "previewImageUrl"
             ],
@@ -396,26 +419,26 @@ const docTemplate = `{
                 }
             }
         },
-        "types.SockResponse": {
+        "types.SockVariant": {
             "type": "object",
             "properties": {
-                "description": {
+                "createdAt": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "preview_image_url": {
-                    "type": "string"
-                },
-                "sock_id": {
+                "id": {
                     "type": "integer"
                 },
-                "variants": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.SockVariant"
-                    }
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "sockId": {
+                    "type": "integer"
                 }
             }
         },
@@ -442,6 +465,26 @@ const docTemplate = `{
                         "LG",
                         "XL"
                     ]
+                }
+            }
+        },
+        "types.SocksPaginatedResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Sock"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         }

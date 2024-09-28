@@ -109,10 +109,11 @@ func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 
 // @Summary Get all socks
 // @Description Returns a list of socks with pagination and sorting options
+// @Tags Inventory
 // @Produce json
-// @Param limit query int false "Limit the number of results"
-// @Param offset query int false "Offset for pagination"
-// @Success 200 {array} types.SockResponse
+// @Param limit query int false "Limit the number of results" default(50)
+// @Param offset query int false "Offset for pagination" default(0)
+// @Success 200 {object} types.SocksPaginatedResponse
 // @Router /socks [get]
 func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) {
 	limit, offset := utils.GetLimitOffset(r, 50, 0)
@@ -129,19 +130,12 @@ func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	response := struct {
-		Items  []types.SockResponse `json:"items"`
-		Total  int                  `json:"total"`
-		Limit  int                  `json:"limit"`
-		Offset int                  `json:"offset"`
-	}{
+	utils.WriteJson(w, http.StatusOK, types.SocksPaginatedResponse{
 		Items:  socks,
 		Total:  total,
 		Limit:  limit,
 		Offset: offset,
-	}
-
-	utils.WriteJson(w, http.StatusOK, response)
+	})
 }
 
 func toSock(dto types.SockDTO) types.Sock {

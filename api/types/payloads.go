@@ -11,6 +11,13 @@ type AdminsPaginatedResponse struct {
 	Offset int     `json:"offset"`
 }
 
+type SocksPaginatedResponse struct {
+	Items  []Sock `json:"items"`
+	Total  int    `json:"total"`
+	Limit  int    `json:"limit"`
+	Offset int    `json:"offset"`
+}
+
 type LoginAdminRequest struct {
 	UserName string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required"`
@@ -36,9 +43,9 @@ type CreateSockResponse struct {
 }
 
 type SockDTO struct {
-	Name            string  `json:"name" validate:"required"`
-	Description     *string `json:"description,omitempty"`
-	PreviewImageURL string  `json:"previewImageUrl" validate:"required"`
+	Name            string `json:"name" validate:"required"`
+	Description     string `json:"description" validate:"required"`
+	PreviewImageURL string `json:"previewImageUrl" validate:"required"`
 }
 type SockVariantDTO struct {
 	Size     string  `json:"size" validate:"required,oneof=S M LG XL"`
