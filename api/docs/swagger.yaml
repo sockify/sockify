@@ -92,6 +92,23 @@ definitions:
     - password
     - username
     type: object
+  types.Sock:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      previewImageUrl:
+        type: string
+      variants:
+        items:
+          $ref: '#/definitions/types.SockVariant'
+        type: array
+    type: object
   types.SockDTO:
     properties:
       description:
@@ -101,8 +118,24 @@ definitions:
       previewImageUrl:
         type: string
     required:
+    - description
     - name
     - previewImageUrl
+    type: object
+  types.SockVariant:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      quantity:
+        type: integer
+      size:
+        type: string
+      sockId:
+        type: integer
     type: object
   types.SockVariantDTO:
     properties:
@@ -122,6 +155,19 @@ definitions:
     - price
     - quantity
     - size
+    type: object
+  types.SocksPaginatedResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/types.Sock'
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -206,6 +252,29 @@ paths:
       tags:
       - Admins
   /socks:
+    get:
+      description: Returns a list of socks with pagination and sorting options
+      parameters:
+      - default: 50
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.SocksPaginatedResponse'
+      summary: Get all socks
+      tags:
+      - Inventory
     post:
       consumes:
       - application/json

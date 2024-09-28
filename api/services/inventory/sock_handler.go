@@ -23,6 +23,7 @@ func NewSockHandler(store types.SockStore) *SockHandler {
 func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.handleCreateSock)).Methods(http.MethodPost)
 	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleDeleteSock)).Methods(http.MethodDelete)
+	router.HandleFunc("/socks", h.handleGetAllSocks).Methods(http.MethodGet)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -104,6 +105,37 @@ func (h *SockHandler) handleDeleteSock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Sock deleted successfully"})
+}
+
+// @Summary Get all socks
+// @Description Returns a list of socks with pagination and sorting options
+// @Tags Inventory
+// @Produce json
+// @Param limit query int false "Limit the number of results" default(50)
+// @Param offset query int false "Offset for pagination" default(0)
+// @Success 200 {object} types.SocksPaginatedResponse
+// @Router /socks [get]
+func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) {
+	limit, offset := utils.GetLimitOffset(r, 50, 0)
+
+	socks, err := h.store.GetSocks(limit, offset)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	total, err := h.store.CountSocks()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.SocksPaginatedResponse{
+		Items:  socks,
+		Total:  total,
+		Limit:  limit,
+		Offset: offset,
+	})
 }
 
 func toSock(dto types.SockDTO) types.Sock {

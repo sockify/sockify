@@ -81,3 +81,74 @@ func (s *SockStore) DeleteSock(sockID int) (bool, error) {
 
 	return true, nil
 }
+
+// GetSocks retrieves socks from the database with pagination and sorted by created date
+func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
+	rows, err := s.db.Query(`
+        SELECT sock_id, name, description, preview_image_url 
+        FROM socks 
+        ORDER BY created_at DESC 
+        LIMIT $1 OFFSET $2`, limit, offset)
+
+	if err != nil {
+		log.Printf("Error fetching socks: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var socks []types.Sock
+	for rows.Next() {
+		var sock types.Sock
+		if err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL); err != nil {
+			log.Printf("Error scanning sock: %v", err)
+			return nil, err
+		}
+
+		// Fetch variants for each sock
+		sock.Variants, err = s.GetSockVariants(sock.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		socks = append(socks, sock)
+	}
+
+	return socks, nil
+}
+
+// CountSocks returns the total number of socks in the database for pagination purposes.
+func (s *SockStore) CountSocks() (int, error) {
+	var count int
+	err := s.db.QueryRow(`SELECT COUNT(*) FROM socks`).Scan(&count)
+	if err != nil {
+		log.Printf("Error counting socks: %v", err)
+		return 0, err
+	}
+	return count, nil
+}
+
+// GetSockVariants retrieves the variants for a specific sock
+func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
+	rows, err := s.db.Query(`
+        SELECT price, quantity, size 
+        FROM sock_variants 
+        WHERE sock_id = $1`, sockID)
+
+	if err != nil {
+		log.Printf("Error fetching variants for sockID %d: %v", sockID, err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var variants []types.SockVariant
+	for rows.Next() {
+		var sv types.SockVariant
+		if err := rows.Scan(&sv.Price, &sv.Quantity, &sv.Size); err != nil {
+			log.Printf("Error scanning variant: %v", err)
+			return nil, err
+		}
+		variants = append(variants, sv)
+	}
+
+	return variants, nil
+}
