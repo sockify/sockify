@@ -101,7 +101,7 @@ func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 	}
 	defer rows.Close()
 
-	var socks []types.Sock
+	socks := make([]types.Sock, 0)
 	for rows.Next() {
 		var sock types.Sock
 		if err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL); err != nil {
@@ -146,7 +146,7 @@ func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 	}
 	defer rows.Close()
 
-	var variants []types.SockVariant
+	variants := make([]types.SockVariant, 0)
 	for rows.Next() {
 		var sv types.SockVariant
 		if err := rows.Scan(&sv.ID, &sv.Price, &sv.Quantity, &sv.Size); err != nil {
