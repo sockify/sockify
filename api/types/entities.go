@@ -23,7 +23,6 @@ type Sock struct {
 
 type SockVariant struct {
 	ID        int       `json:"id"`
-	SockID    int       `json:"sockId"`
 	Size      string    `json:"size"`
 	Price     float64   `json:"price"`
 	Quantity  int       `json:"quantity"`

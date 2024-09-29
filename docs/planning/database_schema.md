@@ -40,6 +40,7 @@ Store general information about the socks.
 | `name`              | VARCHAR(64) | UNIQUE, NOT NULL                    |
 | `description`       | TEXT        |                                     |
 | `preview_image_url` | TEXT        | NOT NULL                            |
+| `is_deleted`        | BOOLEAN     | NOT NULL, DEFAULT false             |
 | `created_at`        | TIMESTAMP   | NOT NULL, DEFAULT CURRENT_TIMESTAMP |
 
 ### `sock_variants`

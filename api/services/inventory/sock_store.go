@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/sockify/sockify/types"
@@ -60,35 +61,62 @@ func (s *SockStore) SockExists(name string) (bool, error) {
 	return exists, nil
 }
 
-// Deletes a sock from the database by its sock_id
-func (s *SockStore) DeleteSock(sockID int) (bool, error) {
-	result, err := s.db.Exec(`DELETE FROM socks WHERE sock_id = $1`, sockID)
+// SockExistsByID checks if a sock with the same sock_id already exists in the database
+func (s *SockStore) SockExistsByID(id int) (bool, error) {
+	var exists bool
+
+	query := `SELECT EXISTS (SELECT 1 FROM socks WHERE sock_id = $1)`
+	err := s.db.QueryRow(query, id).Scan(&exists)
 	if err != nil {
-		log.Printf("Error deleting sock: %v", err)
+		log.Printf("Error checking if sock exists: %v", err)
 		return false, err
 	}
 
-	// Check how many rows were affected
+	return exists, nil
+}
+
+// Deletes a sock from the database by its sock_id
+func (s *SockStore) DeleteSock(sockID int) error {
+	var isDeleted bool
+	err := s.db.QueryRow(`SELECT is_deleted FROM socks WHERE sock_id = $1`, sockID).Scan(&isDeleted)
+	if err != nil {
+		return fmt.Errorf("error checking sock status: %v", err)
+	}
+
+	if isDeleted {
+		return fmt.Errorf("sock with ID %d is already deleted", sockID)
+	}
+
+	result, err := s.db.Exec(`
+    UPDATE socks
+    SET is_deleted = true
+    WHERE sock_id = $1
+  `, sockID)
+	if err != nil {
+		return fmt.Errorf("error deleting sock: %v", err)
+	}
+
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		log.Printf("Error fetching affected rows %v", err)
-		return false, err
+		return fmt.Errorf("error fetching affected rows %v", err)
 	}
 
 	if rowsAffected == 0 {
-		return false, nil
+		return fmt.Errorf("no rows were affected")
 	}
 
-	return true, nil
+	return nil
 }
 
 // GetSocks retrieves socks from the database with pagination and sorted by created date
 func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 	rows, err := s.db.Query(`
-        SELECT sock_id, name, description, preview_image_url 
-        FROM socks 
-        ORDER BY created_at DESC 
-        LIMIT $1 OFFSET $2`, limit, offset)
+    SELECT sock_id, name, description, preview_image_url 
+    FROM socks
+    WHERE is_deleted = false
+    ORDER BY created_at DESC
+    LIMIT $1 OFFSET $2
+  `, limit, offset)
 
 	if err != nil {
 		log.Printf("Error fetching socks: %v", err)
@@ -96,7 +124,7 @@ func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 	}
 	defer rows.Close()
 
-	var socks []types.Sock
+	socks := make([]types.Sock, 0)
 	for rows.Next() {
 		var sock types.Sock
 		if err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL); err != nil {
@@ -119,7 +147,7 @@ func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 // CountSocks returns the total number of socks in the database for pagination purposes.
 func (s *SockStore) CountSocks() (int, error) {
 	var count int
-	err := s.db.QueryRow(`SELECT COUNT(*) FROM socks`).Scan(&count)
+	err := s.db.QueryRow(`SELECT COUNT(*) FROM socks WHERE is_deleted = false`).Scan(&count)
 	if err != nil {
 		log.Printf("Error counting socks: %v", err)
 		return 0, err
@@ -130,9 +158,10 @@ func (s *SockStore) CountSocks() (int, error) {
 // GetSockVariants retrieves the variants for a specific sock
 func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 	rows, err := s.db.Query(`
-        SELECT price, quantity, size 
-        FROM sock_variants 
-        WHERE sock_id = $1`, sockID)
+    SELECT sock_variant_id, price, quantity, size 
+    FROM sock_variants
+    WHERE sock_id = $1
+  `, sockID)
 
 	if err != nil {
 		log.Printf("Error fetching variants for sockID %d: %v", sockID, err)
@@ -140,10 +169,10 @@ func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 	}
 	defer rows.Close()
 
-	var variants []types.SockVariant
+	variants := make([]types.SockVariant, 0)
 	for rows.Next() {
 		var sv types.SockVariant
-		if err := rows.Scan(&sv.Price, &sv.Quantity, &sv.Size); err != nil {
+		if err := rows.Scan(&sv.ID, &sv.Price, &sv.Quantity, &sv.Size); err != nil {
 			log.Printf("Error scanning variant: %v", err)
 			return nil, err
 		}
