@@ -99,6 +99,8 @@ We are using [Swagger UI](https://swagger.io/tools/swagger-ui/) to access our AP
 
 You can open the local API docs at http://localhost:8080/swagger/index.html
 
+![swagger ui](./docs/assets/swagger_ui.png)
+
 #### Generating the docs <!-- omit in toc -->
 
 Whenever changes are made to API, we have to re-build the API specification.
@@ -115,4 +117,5 @@ We are using [Swaggo](https://github.com/swaggo/swag?tab=readme-ov-file) to auto
    Otherwise, you will probably see an error like: `zsh: command not found: swag`
 
 3. Open the `/api` directory: `cd api`
-4. Run the following command: `swag init -g ./cmd/main.go -o ./docs`
+
+4. Run the following command: `make swag` (OR `swag init -g ./cmd/main.go -o ./docs`)

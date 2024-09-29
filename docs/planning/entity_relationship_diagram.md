@@ -17,6 +17,7 @@ erDiagram
         VARCHAR name "UNIQUE, NOT NULL"
         VARCHAR description
         TEXT preview_image_url "NOT NULL"
+        BOOLEAN is_deleted "NOT NULL, Default false"
         TIMESTAMP created_at "NOT NULL, Default CURRENT_TIMESTAMP"
     }
 

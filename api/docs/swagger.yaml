@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  admin.Admin:
+  types.Admin:
     properties:
       createdAt:
         type: string
@@ -15,6 +15,158 @@ definitions:
       username:
         type: string
     type: object
+  types.AdminsPaginatedResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/types.Admin'
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
+  types.CreateSockRequest:
+    properties:
+      sock:
+        $ref: '#/definitions/types.SockDTO'
+      variants:
+        items:
+          $ref: '#/definitions/types.SockVariantDTO'
+        type: array
+    required:
+    - sock
+    - variants
+    type: object
+  types.CreateSockResponse:
+    properties:
+      sockId:
+        type: integer
+    type: object
+  types.LoginAdminRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  types.LoginAdminResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  types.Message:
+    properties:
+      message:
+        type: string
+    type: object
+  types.RegisterAdminRequest:
+    properties:
+      email:
+        type: string
+      firstname:
+        maxLength: 16
+        minLength: 2
+        type: string
+      lastname:
+        maxLength: 16
+        minLength: 1
+        type: string
+      password:
+        maxLength: 16
+        minLength: 8
+        type: string
+      username:
+        maxLength: 16
+        minLength: 3
+        type: string
+    required:
+    - email
+    - firstname
+    - lastname
+    - password
+    - username
+    type: object
+  types.Sock:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      previewImageUrl:
+        type: string
+      variants:
+        items:
+          $ref: '#/definitions/types.SockVariant'
+        type: array
+    type: object
+  types.SockDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      previewImageUrl:
+        type: string
+    required:
+    - description
+    - name
+    - previewImageUrl
+    type: object
+  types.SockVariant:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      quantity:
+        type: integer
+      size:
+        type: string
+    type: object
+  types.SockVariantDTO:
+    properties:
+      price:
+        type: number
+      quantity:
+        minimum: 0
+        type: integer
+      size:
+        enum:
+        - S
+        - M
+        - LG
+        - XL
+        type: string
+    required:
+    - price
+    - quantity
+    - size
+    type: object
+  types.SocksPaginatedResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/types.Sock'
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -28,20 +180,146 @@ paths:
   /admins:
     get:
       description: Retrieves a list of all admins.
+      parameters:
+      - default: 50
+        description: Results per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Page number
+        in: query
+        name: offset
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/admin.Admin'
-            type: array
+            $ref: '#/definitions/types.AdminsPaginatedResponse'
+      security:
+      - Bearer: []
       summary: Get all admins.
       tags:
       - Admins
+  /admins/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in an admin using username and password credentials.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.LoginAdminResponse'
+      summary: Logs in an admin.
+      tags:
+      - Admins
+  /admins/register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new set of admin credentials.
+      parameters:
+      - description: Register credentials
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterAdminRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Registers new admin credentials.
+      tags:
+      - Admins
+  /socks:
+    get:
+      description: Returns a list of paginated socks sorted in descending order by
+        created date
+      parameters:
+      - default: 50
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.SocksPaginatedResponse'
+      summary: Get all socks
+      tags:
+      - Inventory
+    post:
+      consumes:
+      - application/json
+      description: Adds a new sock to the store with its variants
+      parameters:
+      - description: Sock Data
+        in: body
+        name: sock
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateSockRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/types.CreateSockResponse'
+      security:
+      - Bearer: []
+      summary: Create a new sock
+      tags:
+      - Inventory
+  /socks/{sock_id}:
+    delete:
+      description: Deletes a sock from the store by its ID
+      parameters:
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Delete a sock
+      tags:
+      - Inventory
 securityDefinitions:
-  ApiKeyAuth:
+  Bearer:
+    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+      XXX"'
     in: header
     name: Authorization
     type: apiKey
