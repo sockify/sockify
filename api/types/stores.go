@@ -16,3 +16,8 @@ type SockStore interface {
 	DeleteSock(sockID int) error
 	CountSocks() (int, error)
 }
+
+type OrderStore interface {
+    OrderExistsByID(orderID int) (bool, error)
+    UpdateOrderAddress(orderID int, address UpdateAddressRequest) error
+}

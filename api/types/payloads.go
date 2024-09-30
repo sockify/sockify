@@ -52,3 +52,10 @@ type SockVariantDTO struct {
 	Price    float64 `json:"price" validate:"required,gt=0,lt=101"`
 	Quantity int     `json:"quantity" validate:"required,gte=0"`
 }
+
+type UpdateAddressRequest struct {
+    Street   string `json:"street" validate:"required,max=100"`         
+    AptUnit  string `json:"apt_unit"`                                   
+    State    string `json:"state" validate:"required,len=2,oneof=AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY"`
+    Zipcode  string `json:"zipcode" validate:"required,max=10"`         
+}
