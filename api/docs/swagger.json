@@ -201,6 +201,30 @@
             }
         },
         "/socks/{sock_id}": {
+            "get": {
+        "summary": "Get details of a specific sock",
+        "description": "Retrieve details for a sock including its variants by its ID",
+        "tags": [
+            "Inventory"
+        ],
+        "parameters": [
+            {
+                "type": "integer",
+                "description": "Sock ID",
+                "name": "sock_id",
+                "in": "path",
+                "required": true
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "OK",
+                "schema": {
+                    "$ref": "#/definitions/Sock"
+                }
+            }
+        }
+    },
             "delete": {
                 "security": [
                     {
