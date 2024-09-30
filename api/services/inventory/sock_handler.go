@@ -24,6 +24,7 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.handleCreateSock)).Methods(http.MethodPost)
 	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleDeleteSock)).Methods(http.MethodDelete)
 	router.HandleFunc("/socks", h.handleGetAllSocks).Methods(http.MethodGet)
+	router.HandleFunc("/socks/{sock_id}", h.handleGetSockDetails).Methods(http.MethodGet)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -165,4 +166,23 @@ func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
 		v[i] = toSockVariant(dto)
 	}
 	return v
+}
+
+func (h *SockHandler) handleGetSockDetails(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sockIDStr := vars["sock_id"]
+
+	sockID, err := strconv.Atoi(sockIDStr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
+	sock, err := h.store.GetSockByID(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, sock)
 }
