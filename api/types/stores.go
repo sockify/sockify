@@ -15,4 +15,6 @@ type SockStore interface {
 	GetSocks(limit, offset int) ([]Sock, error)
 	DeleteSock(sockID int) error
 	CountSocks() (int, error)
+	GetSockByID(sockID int) (Sock, error)
+	GetSockVariants(sockID int) ([]SockVariant, error)
 }
