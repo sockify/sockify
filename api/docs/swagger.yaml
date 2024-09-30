@@ -19,7 +19,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/types.Admin'
+          $ref: "#/definitions/types.Admin"
         type: array
       limit:
         type: integer
@@ -31,14 +31,14 @@ definitions:
   types.CreateSockRequest:
     properties:
       sock:
-        $ref: '#/definitions/types.SockDTO'
+        $ref: "#/definitions/types.SockDTO"
       variants:
         items:
-          $ref: '#/definitions/types.SockVariantDTO'
+          $ref: "#/definitions/types.SockVariantDTO"
         type: array
     required:
-    - sock
-    - variants
+      - sock
+      - variants
     type: object
   types.CreateSockResponse:
     properties:
@@ -52,8 +52,8 @@ definitions:
       username:
         type: string
     required:
-    - password
-    - username
+      - password
+      - username
     type: object
   types.LoginAdminResponse:
     properties:
@@ -86,11 +86,11 @@ definitions:
         minLength: 3
         type: string
     required:
-    - email
-    - firstname
-    - lastname
-    - password
-    - username
+      - email
+      - firstname
+      - lastname
+      - password
+      - username
     type: object
   types.Sock:
     properties:
@@ -106,7 +106,7 @@ definitions:
         type: string
       variants:
         items:
-          $ref: '#/definitions/types.SockVariant'
+          $ref: "#/definitions/types.SockVariant"
         type: array
     type: object
   types.SockDTO:
@@ -118,9 +118,9 @@ definitions:
       previewImageUrl:
         type: string
     required:
-    - description
-    - name
-    - previewImageUrl
+      - description
+      - name
+      - previewImageUrl
     type: object
   types.SockVariant:
     properties:
@@ -144,21 +144,21 @@ definitions:
         type: integer
       size:
         enum:
-        - S
-        - M
-        - LG
-        - XL
+          - S
+          - M
+          - LG
+          - XL
         type: string
     required:
-    - price
-    - quantity
-    - size
+      - price
+      - quantity
+      - size
     type: object
   types.SocksPaginatedResponse:
     properties:
       items:
         items:
-          $ref: '#/definitions/types.Sock'
+          $ref: "#/definitions/types.Sock"
         type: array
       limit:
         type: integer
@@ -181,144 +181,164 @@ paths:
     get:
       description: Retrieves a list of all admins.
       parameters:
-      - default: 50
-        description: Results per page
-        in: query
-        name: limit
-        type: integer
-      - default: 0
-        description: Page number
-        in: query
-        name: offset
-        type: integer
+        - default: 50
+          description: Results per page
+          in: query
+          name: limit
+          type: integer
+        - default: 0
+          description: Page number
+          in: query
+          name: offset
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.AdminsPaginatedResponse'
+            $ref: "#/definitions/types.AdminsPaginatedResponse"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: Get all admins.
       tags:
-      - Admins
+        - Admins
   /admins/login:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Logs in an admin using username and password credentials.
       parameters:
-      - description: Login credentials
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/types.LoginAdminRequest'
+        - description: Login credentials
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: "#/definitions/types.LoginAdminRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.LoginAdminResponse'
+            $ref: "#/definitions/types.LoginAdminResponse"
       summary: Logs in an admin.
       tags:
-      - Admins
+        - Admins
   /admins/register:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Creates a new set of admin credentials.
       parameters:
-      - description: Register credentials
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/types.RegisterAdminRequest'
+        - description: Register credentials
+          in: body
+          name: Body
+          required: true
+          schema:
+            $ref: "#/definitions/types.RegisterAdminRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/types.Message'
+            $ref: "#/definitions/types.Message"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: Registers new admin credentials.
       tags:
-      - Admins
+        - Admins
   /socks:
     get:
-      description: Returns a list of paginated socks sorted in descending order by
+      description:
+        Returns a list of paginated socks sorted in descending order by
         created date
       parameters:
-      - default: 50
-        description: Limit the number of results
-        in: query
-        name: limit
-        type: integer
-      - default: 0
-        description: Offset for pagination
-        in: query
-        name: offset
-        type: integer
+        - default: 50
+          description: Limit the number of results
+          in: query
+          name: limit
+          type: integer
+        - default: 0
+          description: Offset for pagination
+          in: query
+          name: offset
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.SocksPaginatedResponse'
+            $ref: "#/definitions/types.SocksPaginatedResponse"
       summary: Get all socks
       tags:
-      - Inventory
+        - Inventory
     post:
       consumes:
-      - application/json
+        - application/json
       description: Adds a new sock to the store with its variants
       parameters:
-      - description: Sock Data
-        in: body
-        name: sock
-        required: true
-        schema:
-          $ref: '#/definitions/types.CreateSockRequest'
+        - description: Sock Data
+          in: body
+          name: sock
+          required: true
+          schema:
+            $ref: "#/definitions/types.CreateSockRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/types.CreateSockResponse'
+            $ref: "#/definitions/types.CreateSockResponse"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: Create a new sock
       tags:
-      - Inventory
+        - Inventory
   /socks/{sock_id}:
+    get:
+      summary: Get details of a specific sock
+      description: Retrieve the details of a sock by its ID.
+      parameters:
+        - description: Sock ID
+          in: path
+          name: sock_id
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Sock details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/GetSockDetailsResponse"
+      tags:
+        - Inventory
     delete:
       description: Deletes a sock from the store by its ID
       parameters:
-      - description: Sock ID
-        in: path
-        name: sock_id
-        required: true
-        type: integer
+        - description: Sock ID
+          in: path
+          name: sock_id
+          required: true
+          type: integer
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.Message'
+            $ref: "#/definitions/types.Message"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: Delete a sock
       tags:
-      - Inventory
+        - Inventory
 securityDefinitions:
   Bearer:
-    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+    description:
+      'Type "Bearer" followed by a space and JWT token. Example: "Bearer
       XXX"'
     in: header
     name: Authorization
