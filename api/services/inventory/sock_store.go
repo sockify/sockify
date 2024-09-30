@@ -181,3 +181,24 @@ func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 
 	return variants, nil
 }
+
+func (s *SockStore) GetSockByID(sockID int) (types.Sock, error) {
+	var sock types.Sock
+
+	err := s.db.QueryRow(`
+        SELECT sock_id, name, description, preview_image_url
+        FROM socks
+        WHERE sock_id = $1 AND is_deleted = false
+    `, sockID).Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL)
+
+	if err != nil {
+		return types.Sock{}, fmt.Errorf("failed to fetch sock with ID %d: %w", sockID, err)
+	}
+
+	sock.Variants, err = s.GetSockVariants(sockID)
+	if err != nil {
+		return types.Sock{}, fmt.Errorf("failed to fetch variants for sock with ID %d: %w", sockID, err)
+	}
+
+	return sock, nil
+}
