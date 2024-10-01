@@ -208,11 +208,14 @@ const docTemplate = `{
         },
         "/socks/{sock_id}": {
             "get": {
-                "summary": "Get details of a specific sock",
                 "description": "Retrieve the details of a sock by its ID",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Inventory"
                 ],
+                "summary": "Get details of a specific sock",
                 "parameters": [
                     {
                         "type": "integer",
@@ -224,27 +227,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Sock details retrieved successfully",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/GetSockDetailsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid sock ID",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
-                        }
-                    },
-                    "404": {
-                        "description": "Sock not found",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
+                            "$ref": "#/definitions/types.Sock"
                         }
                     }
                 }

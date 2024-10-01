@@ -144,6 +144,37 @@ func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) 
 	})
 }
 
+// @Summary Get details of a specific sock
+// @Description Retrieve the details of a sock by its ID
+// @Tags Inventory
+// @Produce json
+// @Param sock_id path int true "Sock ID"
+// @Success 200 {object} types.Sock
+// @Router /socks/{sock_id} [get]
+func (h *SockHandler) handleGetSockDetails(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sockIDStr := vars["sock_id"]
+
+	sockID, err := strconv.Atoi(sockIDStr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
+	sock, err := h.store.GetSockByID(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if sock == nil {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, sock)
+}
+
 func toSock(dto types.SockDTO) types.Sock {
 	return types.Sock{
 		Name:            dto.Name,
@@ -166,23 +197,4 @@ func toSockVariantArray(dtos []types.SockVariantDTO) []types.SockVariant {
 		v[i] = toSockVariant(dto)
 	}
 	return v
-}
-
-func (h *SockHandler) handleGetSockDetails(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	sockIDStr := vars["sock_id"]
-
-	sockID, err := strconv.Atoi(sockIDStr)
-	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
-		return
-	}
-
-	sock, err := h.store.GetSockByID(sockID)
-	if err != nil {
-		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
-		return
-	}
-
-	utils.WriteJson(w, http.StatusOK, sock)
 }
