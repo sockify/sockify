@@ -52,11 +52,3 @@ type SockVariantDTO struct {
 	Price    float64 `json:"price" validate:"required,gt=0,lt=101"`
 	Quantity int     `json:"quantity" validate:"required,gte=0"`
 }
-
-type GetSockDetailsResponse struct {
-	ID              int              `json:"id"`
-	Name            string           `json:"name"`
-	Description     string           `json:"description"`
-	PreviewImageURL string           `json:"previewImageUrl"`
-	Variants        []SockVariantDTO `json:"variants"`
-}

@@ -186,10 +186,10 @@ func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 func (s *SockStore) GetSockByID(sockID int) (*types.Sock, error) {
 	var sock types.Sock
 	err := s.db.QueryRow(`
-        SELECT sock_id, name, description, preview_image_url
-        FROM socks
-        WHERE sock_id = $1 AND is_deleted = false
-    `, sockID).Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL)
+    SELECT sock_id, name, description, preview_image_url, created_at
+    FROM socks
+    WHERE sock_id = $1 AND is_deleted = false
+  `, sockID).Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL, &sock.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
