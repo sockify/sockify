@@ -316,6 +316,24 @@ paths:
       summary: Delete a sock
       tags:
       - Inventory
+    get:
+      description: Retrieve the details of a sock by its ID
+      parameters:
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Sock'
+      summary: Get details of a specific sock
+      tags:
+      - Inventory
 securityDefinitions:
   Bearer:
     description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer

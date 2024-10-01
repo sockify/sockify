@@ -207,6 +207,33 @@ const docTemplate = `{
             }
         },
         "/socks/{sock_id}": {
+            "get": {
+                "description": "Retrieve the details of a sock by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Get details of a specific sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Sock"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
