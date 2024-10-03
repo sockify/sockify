@@ -17,7 +17,7 @@ func Router(db *sql.DB) *mux.Router {
 	adminHandler := admin.NewHandler(adminStore)
 	adminHandler.RegisterRoutes(subrouter)
 
-	sockStore := inventory.NewSockStore(db) 
+	sockStore := inventory.NewSockStore(db)
 	sockHandler := inventory.NewSockHandler(sockStore)
 	sockHandler.RegisterRoutes(subrouter, adminStore)
 

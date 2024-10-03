@@ -20,6 +20,9 @@ type SockStore interface {
 }
 
 type OrderStore interface {
-    UpdateOrderAddress(orderID int, address UpdateAddressRequest) error
+	GetOrders(limit int, offset int, status string) ([]Order, error)
+	GetOrderItems(id int) ([]OrderItem, error)
+	CountOrders() (total int, err error)
+	UpdateOrderAddress(orderID int, address UpdateAddressRequest) error
 	LogOrderUpdate(orderID, adminID int, message string) error
 }

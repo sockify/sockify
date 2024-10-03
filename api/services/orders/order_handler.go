@@ -2,6 +2,7 @@ package orders
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,7 +21,42 @@ func NewOrderHandler(store types.OrderStore) *OrderHandler {
 }
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
+	router.HandleFunc("/orders", middleware.WithJWTAuth(adminStore, h.handleGetOrders)).Methods(http.MethodGet)
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
+}
+
+// @Summary Retrieve all orders
+// @Description Retrieves all orders from the database with optional filters.
+// @Tags Orders
+// @Produce json
+// @Security Bearer
+// @Param limit query int false "Limit the number of results" default(50)
+// @Param offset query int false "Offset for pagination" default(0)
+// @Param status query string false "Status of the order"
+// @Success 200 {object} types.OrdersPaginatedResponse
+// @Router /orders [get]
+func (h *OrderHandler) handleGetOrders(w http.ResponseWriter, r *http.Request) {
+	limit, offset := utils.GetLimitOffset(r, 50, 0)
+	status := r.URL.Query().Get("status")
+
+	orders, err := h.store.GetOrders(limit, offset, status)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	total, err := h.store.CountOrders()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.OrdersPaginatedResponse{
+		Items:  orders,
+		Total:  total,
+		Limit:  limit,
+		Offset: offset,
+	})
 }
 
 // @Summary Update the address of an existing order
@@ -54,23 +90,17 @@ func (h *OrderHandler) handleUpdateOrderAddress(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	adminID := middleware.GetUserIDFromContext(r.Context())
-	if adminID == -1 {
-		utils.WriteError(w, http.StatusUnauthorized, errors.New("admin ID not found"))
+	if err := h.store.UpdateOrderAddress(orderID, req); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	if err := h.store.UpdateOrderAddress(orderID, req); err != nil {
-    	utils.WriteError(w, http.StatusInternalServerError, err)
-    	return
-	}
-
+	adminID := middleware.GetUserIDFromContext(r.Context())
 	message := "Updated order address"
 	if err := h.store.LogOrderUpdate(orderID, adminID, message); err != nil {
-		utils.WriteError(w, http.StatusInternalServerError, errors.New("failed to log order update"))
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("failed to log order update: %v", err))
 		return
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order address updated successfully"})
-
 }

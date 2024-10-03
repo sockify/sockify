@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  types.Address:
+    properties:
+      aptUnit:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+      zipcode:
+        type: string
+    type: object
   types.Admin:
     properties:
       createdAt:
@@ -27,6 +38,17 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  types.Contact:
+    properties:
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      phone:
+        type: string
     type: object
   types.CreateSockRequest:
     properties:
@@ -64,6 +86,51 @@ definitions:
     properties:
       message:
         type: string
+    type: object
+  types.Order:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      contact:
+        $ref: '#/definitions/types.Contact'
+      createdAt:
+        type: string
+      invoiceNumber:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/types.OrderItem'
+        type: array
+      orderId:
+        type: integer
+      status:
+        type: string
+      total:
+        type: number
+    type: object
+  types.OrderItem:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      size:
+        type: string
+    type: object
+  types.OrdersPaginatedResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/types.Order'
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
     type: object
   types.RegisterAdminRequest:
     properties:
@@ -317,6 +384,36 @@ paths:
       summary: Registers new admin credentials.
       tags:
       - Admins
+  /orders:
+    get:
+      description: Retrieves all orders from the database with optional filters.
+      parameters:
+      - default: 50
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - description: Status of the order
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.OrdersPaginatedResponse'
+      security:
+      - Bearer: []
+      summary: Retrieve all orders
+      tags:
+      - Orders
   /orders/{order_id}/address:
     patch:
       consumes:

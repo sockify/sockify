@@ -18,6 +18,13 @@ type SocksPaginatedResponse struct {
 	Offset int    `json:"offset"`
 }
 
+type OrdersPaginatedResponse struct {
+	Items  []Order `json:"items"`
+	Total  int     `json:"total"`
+	Limit  int     `json:"limit"`
+	Offset int     `json:"offset"`
+}
+
 type LoginAdminRequest struct {
 	UserName string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required"`
@@ -53,9 +60,16 @@ type SockVariantDTO struct {
 	Quantity int     `json:"quantity" validate:"required,gte=0"`
 }
 
+// UpdateSockRequest is the payload for updating a sock and its variants.
+type UpdateSockRequest struct {
+	Name        string           `json:"name" validate:"required"`
+	Description *string          `json:"description,omitempty"`
+	Variants    []SockVariantDTO `json:"variants" validate:"required,dive"`
+}
+
 type UpdateAddressRequest struct {
-    Street   string `json:"street" validate:"required,max=100"`         
-    AptUnit  string `json:"aptUnit"`                                   
-    State    string `json:"state" validate:"required,len=2,oneof=AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY"`
-    Zipcode  string `json:"zipcode" validate:"required,max=10"`         
+	Street  string `json:"street" validate:"required,max=100"`
+	AptUnit string `json:"aptUnit"`
+	State   string `json:"state" validate:"required,len=2,oneof=AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY"`
+	Zipcode string `json:"zipcode" validate:"required,max=10"`
 }

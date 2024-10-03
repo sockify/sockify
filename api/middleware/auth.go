@@ -92,6 +92,11 @@ func WithJWTAuth(store types.AdminStore, nextHandler http.HandlerFunc) http.Hand
 
 // GetUserIDFromContext returns the `UserKey` from the context.
 func GetUserIDFromContext(ctx context.Context) int {
+	if config.Envs.DisableAuth {
+		log.Println("Auth is disabled, returning '1' as userID from context")
+		return 1
+	}
+
 	userID, ok := ctx.Value(UserKey).(int)
 	if !ok {
 		return -1
