@@ -17,18 +17,18 @@ func NewOrderStore(db *sql.DB) types.OrderStore {
 }
 
 // GetOrders retrieves orders filtered by status (optional) from the database
-func (s *OrderStore) GetOrders(status string) ([]types.Order, error) {
+func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Order, error) {
 	var orders []types.Order
 	var query string
 	var rows *sql.Rows
 	var err error
 
 	if status == "" {
-		query = "SELECT * FROM orders ORDER BY created_at DESC"
-		rows, err = s.db.Query(query)
+		query = "SELECT * FROM orders ORDER BY created_at DESC LIMIT $1 OFFSET $2"
+		rows, err = s.db.Query(query, limit, offset)
 	} else {
-		query = "SELECT * FROM orders WHERE status = $1 ORDER BY created_at DESC"
-		rows, err = s.db.Query(query, status)
+		query = "SELECT * FROM orders WHERE status = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"
+		rows, err = s.db.Query(query, status, limit, offset)
 	}
 
 	if err != nil {
@@ -91,4 +91,13 @@ func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	}
 
 	return items, nil
+}
+
+func (s *OrderStore) CountOrders() (total int, err error) {
+	err = s.db.QueryRow(`SELECT COUNT(*) FROM orders`).Scan(&total)
+	if err != nil {
+		log.Printf("Error counting orders: %v", err)
+		return 0, err
+	}
+	return total, nil
 }

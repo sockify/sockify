@@ -18,6 +18,7 @@ type SockStore interface {
 }
 
 type OrderStore interface {
-	GetOrders(status string) ([]Order, error)
+	GetOrders(limit int, offset int, status string) ([]Order, error)
 	GetOrderItems(id int) ([]OrderItem, error)
+	CountOrders() (total int, err error)
 }

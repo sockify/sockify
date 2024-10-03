@@ -119,6 +119,19 @@ definitions:
       size:
         type: string
     type: object
+  types.OrdersPaginatedResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/types.Order'
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
   types.RegisterAdminRequest:
     properties:
       email:
@@ -307,6 +320,16 @@ paths:
     get:
       description: Retrieves all orders from the database with optional filters.
       parameters:
+      - default: 50
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
       - description: Status of the order
         in: query
         name: status
@@ -317,9 +340,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/types.Order'
-            type: array
+            $ref: '#/definitions/types.OrdersPaginatedResponse'
       security:
       - Bearer: []
       summary: Retrieve all orders
