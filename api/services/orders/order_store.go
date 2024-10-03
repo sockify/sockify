@@ -135,3 +135,14 @@ func (s *OrderStore) UpdateOrderAddress(orderID int, address types.UpdateAddress
 
 	return nil
 }
+
+func (s *OrderStore) OrderExistsByID(orderID int) (bool, error) {
+	var exists bool
+	query := `SELECT EXISTS (SELECT 1 FROM orders WHERE order_id = $1)`
+	err := s.db.QueryRow(query, orderID).Scan(&exists)
+	if err != nil {
+		log.Printf("Error checking if order exists: %v", err)
+		return false, err
+	}
+	return exists, nil
+}

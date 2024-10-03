@@ -2,6 +2,7 @@ package orders
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -75,6 +76,17 @@ func (h *OrderHandler) handleUpdateOrderAddress(w http.ResponseWriter, r *http.R
 	orderID, err := strconv.Atoi(orderIDstr)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid order ID"))
+		return
+	}
+
+	exists, err := h.store.OrderExistsByID(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if !exists {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with ID %v not found", orderID))
 		return
 	}
 
