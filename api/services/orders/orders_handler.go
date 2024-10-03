@@ -56,11 +56,25 @@ func (h *OrderHandler) handleUpdateOrderAddress(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	// Retrieve the admin ID from the request context (populated by JWT middleware)
+	adminID := middleware.GetUserIDFromContext(r.Context())
+	if adminID == -1 {
+		utils.WriteError(w, http.StatusUnauthorized, errors.New("admin ID not found"))
+		return
+	}
+
 	// Update the address in the store
 	if err := h.store.UpdateOrderAddress(orderID, req); err != nil {
     	// Return an error response indicating the update failed
     	utils.WriteError(w, http.StatusInternalServerError, err)
     	return
+	}
+
+	// Log the order update by the admin
+	message := "Updated order address"
+	if err := h.store.LogOrderUpdate(orderID, adminID, message); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, errors.New("failed to log order update"))
+		return
 	}
 
 	// If the update is successful

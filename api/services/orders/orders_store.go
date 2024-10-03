@@ -41,7 +41,7 @@ func (s *OrderStore) UpdateOrderAddress(orderID int, address types.UpdateAddress
 
 // LogOrderUpdate logs an admin's action in the order_updates table.
 func (s *OrderStore) LogOrderUpdate(orderID, adminID int, message string) error {
-    query := `INSERT INTO order_updates (order_id, admin_id, message, created_at) VALUES ($1, $2, $3, NOW())`
+    query := `INSERT INTO order_updates (order_id, admin_id, message) VALUES ($1, $2, $3)`
     _, err := s.db.Exec(query, orderID, adminID, message)
     if err != nil {
         log.Printf("Error logging order update for order ID %d: %v", orderID, err)

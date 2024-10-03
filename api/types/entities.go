@@ -28,3 +28,11 @@ type SockVariant struct {
 	Quantity  int       `json:"quantity"`
 	CreatedAt time.Time `json:"createdAt"`
 }
+
+type LogOrderUpdate struct {
+    OrderUpdateID int       `json:"orderUpdateId"`
+    OrderID       int       `json:"orderId"`
+    AdminID       int       `json:"adminId"`
+    Message       string    `json:"message"`
+    CreatedAt     time.Time `json:"createdAt"`
+}
