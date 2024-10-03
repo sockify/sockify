@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sockify/sockify/services/admin"
 	"github.com/sockify/sockify/services/inventory"
+	"github.com/sockify/sockify/services/orders"
 )
 
 func Router(db *sql.DB) *mux.Router {
@@ -16,9 +17,13 @@ func Router(db *sql.DB) *mux.Router {
 	adminHandler := admin.NewHandler(adminStore)
 	adminHandler.RegisterRoutes(subrouter)
 
-	sockStore := inventory.NewSockStore(db) 
+	sockStore := inventory.NewSockStore(db)
 	sockHandler := inventory.NewSockHandler(sockStore)
 	sockHandler.RegisterRoutes(subrouter, adminStore)
+
+	orderStore := orders.NewOrderStore(db)
+	orderHandler := orders.NewOrderHandler(orderStore)
+	orderHandler.RegisterRoutes(subrouter, adminStore)
 
 	return router
 }

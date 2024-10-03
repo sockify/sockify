@@ -18,6 +18,13 @@ type SocksPaginatedResponse struct {
 	Offset int    `json:"offset"`
 }
 
+type OrdersPaginatedResponse struct {
+	Items  []Order `json:"items"`
+	Total  int     `json:"total"`
+	Limit  int     `json:"limit"`
+	Offset int     `json:"offset"`
+}
+
 type LoginAdminRequest struct {
 	UserName string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required"`
@@ -51,4 +58,11 @@ type SockVariantDTO struct {
 	Size     string  `json:"size" validate:"required,oneof=S M LG XL"`
 	Price    float64 `json:"price" validate:"required,gt=0,lt=101"`
 	Quantity int     `json:"quantity" validate:"required,gte=0"`
+}
+
+// UpdateSockRequest is the payload for updating a sock and its variants.
+type UpdateSockRequest struct {
+	Name        string           `json:"name" validate:"required"`
+	Description *string          `json:"description,omitempty"`
+	Variants    []SockVariantDTO `json:"variants" validate:"required,dive"`
 }

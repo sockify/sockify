@@ -18,3 +18,9 @@ type SockStore interface {
 	GetSockByID(sockID int) (*Sock, error)
 	GetSockVariants(sockID int) ([]SockVariant, error)
 }
+
+type OrderStore interface {
+	GetOrders(limit int, offset int, status string) ([]Order, error)
+	GetOrderItems(id int) ([]OrderItem, error)
+	CountOrders() (total int, err error)
+}
