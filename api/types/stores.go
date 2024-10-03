@@ -13,3 +13,7 @@ type SockStore interface {
 	SockExists(name string) (bool, error)
 	DeleteSock(sockID int) (bool, error)
 }
+
+type OrderStore interface {
+	GetOrdersByStatus(status string) ([]Order, error)
+}
