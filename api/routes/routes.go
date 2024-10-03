@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sockify/sockify/services/admin"
 	"github.com/sockify/sockify/services/inventory"
+	"github.com/sockify/sockify/services/orders"
 )
 
 func Router(db *sql.DB) *mux.Router {
