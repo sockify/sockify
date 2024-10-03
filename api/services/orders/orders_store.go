@@ -14,17 +14,6 @@ func NewOrderStore(db *sql.DB) *OrderStore {
 	return &OrderStore{db: db}
 }
 
-func (s *OrderStore) OrderExistsByID(orderID int) (bool, error) {
-	var exists bool
-	query := `SELECT EXISTS (SELECT 1 FROM orders WHERE order_id = $1)`
-	err := s.db.QueryRow(query, orderID).Scan(&exists)
-	if err != nil {
-		log.Printf("Error checking if order exists: %v", err)
-		return false, err
-	}
-	return exists, nil
-}
-
 func (s *OrderStore) UpdateOrderAddress(orderID int, address types.UpdateAddressRequest) error {
 	query := `UPDATE orders SET street = $1, apt_unit = $2, state = $3, zipcode = $4 WHERE order_id = $5`
 	_, err := s.db.Exec(query, address.Street, address.AptUnit, address.State, address.Zipcode, orderID)

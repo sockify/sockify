@@ -20,7 +20,6 @@ type SockStore interface {
 }
 
 type OrderStore interface {
-    OrderExistsByID(orderID int) (bool, error)
     UpdateOrderAddress(orderID int, address UpdateAddressRequest) error
 	LogOrderUpdate(orderID, adminID int, message string) error
 }
