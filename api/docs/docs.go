@@ -566,7 +566,7 @@ const docTemplate = `{
                 "zipcode"
             ],
             "properties": {
-                "apt_unit": {
+                "aptUnit": {
                     "type": "string"
                 },
                 "state": {

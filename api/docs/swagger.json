@@ -560,7 +560,7 @@
                 "zipcode"
             ],
             "properties": {
-                "apt_unit": {
+                "aptUnit": {
                     "type": "string"
                 },
                 "state": {
