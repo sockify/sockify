@@ -18,5 +18,6 @@ type SockStore interface {
 }
 
 type OrderStore interface {
-	GetOrdersByStatus(status string) ([]Order, error)
+	GetOrders(status string) ([]Order, error)
+	GetOrderItems(id int) ([]OrderItem, error)
 }

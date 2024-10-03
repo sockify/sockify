@@ -1,7 +1,5 @@
 package types
 
-import "time"
-
 type Message struct {
 	Message string `json:"message"`
 }
@@ -53,21 +51,6 @@ type SockVariantDTO struct {
 	Size     string  `json:"size" validate:"required,oneof=S M LG XL"`
 	Price    float64 `json:"price" validate:"required,gt=0,lt=101"`
 	Quantity int     `json:"quantity" validate:"required,gte=0"`
-}
-
-type GetOrdersRequest struct {
-	Status string `json:"status,omitempty"` // optional filter by order status
-}
-
-type OrderResponse struct {
-	OrderID       int         `json:"orderId"`
-	InvoiceNumber string      `json:"invoiceNumber"`
-	Total         float64     `json:"total"`
-	Address       Address     `json:"address"`
-	Contact       Contact     `json:"contact"`
-	Items         []OrderItem `json:"items"`
-	CreatedAt     time.Time   `json:"createdAt"`
-	Status        string      `json:"status"` // Order status, e.g., received, shipped, delivered
 }
 
 // UpdateSockRequest is the payload for updating a sock and its variants.

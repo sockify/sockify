@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  types.Address:
+    properties:
+      aptUnit:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+      zipcode:
+        type: string
+    type: object
   types.Admin:
     properties:
       createdAt:
@@ -27,6 +38,17 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  types.Contact:
+    properties:
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      phone:
+        type: string
     type: object
   types.CreateSockRequest:
     properties:
@@ -63,6 +85,38 @@ definitions:
   types.Message:
     properties:
       message:
+        type: string
+    type: object
+  types.Order:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      contact:
+        $ref: '#/definitions/types.Contact'
+      createdAt:
+        type: string
+      invoiceNumber:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/types.OrderItem'
+        type: array
+      orderId:
+        type: integer
+      status:
+        type: string
+      total:
+        type: number
+    type: object
+  types.OrderItem:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      size:
         type: string
     type: object
   types.RegisterAdminRequest:
@@ -249,6 +303,28 @@ paths:
       summary: Registers new admin credentials.
       tags:
       - Admins
+  /orders:
+    get:
+      description: Retrieves all orders from the database with optional filters.
+      parameters:
+      - description: Status of the order
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/types.Order'
+            type: array
+      security:
+      - Bearer: []
+      summary: Retrieve all orders
+      tags:
+      - Orders
   /socks:
     get:
       description: Returns a list of paginated socks sorted in descending order by

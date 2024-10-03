@@ -33,7 +33,7 @@ type SockVariant struct {
 type Order struct {
 	ID            int         `json:"orderId"`
 	InvoiceNumber string      `json:"invoiceNumber"`
-	Total         float64     `json:"total,omitempty"`
+	Total         float64     `json:"total"`
 	Address       Address     `json:"address"`
 	Contact       Contact     `json:"contact"`
 	Items         []OrderItem `json:"items"`
@@ -43,25 +43,24 @@ type Order struct {
 
 // OrderItem represents an item in an order
 type OrderItem struct {
-	Name          string  `json:"name"`
-	Price         float64 `json:"price"`
-	Quantity      int     `json:"quantity"`
-	Size          string  `json:"size"`
-	SockVariantID int     `json:"sockVariantId"`
+	Name     string  `json:"name"`
+	Size     string  `json:"size"`
+	Price    float64 `json:"price"`
+	Quantity int     `json:"quantity"`
 }
 
 // Address represents the shipping address for an order
 type Address struct {
-	Street  string `json:"street"`
-	AptUnit string `json:"apt_unit,omitempty"`
-	State   string `json:"state"`
-	Zipcode string `json:"zipcode"`
+	Street  string  `json:"street"`
+	AptUnit *string `json:"aptUnit"`
+	State   string  `json:"state"`
+	Zipcode string  `json:"zipcode"`
 }
 
 // Contact represents the contact information for an order
 type Contact struct {
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Email     string `json:"email"`
-	Phone     string `json:"phone,omitempty"`
+	FirstName string  `json:"firstname"`
+	LastName  string  `json:"lastname"`
+	Email     string  `json:"email"`
+	Phone     *string `json:"phone"`
 }
