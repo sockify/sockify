@@ -117,4 +117,5 @@ We are using [Swaggo](https://github.com/swaggo/swag?tab=readme-ov-file) to auto
    Otherwise, you will probably see an error like: `zsh: command not found: swag`
 
 3. Open the `/api` directory: `cd api`
+
 4. Run the following command: `make swag` (OR `swag init -g ./cmd/main.go -o ./docs`)

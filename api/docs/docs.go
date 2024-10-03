@@ -134,6 +134,40 @@ const docTemplate = `{
             }
         },
         "/socks": {
+            "get": {
+                "description": "Returns a list of paginated socks sorted in descending order by created date",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Get all socks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "Limit the number of results",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.SocksPaginatedResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -340,9 +374,36 @@ const docTemplate = `{
                 }
             }
         },
+        "types.Sock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "previewImageUrl": {
+                    "type": "string"
+                },
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SockVariant"
+                    }
+                }
+            }
+        },
         "types.SockDTO": {
             "type": "object",
             "required": [
+                "description",
                 "name",
                 "previewImageUrl"
             ],
@@ -354,6 +415,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "previewImageUrl": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.SockVariant": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "size": {
                     "type": "string"
                 }
             }
@@ -381,6 +462,26 @@ const docTemplate = `{
                         "LG",
                         "XL"
                     ]
+                }
+            }
+        },
+        "types.SocksPaginatedResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Sock"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         }

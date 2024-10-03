@@ -30,6 +30,9 @@ services:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+    env_file:
+      - path: ./api/.env
+        required: false
     develop:
       watch:
         - action: rebuild
@@ -63,7 +66,7 @@ services:
         "/migrations",
         "-database",
         "postgres://postgres:password@postgres:5432/sockify?sslmode=disable",
-        "up"
+        "up",
       ]
 
   redis:

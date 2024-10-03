@@ -1,11 +1,8 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 const FOUR_HOURS_IN_SECONDS int64 = 3600 * 4
@@ -27,11 +24,6 @@ type Config struct {
 var Envs = initConfig()
 
 func initConfig() Config {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Unable to load .env: %v", err)
-	}
-
 	return Config{
 		WebClientURL:           getEnv("WEB_CLIENT_URL", "http://localhost:5173"),
 		APIPort:                getEnv("API_PORT", "8080"),
