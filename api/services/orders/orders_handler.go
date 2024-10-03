@@ -23,7 +23,6 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.Admin
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
 }
 
-// UpdateOrderAddress handles the HTTP request to update the address of an order
 // @Summary Update the address of an existing order
 // @Description Updates the address for a specific order by ID
 // @Tags Orders
@@ -50,34 +49,28 @@ func (h *OrderHandler) handleUpdateOrderAddress(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	// Validate the address
 	if err := utils.Validate.Struct(req); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	// Retrieve the admin ID from the request context (populated by JWT middleware)
 	adminID := middleware.GetUserIDFromContext(r.Context())
 	if adminID == -1 {
 		utils.WriteError(w, http.StatusUnauthorized, errors.New("admin ID not found"))
 		return
 	}
 
-	// Update the address in the store
 	if err := h.store.UpdateOrderAddress(orderID, req); err != nil {
-    	// Return an error response indicating the update failed
     	utils.WriteError(w, http.StatusInternalServerError, err)
     	return
 	}
 
-	// Log the order update by the admin
 	message := "Updated order address"
 	if err := h.store.LogOrderUpdate(orderID, adminID, message); err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, errors.New("failed to log order update"))
 		return
 	}
 
-	// If the update is successful
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order address updated successfully"})
 
 }
