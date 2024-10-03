@@ -2,7 +2,6 @@ package orders
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -90,15 +89,9 @@ func (h *OrderHandler) handleUpdateOrderAddress(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	if err := h.store.UpdateOrderAddress(orderID, req); err != nil {
-		utils.WriteError(w, http.StatusInternalServerError, err)
-		return
-	}
-
 	adminID := middleware.GetUserIDFromContext(r.Context())
-	message := "Updated order address"
-	if err := h.store.LogOrderUpdate(orderID, adminID, message); err != nil {
-		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("failed to log order update: %v", err))
+	if err := h.store.UpdateOrderAddress(orderID, req, adminID); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 

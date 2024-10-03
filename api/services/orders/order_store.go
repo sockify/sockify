@@ -97,22 +97,41 @@ func (s *OrderStore) CountOrders() (total int, err error) {
 	return total, nil
 }
 
-func (s *OrderStore) UpdateOrderAddress(orderID int, address types.UpdateAddressRequest) error {
-	query := `UPDATE orders SET street = $1, apt_unit = $2, state = $3, zipcode = $4 WHERE order_id = $5`
-	_, err := s.db.Exec(query, address.Street, address.AptUnit, address.State, address.Zipcode, orderID)
+func (s *OrderStore) UpdateOrderAddress(orderID int, address types.UpdateAddressRequest, adminID int) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		log.Printf("Error starting transaction: %v", err)
+		return err
+	}
+
+	// Defer rollback in case of error
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	updateQuery := `UPDATE orders SET street = $1, apt_unit = $2, state = $3, zipcode = $4 WHERE order_id = $5`
+	_, err = tx.Exec(updateQuery, address.Street, address.AptUnit, address.State, address.Zipcode, orderID)
 	if err != nil {
 		log.Printf("Error updating order address: %v", err)
 		return err
 	}
-	return nil
-}
 
-func (s *OrderStore) LogOrderUpdate(orderID, adminID int, message string) error {
-	query := `INSERT INTO order_updates (order_id, admin_id, message) VALUES ($1, $2, $3)`
-	_, err := s.db.Exec(query, orderID, adminID, message)
+	logQuery := `INSERT INTO order_updates (order_id, admin_id, message) VALUES ($1, $2, $3)`
+	_, err = tx.Exec(logQuery, orderID, adminID, "Updated order address")
 	if err != nil {
-		log.Printf("Error logging order update for order ID %d: %v", orderID, err)
+		log.Printf("Error logging order update: %v", err)
 		return err
 	}
+
+	if err = tx.Commit(); err != nil {
+		log.Printf("Error committing transaction: %v", err)
+		return err
+	}
+
 	return nil
 }
