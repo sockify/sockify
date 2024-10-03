@@ -39,13 +39,11 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 
 	for rows.Next() {
 		var order types.Order
-		var address types.Address
-		var contact types.Contact
 
 		if err := rows.Scan(
 			&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
-			&contact.FirstName, &contact.LastName, &contact.Email, &contact.Phone,
-			&address.Street, &address.AptUnit, &address.State, &address.Zipcode,
+			&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
+			&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
 			&order.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -56,8 +54,6 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 			return nil, err
 		}
 
-		order.Address = address
-		order.Contact = contact
 		order.Items = items
 		orders = append(orders, order)
 	}
