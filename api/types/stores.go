@@ -23,4 +23,6 @@ type OrderStore interface {
 	GetOrders(limit int, offset int, status string) ([]Order, error)
 	GetOrderItems(id int) ([]OrderItem, error)
 	CountOrders() (total int, err error)
+	UpdateOrderAddress(orderID int, address UpdateAddressRequest, adminID int) error
+	OrderExistsByID(orderID int) (bool, error)
 }

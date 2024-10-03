@@ -64,3 +64,11 @@ type Contact struct {
 	Email     string  `json:"email"`
 	Phone     *string `json:"phone"`
 }
+
+type LogOrderUpdate struct {
+	OrderUpdateID int       `json:"orderUpdateId"`
+	OrderID       int       `json:"orderId"`
+	AdminID       int       `json:"adminId"`
+	Message       string    `json:"message"`
+	CreatedAt     time.Time `json:"createdAt"`
+}

@@ -234,6 +234,74 @@ definitions:
       total:
         type: integer
     type: object
+  types.UpdateAddressRequest:
+    properties:
+      aptUnit:
+        type: string
+      state:
+        enum:
+        - AL
+        - AK
+        - AZ
+        - AR
+        - CA
+        - CO
+        - CT
+        - DE
+        - FL
+        - GA
+        - HI
+        - ID
+        - IL
+        - IN
+        - IA
+        - KS
+        - KY
+        - LA
+        - ME
+        - MD
+        - MA
+        - MI
+        - MN
+        - MS
+        - MO
+        - MT
+        - NE
+        - NV
+        - NH
+        - NJ
+        - NM
+        - NY
+        - NC
+        - ND
+        - OH
+        - OK
+        - OR
+        - PA
+        - RI
+        - SC
+        - SD
+        - TN
+        - TX
+        - UT
+        - VT
+        - VA
+        - WA
+        - WV
+        - WI
+        - WY
+        type: string
+      street:
+        maxLength: 100
+        type: string
+      zipcode:
+        maxLength: 10
+        type: string
+    required:
+    - state
+    - street
+    - zipcode
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -344,6 +412,35 @@ paths:
       security:
       - Bearer: []
       summary: Retrieve all orders
+      tags:
+      - Orders
+  /orders/{order_id}/address:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the address for a specific order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New Address Data
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateAddressRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Update the address of an existing order
       tags:
       - Orders
   /socks:
