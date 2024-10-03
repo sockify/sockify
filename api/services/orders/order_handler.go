@@ -9,15 +9,15 @@ import (
 	"github.com/sockify/sockify/utils"
 )
 
-type Handler struct {
-	orderStore types.OrderStore
+type OrderHandler struct {
+	store types.OrderStore
 }
 
-func NewHandler(orderStore types.OrderStore) *Handler {
-	return &Handler{orderStore: orderStore}
+func NewOrderHandler(orderStore types.OrderStore) *OrderHandler {
+	return &OrderHandler{store: orderStore}
 }
 
-func (h *Handler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
+func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/orders", middleware.WithJWTAuth(adminStore, h.handleGetOrders)).Methods(http.MethodGet)
 
 }
@@ -32,17 +32,17 @@ func (h *Handler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore
 // @Param status query string false "Status of the order"
 // @Success 200 {object} types.OrdersPaginatedResponse
 // @Router /orders [get]
-func (h *Handler) handleGetOrders(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) handleGetOrders(w http.ResponseWriter, r *http.Request) {
 	limit, offset := utils.GetLimitOffset(r, 50, 0)
 	status := r.URL.Query().Get("status")
 
-	orders, err := h.orderStore.GetOrders(limit, offset, status)
+	orders, err := h.store.GetOrders(limit, offset, status)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	total, err := h.orderStore.CountOrders()
+	total, err := h.store.CountOrders()
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
