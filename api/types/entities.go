@@ -65,10 +65,15 @@ type Contact struct {
 	Phone     *string `json:"phone"`
 }
 
-type LogOrderUpdate struct {
-	OrderUpdateID int       `json:"orderUpdateId"`
-	OrderID       int       `json:"orderId"`
-	AdminID       int       `json:"adminId"`
-	Message       string    `json:"message"`
-	CreatedAt     time.Time `json:"createdAt"`
+type OrderUpdate struct {
+	ID        int                `json:"id"`
+	CreatedBy OrderUpdateCreator `json:"createdBy"`
+	Message   string             `json:"message"`
+	CreatedAt time.Time          `json:"createdAt"`
+}
+
+type OrderUpdateCreator struct {
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Username  string `json:"username"`
 }

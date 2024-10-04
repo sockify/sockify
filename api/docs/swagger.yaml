@@ -119,6 +119,26 @@ definitions:
       size:
         type: string
     type: object
+  types.OrderUpdate:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        $ref: '#/definitions/types.OrderUpdateCreator'
+      id:
+        type: integer
+      message:
+        type: string
+    type: object
+  types.OrderUpdateCreator:
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      username:
+        type: string
+    type: object
   types.OrdersPaginatedResponse:
     properties:
       items:
@@ -486,6 +506,30 @@ paths:
       security:
       - Bearer: []
       summary: Update the status of an existing order
+      tags:
+      - Orders
+  /orders/{order_id}/updates:
+    get:
+      description: Retrieves all order updates for a particular order. Results are
+        sorted descending by createdAt.
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/types.OrderUpdate'
+            type: array
+      security:
+      - Bearer: []
+      summary: Retrieve updates for an order
       tags:
       - Orders
   /socks:

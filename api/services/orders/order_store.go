@@ -193,3 +193,30 @@ func (s *OrderStore) GetOrderStatusByID(orderID int) (status string, err error) 
 	}
 	return status, nil
 }
+
+func (s *OrderStore) GetOrderUpdates(orderID int) ([]types.OrderUpdate, error) {
+	rows, err := s.db.Query(`
+    SELECT ou.order_update_id, ou.message, ou.created_at, a.firstname, a.lastname, a.username
+    FROM order_updates ou
+    JOIN admins a ON a.admin_id = ou.admin_id
+    WHERE ou.order_id = $1
+    ORDER BY created_at DESC
+  `, orderID)
+	if err != nil {
+		log.Printf("Unable to get the order updates for orderID %v: %v", orderID, err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	updates := make([]types.OrderUpdate, 0)
+	for rows.Next() {
+		var u types.OrderUpdate
+
+		if err := rows.Scan(&u.ID, &u.Message, &u.CreatedAt, &u.CreatedBy.FirstName, &u.CreatedBy.LastName, &u.CreatedBy.Username); err != nil {
+			return nil, err
+		}
+		updates = append(updates, u)
+	}
+
+	return updates, nil
+}
