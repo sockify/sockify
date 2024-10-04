@@ -220,6 +220,52 @@
                 }
             }
         },
+        "/orders/{order_id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the status for a specific order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update the status of an existing order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New order status",
+                        "name": "statusUpdate",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateOrderStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/socks": {
             "get": {
                 "description": "Returns a list of paginated socks sorted in descending order by created date",
@@ -775,6 +821,28 @@
                 "zipcode": {
                     "type": "string",
                     "maxLength": 10
+                }
+            }
+        },
+        "types.UpdateOrderStatusRequest": {
+            "type": "object",
+            "required": [
+                "message",
+                "newStatus"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "newStatus": {
+                    "type": "string",
+                    "enum": [
+                        "received",
+                        "shipped",
+                        "delivered",
+                        "canceled",
+                        "returned"
+                    ]
                 }
             }
         }

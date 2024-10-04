@@ -302,6 +302,22 @@ definitions:
     - street
     - zipcode
     type: object
+  types.UpdateOrderStatusRequest:
+    properties:
+      message:
+        type: string
+      newStatus:
+        enum:
+        - received
+        - shipped
+        - delivered
+        - canceled
+        - returned
+        type: string
+    required:
+    - message
+    - newStatus
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -441,6 +457,35 @@ paths:
       security:
       - Bearer: []
       summary: Update the address of an existing order
+      tags:
+      - Orders
+  /orders/{order_id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the status for a specific order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New order status
+        in: body
+        name: statusUpdate
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateOrderStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Update the status of an existing order
       tags:
       - Orders
   /socks:

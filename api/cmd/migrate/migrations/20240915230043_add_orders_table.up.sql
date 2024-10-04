@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_id SERIAL PRIMARY KEY,
     invoice_number VARCHAR(36) UNIQUE NOT NULL,
     total_price DECIMAL(12, 2) NOT NULL,
-    status order_status NOT NULL,
+    status order_status NOT NULL DEFAULT 'received',
     firstname VARCHAR(32) NOT NULL,
     lastname VARCHAR(32) NOT NULL,
     email VARCHAR(100) NOT NULL,
