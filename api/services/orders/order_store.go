@@ -146,3 +146,50 @@ func (s *OrderStore) OrderExistsByID(orderID int) (bool, error) {
 	}
 	return exists, nil
 }
+
+func (s *OrderStore) UpdateOrderStatus(orderID int, adminID int, newStatus string, message string) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		log.Printf("Error starting transaction: %v", err)
+		return err
+	}
+
+	// Defer rollback in case of error
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	_, err = tx.Exec("UPDATE orders SET status = $1 WHERE order_id = $2", newStatus, orderID)
+	if err != nil {
+		log.Printf("Error updating order status: %v", err)
+		return err
+	}
+
+	logQuery := `INSERT INTO order_updates (order_id, admin_id, message) VALUES ($1, $2, $3)`
+	_, err = tx.Exec(logQuery, orderID, adminID, message)
+	if err != nil {
+		log.Printf("Error logging order update: %v", err)
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
+		log.Printf("Error committing transaction: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *OrderStore) GetOrderStatusByID(orderID int) (status string, err error) {
+	err = s.db.QueryRow("SELECT status FROM orders WHERE order_id = $1", orderID).Scan(&status)
+	if err != nil {
+		log.Printf("Unable to get the order status for orderID %v: %v", orderID, err)
+		return "", err
+	}
+	return status, nil
+}

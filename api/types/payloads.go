@@ -73,3 +73,8 @@ type UpdateAddressRequest struct {
 	State   string `json:"state" validate:"required,len=2,oneof=AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY"`
 	Zipcode string `json:"zipcode" validate:"required,max=10"`
 }
+
+type UpdateOrderStatusRequest struct {
+	NewStatus string `json:"newStatus" validate:"required,oneof=received shipped delivered canceled returned"`
+	Message   string `json:"message" validate:"required"`
+}

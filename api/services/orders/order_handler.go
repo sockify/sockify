@@ -23,6 +23,7 @@ func NewOrderHandler(store types.OrderStore) *OrderHandler {
 func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/orders", middleware.WithJWTAuth(adminStore, h.handleGetOrders)).Methods(http.MethodGet)
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
+	router.HandleFunc("/orders/{order_id}/status", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderStatus)).Methods(http.MethodPatch)
 }
 
 // @Summary Retrieve all orders
@@ -108,4 +109,77 @@ func (h *OrderHandler) handleUpdateOrderAddress(w http.ResponseWriter, r *http.R
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order address updated successfully"})
+}
+
+// @Summary Update the status of an existing order
+// @Description Updates the status for a specific order by ID
+// @Tags Orders
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param order_id path int true "Order ID"
+// @Param statusUpdate body types.UpdateOrderStatusRequest true "New order status"
+// @Success 200 {object} types.Message
+// @Router /orders/{order_id}/status [patch]
+func (h *OrderHandler) handleUpdateOrderStatus(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderIDstr := vars["order_id"]
+
+	orderID, err := strconv.Atoi(orderIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid order ID"))
+		return
+	}
+
+	currentStatus, err := h.store.GetOrderStatusByID(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("no order status found for orderID %v: %v", orderID, err))
+		return
+	}
+
+	var req types.UpdateOrderStatusRequest
+	if err := utils.ParseJson(r, &req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = isValidStatusUpdate(currentStatus, req.NewStatus); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	adminID := middleware.GetUserIDFromContext(r.Context())
+	if err := h.store.UpdateOrderStatus(orderID, adminID, req.NewStatus, req.Message); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order status updated successfully"})
+}
+
+func isValidStatusUpdate(currentStatus string, newStatus string) error {
+	if newStatus == "" {
+		return fmt.Errorf("the new status can not be empty")
+	}
+
+	if currentStatus == newStatus {
+		return fmt.Errorf("the new status can not be the same as the old status")
+	}
+
+	// received (default) -> shipped -> delivered -> returned
+	//    |
+	//     > canceled
+	if (newStatus == "shipped" && currentStatus == "received") ||
+		(newStatus == "delivered" && currentStatus == "shipped") ||
+		(newStatus == "returned" && currentStatus == "delivered") ||
+		(newStatus == "canceled" && currentStatus == "received") {
+		return nil
+	}
+
+	return fmt.Errorf("order status can not change from '%v' to '%v'", currentStatus, newStatus)
 }
