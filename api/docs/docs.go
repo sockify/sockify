@@ -272,6 +272,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/{order_id}/updates": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all order updates for a particular order. Results are sorted descending by createdAt.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve updates for an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.OrderUpdate"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/socks": {
             "get": {
                 "description": "Returns a list of paginated socks sorted in descending order by created date",
@@ -584,6 +621,37 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "size": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.OrderUpdate": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "$ref": "#/definitions/types.OrderUpdateCreator"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.OrderUpdateCreator": {
+            "type": "object",
+            "properties": {
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
