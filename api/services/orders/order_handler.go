@@ -25,6 +25,7 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.Admin
 	router.HandleFunc("/orders/{order_id}/updates", middleware.WithJWTAuth(adminStore, h.handleGetOrderUpdates)).Methods(http.MethodGet)
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/{order_id}/status", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderStatus)).Methods(http.MethodPatch)
+	router.HandleFunc("/orders/{order_id}/contact", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderContact)).Methods(http.MethodPatch)
 }
 
 // @Summary Retrieve all orders
@@ -199,6 +200,57 @@ func (h *OrderHandler) handleUpdateOrderStatus(w http.ResponseWriter, r *http.Re
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order status updated successfully"})
+}
+
+// @Summary Update the contact information of an existing order
+// @Description Updates the contact information (name, email, phone) for a specific order by ID
+// @Tags Orders
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param order_id path int true "Order ID"
+// @Param contact body types.UpdateContactRequest true "New Contact Information"
+// @Success 200 {object} types.Message
+// @Router /orders/{order_id}/contact [patch]
+func (h *OrderHandler) handleUpdateOrderContact(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderIDstr := vars["order_id"]
+
+	orderID, err := strconv.Atoi(orderIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid order ID"))
+		return
+	}
+
+	exists, err := h.store.OrderExistsByID(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if !exists {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with ID %v not found", orderID))
+		return
+	}
+
+	var req types.UpdateContactRequest
+	if err := utils.ParseJson(r, &req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	adminID := middleware.GetUserIDFromContext(r.Context())
+	if err := h.store.UpdateOrderContact(orderID, req, adminID); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order contact info updated successfully"})
 }
 
 func isValidStatusUpdate(currentStatus string, newStatus string) error {
