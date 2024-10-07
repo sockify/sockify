@@ -52,6 +52,10 @@
 
 ![admin inventory view](../assets/ui_mocks_inventory_management.png)
 
+#### View product details
+
+TODO(sebsatian-nunez): add product details modal with ability to see product updates.
+
 #### Edit product
 
 ![edit product modal](../assets/ui_mocks_edit_product.png)
