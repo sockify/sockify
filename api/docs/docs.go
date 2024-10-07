@@ -226,6 +226,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/{order_id}/contact": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the contact information (name, email, phone) for a specific order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update the contact information of an existing order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Contact Information",
+                        "name": "contact",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateContactRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{order_id}/status": {
             "patch": {
                 "security": [
@@ -307,55 +353,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/orders/{order_id}/contact": {
-            "patch": {
-                "summary": "Update the contact information of an existing order",
-                "description": "Updates the contact information (name, email, phone) for a specific order by ID",
-                "tags": ["Orders"],
-                "parameters": [
-                    {
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true,
-                        "description": "The ID of the order",
-                        "schema": {
-                        "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "contact",
-                        "in": "body",
-                        "required": true,
-                        "description": "The updated contact information",
-                        "schema": {
-                        "$ref": "#/definitions/types.UpdateContactRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Order contact info updated successfully",
-                        "schema": {
-                        "$ref": "#/definitions/types.Message"
-                    }
-                },
-                    "400": {
-                        "description": "Invalid request"
-                    },
-                    "404": {
-                        "description": "Order not found"
-                    },
-                    "403": {
-                        "description": "Unauthorized access"
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
             }
         },
         "/socks": {
@@ -947,6 +944,29 @@ const docTemplate = `{
                 }
             }
         },
+        "types.UpdateContactRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "firstName",
+                "lastName",
+                "phone"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "types.UpdateOrderStatusRequest": {
             "type": "object",
             "required": [
@@ -966,25 +986,6 @@ const docTemplate = `{
                         "canceled",
                         "returned"
                     ]
-                }
-            }
-        },
-        "types.UpdateContactRequest": {
-            "type": "object",
-            "required": ["firstName", "lastName", "email", "phone"],
-            "properties": {
-                "firstName": {
-                    "type": "string"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string",
-                    "format": "email"
-                },
-                "phone": {
-                    "type": "string"
                 }
             }
         }

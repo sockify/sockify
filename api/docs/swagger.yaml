@@ -30,7 +30,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: "#/definitions/types.Admin"
+          $ref: '#/definitions/types.Admin'
         type: array
       limit:
         type: integer
@@ -53,14 +53,14 @@ definitions:
   types.CreateSockRequest:
     properties:
       sock:
-        $ref: "#/definitions/types.SockDTO"
+        $ref: '#/definitions/types.SockDTO'
       variants:
         items:
-          $ref: "#/definitions/types.SockVariantDTO"
+          $ref: '#/definitions/types.SockVariantDTO'
         type: array
     required:
-      - sock
-      - variants
+    - sock
+    - variants
     type: object
   types.CreateSockResponse:
     properties:
@@ -74,8 +74,8 @@ definitions:
       username:
         type: string
     required:
-      - password
-      - username
+    - password
+    - username
     type: object
   types.LoginAdminResponse:
     properties:
@@ -90,16 +90,16 @@ definitions:
   types.Order:
     properties:
       address:
-        $ref: "#/definitions/types.Address"
+        $ref: '#/definitions/types.Address'
       contact:
-        $ref: "#/definitions/types.Contact"
+        $ref: '#/definitions/types.Contact'
       createdAt:
         type: string
       invoiceNumber:
         type: string
       items:
         items:
-          $ref: "#/definitions/types.OrderItem"
+          $ref: '#/definitions/types.OrderItem'
         type: array
       orderId:
         type: integer
@@ -124,7 +124,7 @@ definitions:
       createdAt:
         type: string
       createdBy:
-        $ref: "#/definitions/types.OrderUpdateCreator"
+        $ref: '#/definitions/types.OrderUpdateCreator'
       id:
         type: integer
       message:
@@ -143,7 +143,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: "#/definitions/types.Order"
+          $ref: '#/definitions/types.Order'
         type: array
       limit:
         type: integer
@@ -173,11 +173,11 @@ definitions:
         minLength: 3
         type: string
     required:
-      - email
-      - firstname
-      - lastname
-      - password
-      - username
+    - email
+    - firstname
+    - lastname
+    - password
+    - username
     type: object
   types.Sock:
     properties:
@@ -193,7 +193,7 @@ definitions:
         type: string
       variants:
         items:
-          $ref: "#/definitions/types.SockVariant"
+          $ref: '#/definitions/types.SockVariant'
         type: array
     type: object
   types.SockDTO:
@@ -205,9 +205,9 @@ definitions:
       previewImageUrl:
         type: string
     required:
-      - description
-      - name
-      - previewImageUrl
+    - description
+    - name
+    - previewImageUrl
     type: object
   types.SockVariant:
     properties:
@@ -231,21 +231,21 @@ definitions:
         type: integer
       size:
         enum:
-          - S
-          - M
-          - LG
-          - XL
+        - S
+        - M
+        - LG
+        - XL
         type: string
     required:
-      - price
-      - quantity
-      - size
+    - price
+    - quantity
+    - size
     type: object
   types.SocksPaginatedResponse:
     properties:
       items:
         items:
-          $ref: "#/definitions/types.Sock"
+          $ref: '#/definitions/types.Sock'
         type: array
       limit:
         type: integer
@@ -260,56 +260,56 @@ definitions:
         type: string
       state:
         enum:
-          - AL
-          - AK
-          - AZ
-          - AR
-          - CA
-          - CO
-          - CT
-          - DE
-          - FL
-          - GA
-          - HI
-          - ID
-          - IL
-          - IN
-          - IA
-          - KS
-          - KY
-          - LA
-          - ME
-          - MD
-          - MA
-          - MI
-          - MN
-          - MS
-          - MO
-          - MT
-          - NE
-          - NV
-          - NH
-          - NJ
-          - NM
-          - NY
-          - NC
-          - ND
-          - OH
-          - OK
-          - OR
-          - PA
-          - RI
-          - SC
-          - SD
-          - TN
-          - TX
-          - UT
-          - VT
-          - VA
-          - WA
-          - WV
-          - WI
-          - WY
+        - AL
+        - AK
+        - AZ
+        - AR
+        - CA
+        - CO
+        - CT
+        - DE
+        - FL
+        - GA
+        - HI
+        - ID
+        - IL
+        - IN
+        - IA
+        - KS
+        - KY
+        - LA
+        - ME
+        - MD
+        - MA
+        - MI
+        - MN
+        - MS
+        - MO
+        - MT
+        - NE
+        - NV
+        - NH
+        - NJ
+        - NM
+        - NY
+        - NC
+        - ND
+        - OH
+        - OK
+        - OR
+        - PA
+        - RI
+        - SC
+        - SD
+        - TN
+        - TX
+        - UT
+        - VT
+        - VA
+        - WA
+        - WV
+        - WI
+        - WY
         type: string
       street:
         maxLength: 100
@@ -318,9 +318,25 @@ definitions:
         maxLength: 10
         type: string
     required:
-      - state
-      - street
-      - zipcode
+    - state
+    - street
+    - zipcode
+    type: object
+  types.UpdateContactRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    - phone
     type: object
   types.UpdateOrderStatusRequest:
     properties:
@@ -328,32 +344,15 @@ definitions:
         type: string
       newStatus:
         enum:
-          - received
-          - shipped
-          - delivered
-          - canceled
-          - returned
+        - received
+        - shipped
+        - delivered
+        - canceled
+        - returned
         type: string
     required:
-      - message
-      - newStatus
-    type: object
-  types.UpdateContactRequest:
-    properties:
-      firstName:
-        type: string
-      lastName:
-        type: string
-      email:
-        type: string
-        format: email
-      phone:
-        type: string
-    required:
-      - firstName
-      - lastName
-      - email
-      - phone
+    - message
+    - newStatus
     type: object
 host: localhost:8080
 info:
@@ -369,313 +368,304 @@ paths:
     get:
       description: Retrieves a list of all admins.
       parameters:
-        - default: 50
-          description: Results per page
-          in: query
-          name: limit
-          type: integer
-        - default: 0
-          description: Page number
-          in: query
-          name: offset
-          type: integer
+      - default: 50
+        description: Results per page
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Page number
+        in: query
+        name: offset
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.AdminsPaginatedResponse"
+            $ref: '#/definitions/types.AdminsPaginatedResponse'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Get all admins.
       tags:
-        - Admins
+      - Admins
   /admins/login:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Logs in an admin using username and password credentials.
       parameters:
-        - description: Login credentials
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/types.LoginAdminRequest"
+      - description: Login credentials
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginAdminRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.LoginAdminResponse"
+            $ref: '#/definitions/types.LoginAdminResponse'
       summary: Logs in an admin.
       tags:
-        - Admins
+      - Admins
   /admins/register:
     post:
       consumes:
-        - application/json
+      - application/json
       description: Creates a new set of admin credentials.
       parameters:
-        - description: Register credentials
-          in: body
-          name: Body
-          required: true
-          schema:
-            $ref: "#/definitions/types.RegisterAdminRequest"
+      - description: Register credentials
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterAdminRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: "#/definitions/types.Message"
+            $ref: '#/definitions/types.Message'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Registers new admin credentials.
       tags:
-        - Admins
+      - Admins
   /orders:
     get:
       description: Retrieves all orders from the database with optional filters.
       parameters:
-        - default: 50
-          description: Limit the number of results
-          in: query
-          name: limit
-          type: integer
-        - default: 0
-          description: Offset for pagination
-          in: query
-          name: offset
-          type: integer
-        - description: Status of the order
-          in: query
-          name: status
-          type: string
+      - default: 50
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - description: Status of the order
+        in: query
+        name: status
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.OrdersPaginatedResponse"
+            $ref: '#/definitions/types.OrdersPaginatedResponse'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Retrieve all orders
       tags:
-        - Orders
+      - Orders
   /orders/{order_id}/address:
     patch:
       consumes:
-        - application/json
+      - application/json
       description: Updates the address for a specific order by ID
       parameters:
-        - description: Order ID
-          in: path
-          name: order_id
-          required: true
-          type: integer
-        - description: New Address Data
-          in: body
-          name: address
-          required: true
-          schema:
-            $ref: "#/definitions/types.UpdateAddressRequest"
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New Address Data
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateAddressRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.Message"
+            $ref: '#/definitions/types.Message'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Update the address of an existing order
       tags:
-        - Orders
+      - Orders
+  /orders/{order_id}/contact:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the contact information (name, email, phone) for a specific
+        order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New Contact Information
+        in: body
+        name: contact
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateContactRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Update the contact information of an existing order
+      tags:
+      - Orders
   /orders/{order_id}/status:
     patch:
       consumes:
-        - application/json
+      - application/json
       description: Updates the status for a specific order by ID
       parameters:
-        - description: Order ID
-          in: path
-          name: order_id
-          required: true
-          type: integer
-        - description: New order status
-          in: body
-          name: statusUpdate
-          required: true
-          schema:
-            $ref: "#/definitions/types.UpdateOrderStatusRequest"
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New order status
+        in: body
+        name: statusUpdate
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateOrderStatusRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.Message"
+            $ref: '#/definitions/types.Message'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Update the status of an existing order
       tags:
-        - Orders
+      - Orders
   /orders/{order_id}/updates:
     get:
-      description:
-        Retrieves all order updates for a particular order. Results are
+      description: Retrieves all order updates for a particular order. Results are
         sorted descending by createdAt.
       parameters:
-        - description: Order ID
-          in: path
-          name: order_id
-          required: true
-          type: integer
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/types.OrderUpdate"
+              $ref: '#/definitions/types.OrderUpdate'
             type: array
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Retrieve updates for an order
       tags:
-        - Orders
-  /orders/{order_id}/contact:
-    patch:
-      summary: Update the contact information of an existing order
-      description: Updates the contact information (name, email, phone) for a specific order by ID
-      tags:
-        - Orders
-      parameters:
-        - name: order_id
-          in: path
-          required: true
-          description: The ID of the order
-          schema:
-            type: integer
-        - name: contact
-          in: body
-          required: true
-          description: The updated contact information
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UpdateContactRequest"
-      responses:
-        "200":
-          description: Order contact info updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/types.Message"
-        "400":
-          description: Invalid request
-        "404":
-          description: Order not found
-        "403":
-          description: Unauthorized access
-      security:
-        - Bearer: []
+      - Orders
   /socks:
     get:
-      description:
-        Returns a list of paginated socks sorted in descending order by
+      description: Returns a list of paginated socks sorted in descending order by
         created date
       parameters:
-        - default: 50
-          description: Limit the number of results
-          in: query
-          name: limit
-          type: integer
-        - default: 0
-          description: Offset for pagination
-          in: query
-          name: offset
-          type: integer
+      - default: 50
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.SocksPaginatedResponse"
+            $ref: '#/definitions/types.SocksPaginatedResponse'
       summary: Get all socks
       tags:
-        - Inventory
+      - Inventory
     post:
       consumes:
-        - application/json
+      - application/json
       description: Adds a new sock to the store with its variants
       parameters:
-        - description: Sock Data
-          in: body
-          name: sock
-          required: true
-          schema:
-            $ref: "#/definitions/types.CreateSockRequest"
+      - description: Sock Data
+        in: body
+        name: sock
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateSockRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: "#/definitions/types.CreateSockResponse"
+            $ref: '#/definitions/types.CreateSockResponse'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Create a new sock
       tags:
-        - Inventory
+      - Inventory
   /socks/{sock_id}:
     delete:
       description: Deletes a sock from the store by its ID
       parameters:
-        - description: Sock ID
-          in: path
-          name: sock_id
-          required: true
-          type: integer
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.Message"
+            $ref: '#/definitions/types.Message'
       security:
-        - Bearer: []
+      - Bearer: []
       summary: Delete a sock
       tags:
-        - Inventory
+      - Inventory
     get:
       description: Retrieve the details of a sock by its ID
       parameters:
-        - description: Sock ID
-          in: path
-          name: sock_id
-          required: true
-          type: integer
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/types.Sock"
+            $ref: '#/definitions/types.Sock'
       summary: Get details of a specific sock
       tags:
-        - Inventory
+      - Inventory
 securityDefinitions:
   Bearer:
-    description:
-      'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
       XXX"'
     in: header
     name: Authorization
