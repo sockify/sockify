@@ -108,6 +108,23 @@ definitions:
       total:
         type: number
     type: object
+  types.OrderByInvoiceResponse:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      contact:
+        $ref: '#/definitions/types.Contact'
+      invoiceNumber:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/types.OrderItem'
+        type: array
+      orderId:
+        type: integer
+      total:
+        type: number
+    type: object
   types.OrderItem:
     properties:
       name:
@@ -576,6 +593,27 @@ paths:
       security:
       - Bearer: []
       summary: Retrieve updates for an order
+      tags:
+      - Orders
+  /orders/invoice/{invoice_number}:
+    get:
+      description: Retrieves order details and item list by invoice number.
+      parameters:
+      - description: Invoice Number
+        in: path
+        name: invoice_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.OrderByInvoiceResponse'
+      security:
+      - Bearer: []
+      summary: Retrieve order details by invoice number
       tags:
       - Orders
   /socks:

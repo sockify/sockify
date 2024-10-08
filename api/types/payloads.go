@@ -85,3 +85,14 @@ type UpdateContactRequest struct {
 	Email     string `json:"email" validate:"required,email"`
 	Phone     string `json:"phone" validate:"required"`
 }
+
+type OrderByInvoiceResponse struct {
+	OrderID       int          `json:"orderId"`
+	InvoiceNumber string       `json:"invoiceNumber"`
+	Total         float64      `json:"total"`
+	Address       Address      `json:"address"`
+	Contact       Contact      `json:"contact"`
+	Items         []OrderItem  `json:"items"`
+	//CreatedAt     string       `json:"createdAt"`
+	//Status        string       `json:"status"`
+}

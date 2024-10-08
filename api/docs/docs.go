@@ -180,6 +180,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/invoice/{invoice_number}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves order details and item list by invoice number.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve order details by invoice number",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Invoice Number",
+                        "name": "invoice_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderByInvoiceResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{order_id}/address": {
             "patch": {
                 "security": [
@@ -648,6 +682,32 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "types.OrderByInvoiceResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "contact": {
+                    "$ref": "#/definitions/types.Contact"
+                },
+                "invoiceNumber": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.OrderItem"
+                    }
+                },
+                "orderId": {
+                    "type": "integer"
                 },
                 "total": {
                     "type": "number"
