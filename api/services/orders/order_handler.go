@@ -254,6 +254,31 @@ func (h *OrderHandler) handleUpdateOrderContact(w http.ResponseWriter, r *http.R
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order contact info updated successfully"})
 }
 
+// @Summary Retrieve order details by invoice number
+// @Description Retrieves order details and item list by invoice number.
+// @Tags Orders
+// @Produce json
+// @Security Bearer
+// @Param invoice_number path string true "Invoice Number"
+// @Success 200 {object} types.Order
+// @Router /orders/invoice/{invoice_number} [get]
+func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	invoiceNumber := vars["invoice_number"]
+
+	order, err := h.store.GetOrderByInvoice(invoiceNumber)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if order == nil {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with invoice number %v not found", invoiceNumber))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, order)
+}
+
 func isValidStatusUpdate(currentStatus string, newStatus string) error {
 	if newStatus == "" {
 		return fmt.Errorf("the new status can not be empty")
@@ -274,29 +299,4 @@ func isValidStatusUpdate(currentStatus string, newStatus string) error {
 	}
 
 	return fmt.Errorf("order status can not change from '%v' to '%v'", currentStatus, newStatus)
-}
-
-// @Summary Retrieve order details by invoice number
-// @Description Retrieves order details and item list by invoice number.
-// @Tags Orders
-// @Produce json
-// @Security Bearer
-// @Param invoice_number path string true "Invoice Number"
-// @Success 200 {object} types.Order
-// @Router /orders/invoice/{invoice_number} [get]
-func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	invoiceNumber := vars["invoice_number"]
-
-	order, err := h.store.GetOrderByInvoice(invoiceNumber)
-	if err != nil {
-		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("internal server error: %v", err))
-		return
-	}
-	if order == nil {
-		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with invoice number %v not found", invoiceNumber))
-		return
-	}
-
-	utils.WriteJson(w, http.StatusOK, order)
 }
