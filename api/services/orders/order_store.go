@@ -262,3 +262,33 @@ func (s *OrderStore) UpdateOrderContact(orderID int, contact types.UpdateContact
 
 	return nil
 }
+
+func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, error) {
+	var order types.Order
+	query := `
+		SELECT * FROM orders 
+		WHERE invoice_number = $1
+	`
+	err := s.db.QueryRow(query, invoiceNumber).Scan(
+		&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
+		&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
+		&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
+		&order.CreatedAt,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		log.Printf("Error fetching order by invoice number %s: %v", invoiceNumber, err)
+		return nil, err
+	}
+
+	items, err := s.GetOrderItems(order.ID)
+	if err != nil {
+		return nil, err
+	}
+	order.Items = items
+
+	return &order, nil
+}
