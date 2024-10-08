@@ -40,26 +40,32 @@
 
 ![admin login](../assets/ui_mocks_admin_login.png)
 
-### View orders
+### View all orders
 
 ![view orders](../assets/ui_mocks_orders_view.png)
 
-### Edit an order
+### View individual order
 
-![edit order](../assets/ui_mocks_orders_edit.png)
+![order](../assets/ui_mocks_order.png)
 
 ### Inventory management
+
+#### View all items
 
 ![admin inventory view](../assets/ui_mocks_inventory_management.png)
 
 #### View product details
 
-TODO(sebsatian-nunez): add product details modal with ability to see product updates.
+![admin view item](../assets/ui_mocks_inventory_admin_item.png)
 
-#### Edit product
+#### Edit product (basic information)
 
 ![edit product modal](../assets/ui_mocks_edit_product.png)
 
 #### Create product
 
-![create product](../assets/ui_mocks_create_product.png)
+![add item step 1](../assets/ui_mocks_add_item_step_1.png)
+
+![add item step 2](../assets/ui_mocks_add_item_step_2.png)
+
+![add item step 3](../assets/ui_mocks_add_item_step_3.png)
