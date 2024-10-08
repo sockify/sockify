@@ -263,7 +263,6 @@ func (s *OrderStore) UpdateOrderContact(orderID int, contact types.UpdateContact
 	return nil
 }
 
-// GetOrderByInvoice retrieves an order by its invoice number
 func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, error) {
 	var order types.Order
 	query := `
@@ -279,7 +278,7 @@ func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, erro
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil // No order found
+			return nil, nil
 		}
 		log.Printf("Error fetching order by invoice number %s: %v", invoiceNumber, err)
 		return nil, err

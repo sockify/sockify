@@ -93,6 +93,4 @@ type OrderByInvoiceResponse struct {
 	Address       Address      `json:"address"`
 	Contact       Contact      `json:"contact"`
 	Items         []OrderItem  `json:"items"`
-	//CreatedAt     string       `json:"createdAt"`
-	//Status        string       `json:"status"`
 }

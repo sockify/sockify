@@ -288,13 +288,11 @@ func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Re
 	vars := mux.Vars(r)
 	invoiceNumber := vars["invoice_number"]
 
-	// Directly fetch the order details response
 	response, err := h.store.GetOrderByInvoice(invoiceNumber)
 	if err != nil {
 		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with invoice number %v not found", invoiceNumber))
 		return
 	}
 
-	// Send the response directly
 	utils.WriteJson(w, http.StatusOK, response)
 }
