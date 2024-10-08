@@ -28,4 +28,5 @@ type OrderStore interface {
 	OrderExistsByID(orderID int) (bool, error)
 	UpdateOrderStatus(orderID int, adminID int, newStatus string, message string) error
 	GetOrderStatusByID(orderID int) (status string, err error)
+	UpdateOrderContact(orderID int, contact UpdateContactRequest, adminID int) error
 }
