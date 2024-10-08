@@ -208,7 +208,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.OrderByInvoiceResponse"
+                            "$ref": "#/definitions/types.Order"
                         }
                     }
                 }
@@ -682,32 +682,6 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
-                },
-                "total": {
-                    "type": "number"
-                }
-            }
-        },
-        "types.OrderByInvoiceResponse": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "$ref": "#/definitions/types.Address"
-                },
-                "contact": {
-                    "$ref": "#/definitions/types.Contact"
-                },
-                "invoiceNumber": {
-                    "type": "string"
-                },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.OrderItem"
-                    }
-                },
-                "orderId": {
-                    "type": "integer"
                 },
                 "total": {
                     "type": "number"

@@ -282,17 +282,21 @@ func isValidStatusUpdate(currentStatus string, newStatus string) error {
 // @Produce json
 // @Security Bearer
 // @Param invoice_number path string true "Invoice Number"
-// @Success 200 {object} types.OrderByInvoiceResponse
+// @Success 200 {object} types.Order
 // @Router /orders/invoice/{invoice_number} [get]
 func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	invoiceNumber := vars["invoice_number"]
 
-	response, err := h.store.GetOrderByInvoice(invoiceNumber)
+	order, err := h.store.GetOrderByInvoice(invoiceNumber)
 	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("internal server error: %v", err))
+		return
+	}
+	if order == nil {
 		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with invoice number %v not found", invoiceNumber))
 		return
 	}
 
-	utils.WriteJson(w, http.StatusOK, response)
+	utils.WriteJson(w, http.StatusOK, order)
 }

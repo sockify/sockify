@@ -108,23 +108,6 @@ definitions:
       total:
         type: number
     type: object
-  types.OrderByInvoiceResponse:
-    properties:
-      address:
-        $ref: '#/definitions/types.Address'
-      contact:
-        $ref: '#/definitions/types.Contact'
-      invoiceNumber:
-        type: string
-      items:
-        items:
-          $ref: '#/definitions/types.OrderItem'
-        type: array
-      orderId:
-        type: integer
-      total:
-        type: number
-    type: object
   types.OrderItem:
     properties:
       name:
@@ -610,7 +593,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/types.OrderByInvoiceResponse'
+            $ref: '#/definitions/types.Order'
       security:
       - Bearer: []
       summary: Retrieve order details by invoice number
