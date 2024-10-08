@@ -578,6 +578,27 @@ paths:
       summary: Retrieve updates for an order
       tags:
       - Orders
+  /orders/invoice/{invoice_number}:
+    get:
+      description: Retrieves order details and item list by invoice number.
+      parameters:
+      - description: Invoice Number
+        in: path
+        name: invoice_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Order'
+      security:
+      - Bearer: []
+      summary: Retrieve order details by invoice number
+      tags:
+      - Orders
   /socks:
     get:
       description: Returns a list of paginated socks sorted in descending order by

@@ -180,6 +180,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/invoice/{invoice_number}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves order details and item list by invoice number.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve order details by invoice number",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Invoice Number",
+                        "name": "invoice_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Order"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{order_id}/address": {
             "patch": {
                 "security": [

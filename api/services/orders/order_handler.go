@@ -26,6 +26,7 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.Admin
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/{order_id}/status", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderStatus)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/{order_id}/contact", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderContact)).Methods(http.MethodPatch)
+	router.HandleFunc("/orders/invoice/{invoice_number}", middleware.WithJWTAuth(adminStore, h.handleGetOrderByInvoice)).Methods(http.MethodGet)
 }
 
 // @Summary Retrieve all orders
@@ -251,6 +252,31 @@ func (h *OrderHandler) handleUpdateOrderContact(w http.ResponseWriter, r *http.R
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order contact info updated successfully"})
+}
+
+// @Summary Retrieve order details by invoice number
+// @Description Retrieves order details and item list by invoice number.
+// @Tags Orders
+// @Produce json
+// @Security Bearer
+// @Param invoice_number path string true "Invoice Number"
+// @Success 200 {object} types.Order
+// @Router /orders/invoice/{invoice_number} [get]
+func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	invoiceNumber := vars["invoice_number"]
+
+	order, err := h.store.GetOrderByInvoice(invoiceNumber)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if order == nil {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with invoice number %v not found", invoiceNumber))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, order)
 }
 
 func isValidStatusUpdate(currentStatus string, newStatus string) error {
