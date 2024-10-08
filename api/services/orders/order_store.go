@@ -220,3 +220,45 @@ func (s *OrderStore) GetOrderUpdates(orderID int) ([]types.OrderUpdate, error) {
 
 	return updates, nil
 }
+
+func (s *OrderStore) UpdateOrderContact(orderID int, contact types.UpdateContactRequest, adminID int) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		log.Printf("Error starting transaction: %v", err)
+		return err
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	query := `
+		UPDATE orders 
+		SET firstname = $1, lastname = $2, email = $3, phone = $4
+		WHERE order_id = $5
+	`
+	_, err = tx.Exec(query, contact.FirstName, contact.LastName, contact.Email, contact.Phone, orderID)
+	if err != nil {
+		log.Printf("Error updating order contact: %v", err)
+		return err
+	}
+
+	logQuery := `INSERT INTO order_updates (order_id, admin_id, message) VALUES ($1, $2, $3)`
+	_, err = tx.Exec(logQuery, orderID, adminID, "Updated order contact information")
+	if err != nil {
+		log.Printf("Error logging order update: %v", err)
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
+		log.Printf("Error committing transaction: %v", err)
+		return err
+	}
+
+	return nil
+}

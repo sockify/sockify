@@ -322,6 +322,22 @@ definitions:
     - street
     - zipcode
     type: object
+  types.UpdateContactRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    - phone
+    type: object
   types.UpdateOrderStatusRequest:
     properties:
       message:
@@ -477,6 +493,36 @@ paths:
       security:
       - Bearer: []
       summary: Update the address of an existing order
+      tags:
+      - Orders
+  /orders/{order_id}/contact:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the contact information (name, email, phone) for a specific
+        order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New Contact Information
+        in: body
+        name: contact
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateContactRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Update the contact information of an existing order
       tags:
       - Orders
   /orders/{order_id}/status:

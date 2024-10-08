@@ -78,3 +78,10 @@ type UpdateOrderStatusRequest struct {
 	NewStatus string `json:"newStatus" validate:"required,oneof=received shipped delivered canceled returned"`
 	Message   string `json:"message" validate:"required"`
 }
+
+type UpdateContactRequest struct {
+	FirstName string `json:"firstName" validate:"required"`
+	LastName  string `json:"lastName" validate:"required"`
+	Email     string `json:"email" validate:"required,email"`
+	Phone     string `json:"phone" validate:"required"`
+}
