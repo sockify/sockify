@@ -1,10 +1,9 @@
+import { useGetAdmins } from "@/api/admins/queries";
+import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
-import { useGetAdmins } from "./api/admins/queries";
-import { Button } from "./components/ui/button";
-
-export default function App() {
+export default function AdminHomePage() {
   const { data: admins, isLoading, error, refetch } = useGetAdmins(false);
 
   return (
