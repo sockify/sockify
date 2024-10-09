@@ -2,6 +2,7 @@ package orders
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/sockify/sockify/types"
@@ -219,6 +220,27 @@ func (s *OrderStore) GetOrderUpdates(orderID int) ([]types.OrderUpdate, error) {
 	}
 
 	return updates, nil
+}
+
+func (s *OrderStore) CreateOrderUpdate(orderID int, adminID int, message string) error {
+	res, err := s.db.Exec(`
+    INSERT INTO order_updates (order_id, admin_id, message)
+    VALUES ($1, $2, $3)
+  `, orderID, adminID, message)
+
+	if err != nil {
+		return err
+	}
+
+	val, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if val == 0 {
+		return fmt.Errorf("no rows were affected")
+	}
+
+	return nil
 }
 
 func (s *OrderStore) UpdateOrderContact(orderID int, contact types.UpdateContactRequest, adminID int) error {

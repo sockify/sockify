@@ -50,6 +50,13 @@ definitions:
       phone:
         type: string
     type: object
+  types.CreateOrderUpdateRequest:
+    properties:
+      message:
+        type: string
+    required:
+    - message
+    type: object
   types.CreateSockRequest:
     properties:
       sock:
@@ -576,6 +583,34 @@ paths:
       security:
       - Bearer: []
       summary: Retrieve updates for an order
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      description: Creates a new update for an existing order.
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: New order update
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/types.CreateOrderUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Creates an update for an order
       tags:
       - Orders
   /orders/invoice/{invoice_number}:

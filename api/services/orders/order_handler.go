@@ -23,6 +23,7 @@ func NewOrderHandler(store types.OrderStore) *OrderHandler {
 func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/orders", middleware.WithJWTAuth(adminStore, h.handleGetOrders)).Methods(http.MethodGet)
 	router.HandleFunc("/orders/{order_id}/updates", middleware.WithJWTAuth(adminStore, h.handleGetOrderUpdates)).Methods(http.MethodGet)
+	router.HandleFunc("/orders/{order_id}/updates", middleware.WithJWTAuth(adminStore, h.handleCreateOrderUpdate)).Methods(http.MethodPost)
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/{order_id}/status", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderStatus)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/{order_id}/contact", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderContact)).Methods(http.MethodPatch)
@@ -99,6 +100,57 @@ func (h *OrderHandler) handleGetOrderUpdates(w http.ResponseWriter, r *http.Requ
 	}
 
 	utils.WriteJson(w, http.StatusOK, updates)
+}
+
+// @Summary Creates an update for an order
+// @Description Creates a new update for an existing order.
+// @Tags Orders
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param order_id path int true "Order ID"
+// @Param address body types.CreateOrderUpdateRequest true "New order update"
+// @Success 200 {object} types.Message
+// @Router /orders/{order_id}/updates [post]
+func (h *OrderHandler) handleCreateOrderUpdate(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderIDstr := vars["order_id"]
+
+	orderID, err := strconv.Atoi(orderIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid order ID"))
+		return
+	}
+
+	exists, err := h.store.OrderExistsByID(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if !exists {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with ID %v not found", orderID))
+		return
+	}
+
+	var req types.CreateOrderUpdateRequest
+	if err := utils.ParseJson(r, &req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	adminID := middleware.GetUserIDFromContext(r.Context())
+	if err := h.store.CreateOrderUpdate(orderID, adminID, req.Message); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Order update created successfully"})
 }
 
 // @Summary Update the address of an existing order
