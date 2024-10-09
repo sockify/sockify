@@ -85,3 +85,7 @@ type UpdateContactRequest struct {
 	Email     string `json:"email" validate:"required,email"`
 	Phone     string `json:"phone" validate:"required"`
 }
+
+type CreateOrderUpdateRequest struct {
+	Message string `json:"message" validate:"required"`
+}
