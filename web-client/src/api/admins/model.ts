@@ -9,5 +9,12 @@ export const adminSchema = z.object({
   passwordHash: z.string().optional(),
   createdAt: z.string().optional(),
 });
-export const adminsSchema = z.array(adminSchema);
 export type Admin = z.infer<typeof adminSchema>;
+
+export const adminsPaginatedSchema = z.object({
+  items: z.array(adminSchema),
+  total: z.number(),
+  limit: z.number(),
+  offset: z.number(),
+});
+export type AdminsPaginatedResponse = z.infer<typeof adminsPaginatedSchema>;

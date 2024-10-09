@@ -4,7 +4,7 @@ import { Users } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function AdminHomePage() {
-  const { data: admins, isLoading, error, refetch } = useGetAdmins(false);
+  const { data, isLoading, error, refetch } = useGetAdmins(25, 0, false);
 
   return (
     <>
@@ -24,8 +24,8 @@ export default function AdminHomePage() {
 
         {isLoading ? (
           <p>Loading...</p>
-        ) : admins && admins.length > 0 ? (
-          admins.map((admin) => (
+        ) : data && data.items.length > 0 ? (
+          data.items.map((admin) => (
             <p key={admin.id}>
               {admin.username} ({admin.id})
             </p>
