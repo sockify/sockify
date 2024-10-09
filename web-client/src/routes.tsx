@@ -1,5 +1,6 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
+import NotFound from "./components/NotFound";
 import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
 import HomePage from "./pages/HomePage";
@@ -42,7 +43,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    // TODO: create 404 page
-    element: <div>404 - Not Found</div>,
+    element: <NotFound />,
   },
 ]);
