@@ -1,7 +1,7 @@
 import { useGetAdmins } from "@/api/admins/queries";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function AdminHomePage() {
   const { data, isLoading, error, refetch } = useGetAdmins(25, 0, false);
@@ -34,8 +34,6 @@ export default function AdminHomePage() {
           <p>No admins found.</p>
         )}
       </ul>
-
-      <Toaster position="top-right" />
     </>
   );
 }

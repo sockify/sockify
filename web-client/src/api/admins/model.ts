@@ -18,3 +18,14 @@ export const adminsPaginatedSchema = z.object({
   offset: z.number(),
 });
 export type AdminsPaginatedResponse = z.infer<typeof adminsPaginatedSchema>;
+
+export const adminLoginRequestSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
+export type AdminLoginRequest = z.infer<typeof adminLoginRequestSchema>;
+
+export const adminLoginResponseSchema = z.object({
+  token: z.string(),
+});
+export type AdminLoginResponse = z.infer<typeof adminLoginResponseSchema>;

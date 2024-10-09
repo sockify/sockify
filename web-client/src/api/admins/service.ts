@@ -1,9 +1,16 @@
 import axios from "axios";
 
-import { AdminsPaginatedResponse, adminsPaginatedSchema } from "./model";
+import {
+  AdminLoginRequest,
+  AdminLoginResponse,
+  AdminsPaginatedResponse,
+  adminLoginResponseSchema,
+  adminsPaginatedSchema,
+} from "./model";
 
 export interface AdminService {
   getAdmins(limit: number, offset: number): Promise<AdminsPaginatedResponse>;
+  login(payload: AdminLoginRequest): Promise<AdminLoginResponse>;
 }
 
 export class HttpAdminService implements AdminService {
@@ -19,5 +26,10 @@ export class HttpAdminService implements AdminService {
     });
 
     return adminsPaginatedSchema.parse(data);
+  }
+
+  async login(payload: AdminLoginRequest): Promise<AdminLoginResponse> {
+    const { data } = await axios.post("/api/v1/admins/login", payload);
+    return adminLoginResponseSchema.parse(data);
   }
 }
