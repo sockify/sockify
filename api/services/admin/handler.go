@@ -77,12 +77,12 @@ func (h *Handler) handleAdminLogin(w http.ResponseWriter, r *http.Request) {
 
 	admin, err := h.store.GetAdminByUsername(payload.UserName)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid username or password"))
+		utils.WriteError(w, http.StatusUnauthorized, fmt.Errorf("invalid username or password"))
 		return
 	}
 
 	if !auth.ComparePasswords(admin.PasswordHash, payload.Password) {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid username or password"))
+		utils.WriteError(w, http.StatusUnauthorized, fmt.Errorf("invalid username or password"))
 		return
 	}
 
