@@ -24,7 +24,6 @@ export class HttpAdminService implements AdminService {
         offset,
       },
     });
-
     return adminsPaginatedSchema.parse(data);
   }
 

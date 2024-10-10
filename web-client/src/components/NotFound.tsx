@@ -32,13 +32,14 @@ export default function NotFound() {
           </p>
 
           <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
+            <Button variant="outline" onClick={() => window.history.back()}>
+              <Undo2 className="mr-2 h-4 w-4" /> Back
+            </Button>
+
             <Button asChild>
               <Link to="/">
                 <Home className="mr-2 h-4 w-4" /> Home
               </Link>
-            </Button>
-            <Button variant="outline" onClick={() => window.history.back()}>
-              <Undo2 className="mr-2 h-4 w-4" /> Back
             </Button>
           </div>
         </div>

@@ -1,6 +1,10 @@
 import { LOCAL_STORAGE_AUTH_TOKEN_KEY } from "@/shared/constants";
 import axios from "axios";
 
+/**
+ * Global axios instance (Singleton) that intercepts requests and adds
+ * the current Auth token (from local storage).
+ */
 const axiosInstance = axios.create({
   baseURL: "",
 });

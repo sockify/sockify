@@ -1,8 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 
-interface DecodedAuthToken {
+/** The decoded public claims from the signed auth, JWT token. */
+export interface DecodedAuthToken {
+  /** ID of the admin that owns this token. */
   adminId: number;
-  expiredAt: number; // Expiration time in seconds since Unix epoch
+  /** Expiration time in seconds since Unix epoch. */
+  expiredAt: number;
 }
 
 /**
@@ -22,5 +25,6 @@ export function decodeJwtToken(token: string): DecodedAuthToken {
  */
 export function isJwtTokenExpired(token: string): boolean {
   const decodedToken = decodeJwtToken(token);
-  return decodedToken.expiredAt < Math.floor(Date.now() / 1000);
+  const currentTimestampInSeconds = Math.floor(Date.now() / 1000);
+  return decodedToken.expiredAt < currentTimestampInSeconds;
 }

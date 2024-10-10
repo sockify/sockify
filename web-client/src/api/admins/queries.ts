@@ -32,7 +32,7 @@ export function useGetAdmins(
   return useQuery(useGetAdminsOptions(limit, offset, enabled));
 }
 
-export function useAdminLoginMutation(): UseMutationResult<
+export function useLoginAdminMutation(): UseMutationResult<
   AdminLoginResponse,
   Error,
   AdminLoginRequest

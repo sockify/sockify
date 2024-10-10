@@ -1,4 +1,4 @@
-import { useAdminLoginMutation } from "@/api/admins/queries";
+import { useLoginAdminMutation } from "@/api/admins/queries";
 import { LOCAL_STORAGE_AUTH_TOKEN_KEY } from "@/shared/constants";
 import { isJwtTokenExpired } from "@/shared/utils/jwt";
 import {
@@ -23,7 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const loginMutation = useAdminLoginMutation();
+  const loginMutation = useLoginAdminMutation();
 
   const [token, setToken] = useState<string | null>(null);
   const isAuthenticated = Boolean(token && !isJwtTokenExpired(token));
