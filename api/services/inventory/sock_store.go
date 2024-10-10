@@ -112,7 +112,7 @@ func (s *SockStore) DeleteSock(sockID int) error {
 // GetSocks retrieves socks from the database with pagination and sorted by created date
 func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 	rows, err := s.db.Query(`
-    SELECT sock_id, name, description, preview_image_url 
+    SELECT sock_id, name, description, preview_image_url, created_at
     FROM socks
     WHERE is_deleted = false
     ORDER BY created_at DESC
@@ -128,7 +128,7 @@ func (s *SockStore) GetSocks(limit int, offset int) ([]types.Sock, error) {
 	socks := make([]types.Sock, 0)
 	for rows.Next() {
 		var sock types.Sock
-		if err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL); err != nil {
+		if err := rows.Scan(&sock.ID, &sock.Name, &sock.Description, &sock.PreviewImageURL, &sock.CreatedAt); err != nil {
 			log.Printf("Error scanning sock: %v", err)
 			return nil, err
 		}
@@ -159,7 +159,7 @@ func (s *SockStore) CountSocks() (int, error) {
 // GetSockVariants retrieves the variants for a specific sock
 func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 	rows, err := s.db.Query(`
-    SELECT sock_variant_id, price, quantity, size 
+    SELECT sock_variant_id, price, quantity, size, created_at
     FROM sock_variants
     WHERE sock_id = $1
   `, sockID)
@@ -173,7 +173,7 @@ func (s *SockStore) GetSockVariants(sockID int) ([]types.SockVariant, error) {
 	variants := make([]types.SockVariant, 0)
 	for rows.Next() {
 		var sv types.SockVariant
-		if err := rows.Scan(&sv.ID, &sv.Price, &sv.Quantity, &sv.Size); err != nil {
+		if err := rows.Scan(&sv.ID, &sv.Price, &sv.Quantity, &sv.Size, &sv.CreatedAt); err != nil {
 			log.Printf("Error scanning variant: %v", err)
 			return nil, err
 		}
