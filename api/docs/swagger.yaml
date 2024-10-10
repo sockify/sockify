@@ -361,6 +361,20 @@ definitions:
     - message
     - newStatus
     type: object
+  types.UpdateSockRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      variants:
+        items:
+          $ref: '#/definitions/types.SockVariantDTO'
+        type: array
+    required:
+    - name
+    - variants
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -717,6 +731,30 @@ paths:
           schema:
             $ref: '#/definitions/types.Sock'
       summary: Get details of a specific sock
+      tags:
+      - Inventory
+    patch:
+      description: Updates the details of a specific sock including its variants
+      parameters:
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
+      - description: Updated Sock Data
+        in: body
+        name: sock
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateSockRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Update a sock
       tags:
       - Inventory
 securityDefinitions:
