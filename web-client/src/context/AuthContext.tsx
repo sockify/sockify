@@ -12,16 +12,24 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
+  /** JWT token for the logged in admin. */
   token: string | null;
+  /** True if the JWT token is valid, and is not expired. */
   isAuthenticated: boolean;
+  /** Logs in an admin. */
   login: (username: string, password: string) => Promise<void>;
+  /** Logs out the currently signed in admin. */
   logout: () => void;
+  /** True if the admin is currently logging in. */
   isLoading: boolean;
 }
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
   const loginMutation = useLoginAdminMutation();
 

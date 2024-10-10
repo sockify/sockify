@@ -6,11 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const { login, isLoading, isAuthenticated } = useAuth();
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  const { login, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
