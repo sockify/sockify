@@ -1,5 +1,6 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 
+import AuthRoutes from "./components/AuthRoutes";
 import NotFound from "./components/NotFound";
 import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
@@ -35,9 +36,14 @@ export const router = createBrowserRouter([
         element: <AdminLoginPage />,
       },
       {
-        path: "home",
-        // TODO: should be guarded using a <AuthRoute />
-        element: <AdminHomePage />,
+        element: <AuthRoutes />,
+        // All routes below require auth.
+        children: [
+          {
+            path: "home",
+            element: <AdminHomePage />,
+          },
+        ],
       },
     ],
   },

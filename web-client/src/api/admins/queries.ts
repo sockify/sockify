@@ -40,7 +40,7 @@ export function useAdminLoginMutation(): UseMutationResult<
   return useMutation({
     mutationFn: (params) => adminService.login(params),
     onSuccess: () => {
-      toast.success("Logged in successfully!");
+      toast.success("Welcome back!");
     },
     onError: (err) => {
       toast.error(`Failed to login: ${err.message}`);

@@ -1,5 +1,5 @@
-import { useAdminLoginMutation } from "@/api/admins/queries";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -7,11 +7,12 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const loginMutation = useAdminLoginMutation();
+  const { login, logout, isLoading, isAuthenticated } = useAuth();
 
   return (
     <>
       <h1>Admin Login</h1>
+      <p>isAuthenticated? {isAuthenticated ? "true" : "false"}</p>
 
       <div>
         <input
@@ -38,12 +39,19 @@ export default function AdminLoginPage() {
             return;
           }
 
-          loginMutation.mutate({ username, password });
+          if (isAuthenticated) {
+            toast.error("Already logged in.");
+            return;
+          }
+
+          login(username, password);
         }}
-        disabled={loginMutation.isPending}
+        disabled={isLoading || isAuthenticated}
       >
-        {loginMutation.isPending ? "Logging in..." : "Login"}
+        {isLoading ? "Logging in..." : "Login"}
       </Button>
+
+      {isAuthenticated && <Button onClick={() => logout()}>Logout</Button>}
     </>
   );
 }
