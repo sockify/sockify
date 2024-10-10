@@ -5,7 +5,7 @@ interface AuthRouteProps {
   redirectPath?: string;
 }
 
-export default function AuthRoutes({
+export default function AuthProtectedRoutes({
   redirectPath = "/admin/login",
 }: AuthRouteProps) {
   const { isAuthenticated } = useAuth();

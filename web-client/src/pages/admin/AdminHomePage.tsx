@@ -2,21 +2,11 @@ import { useGetAdmins } from "@/api/admins/queries";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Users } from "lucide-react";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 export default function AdminHomePage() {
-  const navigate = useNavigate();
-
   const { data, isLoading, error, refetch } = useGetAdmins(25, 0, false);
   const { isAuthenticated, logout } = useAuth();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/admin/login");
-    }
-  }, [isAuthenticated]);
 
   return (
     <>

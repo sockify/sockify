@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-import AuthRoutes from "./components/AuthRoutes";
+import AuthProtectedRoutes from "./components/AuthProtectedRoutes";
 import NotFound from "./components/NotFound";
 import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
@@ -29,11 +29,11 @@ createRoot(document.getElementById("root")!).render(
             </Route>
 
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Navigate to="/admin/login" replace />} />
+              <Route index element={<Navigate to="/admin/home" replace />} />
               <Route path="login" element={<AdminLoginPage />} />
 
-              {/* Protected Routes */}
-              <Route element={<AuthRoutes />}>
+              {/* Protected routes */}
+              <Route element={<AuthProtectedRoutes />}>
                 <Route path="home" element={<AdminHomePage />} />
               </Route>
             </Route>

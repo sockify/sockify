@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/shared/axios";
 
 import {
   AdminLoginRequest,
@@ -18,7 +18,7 @@ export class HttpAdminService implements AdminService {
     limit: number,
     offset: number,
   ): Promise<AdminsPaginatedResponse> {
-    const { data } = await axios.get("/api/v1/admins", {
+    const { data } = await axiosInstance.get("/api/v1/admins", {
       params: {
         limit,
         offset,
@@ -29,7 +29,7 @@ export class HttpAdminService implements AdminService {
   }
 
   async login(payload: AdminLoginRequest): Promise<AdminLoginResponse> {
-    const { data } = await axios.post("/api/v1/admins/login", payload);
+    const { data } = await axiosInstance.post("/api/v1/admins/login", payload);
     return adminLoginResponseSchema.parse(data);
   }
 }
