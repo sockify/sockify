@@ -23,16 +23,18 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* ----- User facing routes (no auth) ----- */}
             <Route path="/" element={<RootLayout />}>
               <Route index element={<Navigate to="/home" replace />} />
               <Route path="home" element={<HomePage />} />
             </Route>
 
+            {/* ----- Admin dashboard ----- */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Navigate to="/admin/home" replace />} />
               <Route path="login" element={<AdminLoginPage />} />
 
-              {/* Protected routes */}
+              {/* --- Auth protected routes --- */}
               <Route element={<AuthProtectedRoutes />}>
                 <Route path="home" element={<AdminHomePage />} />
               </Route>
