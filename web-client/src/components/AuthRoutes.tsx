@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_AUTH_TOKEN_KEY } from "@/shared/constants";
+import { useAuth } from "@/context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 interface AuthRouteProps {
@@ -8,9 +8,9 @@ interface AuthRouteProps {
 export default function AuthRoutes({
   redirectPath = "/admin/login",
 }: AuthRouteProps) {
-  const token = localStorage.getItem(LOCAL_STORAGE_AUTH_TOKEN_KEY);
+  const { isAuthenticated } = useAuth();
 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
   }
 

@@ -1,13 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminLoginPage() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const { login, logout, isLoading, isAuthenticated } = useAuth();
+  const { login, isLoading, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin/home");
+    }
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -50,8 +59,6 @@ export default function AdminLoginPage() {
       >
         {isLoading ? "Logging in..." : "Login"}
       </Button>
-
-      {isAuthenticated && <Button onClick={() => logout()}>Logout</Button>}
     </>
   );
 }
