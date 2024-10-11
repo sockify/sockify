@@ -1,6 +1,7 @@
-import { useLoginAdminMutation } from "@/api/admins/queries";
+import { Admin } from "@/api/admins/model";
+import { useGetAdminById, useLoginAdminMutation } from "@/api/admins/queries";
 import { LOCAL_STORAGE_AUTH_TOKEN_KEY } from "@/shared/constants";
-import { isJwtTokenExpired } from "@/shared/utils/jwt";
+import { decodeJwtToken, isJwtTokenExpired } from "@/shared/utils/jwt";
 import {
   ReactNode,
   createContext,
@@ -14,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 interface AuthContextType {
   /** JWT token for the logged in admin. */
   token: string | null;
+  /** Details of the currently logged in admin. */
+  admin: Admin | null;
   /** True if the JWT token is valid, and is not expired. */
   isAuthenticated: boolean;
   /** Logs in an admin. */
@@ -21,7 +24,7 @@ interface AuthContextType {
   /** Logs out the currently signed in admin. */
   logout: () => void;
   /** True if the admin is currently logging in. */
-  isLoading: boolean;
+  isLoggingIn: boolean;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -34,8 +37,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const loginMutation = useLoginAdminMutation();
 
   const [token, setToken] = useState<string | null>(null);
+  const [admin, setAdmin] = useState<Admin | null>(null);
   const isAuthenticated = Boolean(token && !isJwtTokenExpired(token));
-  const isLoading = loginMutation.isPending;
+  const isLoggingIn = loginMutation.isPending;
+
+  const adminQuery = useGetAdminById(
+    token ? decodeJwtToken(token).userId : 0,
+    Boolean(token && !admin),
+  );
 
   useEffect(() => {
     const storedToken = localStorage.getItem(LOCAL_STORAGE_AUTH_TOKEN_KEY);
@@ -49,15 +58,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (adminQuery.data) {
+      setAdmin(adminQuery.data);
+    }
+  }, [adminQuery.data?.id]);
+
+  useEffect(() => {
+    if (adminQuery.isError) {
+      toast.error("Unable to fetch admin metadata.");
+    }
+  }, [adminQuery.isError]);
+
   const login = async (username: string, password: string) => {
-    const { token } = await loginMutation.mutateAsync({ username, password });
+    const { token, admin } = await loginMutation.mutateAsync({
+      username,
+      password,
+    });
+
     setToken(token);
     localStorage.setItem(LOCAL_STORAGE_AUTH_TOKEN_KEY, token);
+    setAdmin(admin);
   };
 
   const logout = () => {
     setToken(null);
     localStorage.removeItem(LOCAL_STORAGE_AUTH_TOKEN_KEY);
+    setAdmin(null);
 
     navigate("/admin/login");
     toast.success("Logged out.");
@@ -65,7 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ token, isAuthenticated, login, logout, isLoading }}
+      value={{ token, admin, isAuthenticated, login, logout, isLoggingIn }}
     >
       {children}
     </AuthContext.Provider>

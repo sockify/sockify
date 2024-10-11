@@ -2,8 +2,8 @@ import { jwtDecode } from "jwt-decode";
 
 /** The decoded public claims from the signed auth, JWT token. */
 export interface DecodedAuthToken {
-  /** ID of the admin that owns this token. */
-  adminId: number;
+  /** ID of the user that owns this token. */
+  userId: number;
   /** Expiration time in seconds since Unix epoch. */
   expiredAt: number;
 }

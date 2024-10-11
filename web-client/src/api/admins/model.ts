@@ -29,3 +29,9 @@ export const adminLoginResponseSchema = z.object({
   token: z.string(),
 });
 export type AdminLoginResponse = z.infer<typeof adminLoginResponseSchema>;
+
+export const authResponseSchema = z.object({
+  token: z.string(),
+  admin: adminSchema,
+});
+export type AuthResponse = z.infer<typeof authResponseSchema>;
