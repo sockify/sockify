@@ -22,6 +22,7 @@ func NewOrderHandler(store types.OrderStore) *OrderHandler {
 
 func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore) {
 	router.HandleFunc("/orders", middleware.WithJWTAuth(adminStore, h.handleGetOrders)).Methods(http.MethodGet)
+	router.HandleFunc("/orders/{order_id}", middleware.WithJWTAuth(adminStore, h.handleGetOrderById)).Methods(http.MethodGet)
 	router.HandleFunc("/orders/{order_id}/updates", middleware.WithJWTAuth(adminStore, h.handleGetOrderUpdates)).Methods(http.MethodGet)
 	router.HandleFunc("/orders/{order_id}/updates", middleware.WithJWTAuth(adminStore, h.handleCreateOrderUpdate)).Methods(http.MethodPost)
 	router.HandleFunc("/orders/{order_id}/address", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderAddress)).Methods(http.MethodPatch)
@@ -62,6 +63,37 @@ func (h *OrderHandler) handleGetOrders(w http.ResponseWriter, r *http.Request) {
 		Limit:  limit,
 		Offset: offset,
 	})
+}
+
+// @Summary Retrieve details for an order
+// @Description Retrieves all the details for a particular order.
+// @Tags Orders
+// @Produce json
+// @Security Bearer
+// @Param order_id path int true "Order ID"
+// @Success 200 {object} types.Order
+// @Router /orders/{order_id} [get]
+func (h *OrderHandler) handleGetOrderById(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderIDstr := vars["order_id"]
+
+	orderID, err := strconv.Atoi(orderIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid order ID"))
+		return
+	}
+
+	order, err := h.store.GetOrderById(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if order == nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("order with ID %v does not exist", orderID))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, order)
 }
 
 // @Summary Retrieve updates for an order

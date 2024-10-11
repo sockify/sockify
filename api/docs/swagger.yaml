@@ -473,6 +473,27 @@ paths:
       summary: Retrieve all orders
       tags:
       - Orders
+  /orders/{order_id}:
+    get:
+      description: Retrieves all the details for a particular order.
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Order'
+      security:
+      - Bearer: []
+      summary: Retrieve details for an order
+      tags:
+      - Orders
   /orders/{order_id}/address:
     patch:
       consumes:
