@@ -234,6 +234,8 @@ definitions:
       price:
         type: number
       quantity:
+        description: Quantity must be a pointer for the "required" validator to work
+          with 0 as an input.
         minimum: 0
         type: integer
       size:

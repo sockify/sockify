@@ -236,10 +236,14 @@ func toSock(dto types.SockDTO) types.Sock {
 }
 
 func toSockVariant(dto types.SockVariantDTO) types.SockVariant {
+	quantity := 0
+	if dto.Quantity != nil {
+		quantity = *dto.Quantity
+	}
 	return types.SockVariant{
 		Size:     dto.Size,
 		Price:    dto.Price,
-		Quantity: dto.Quantity,
+		Quantity: quantity,
 	}
 }
 

@@ -1001,6 +1001,7 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "quantity": {
+                    "description": "Quantity must be a pointer for the \"required\" validator to work with 0 as an input.",
                     "type": "integer",
                     "minimum": 0
                 },
