@@ -1,4 +1,5 @@
 import axiosInstance from "@/shared/axios";
+import { LOCAL_STORAGE_AUTH_TOKEN_KEY } from "@/shared/constants";
 import { decodeJwtToken } from "@/shared/utils/jwt";
 
 import {
@@ -40,6 +41,8 @@ export class HttpAdminService implements AdminService {
   async login(payload: AdminLoginRequest): Promise<AuthResponse> {
     const { data } = await axiosInstance.post("/api/v1/admins/login", payload);
     const { token } = adminLoginResponseSchema.parse(data);
+    // For `getAdminById` to work, `token` must be in local storage ahead of time.
+    localStorage.setItem(LOCAL_STORAGE_AUTH_TOKEN_KEY, token);
 
     const { userId } = decodeJwtToken(token);
     const admin = await this.getAdminById(userId);
