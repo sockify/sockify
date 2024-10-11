@@ -29,7 +29,6 @@ type SockVariant struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-// Order represents an order in the system
 type Order struct {
 	ID            int         `json:"orderId"`
 	InvoiceNumber string      `json:"invoiceNumber"`
@@ -41,7 +40,6 @@ type Order struct {
 	Status        string      `json:"status"`
 }
 
-// OrderItem represents an item in an order
 type OrderItem struct {
 	Name     string  `json:"name"`
 	Size     string  `json:"size"`
@@ -49,7 +47,6 @@ type OrderItem struct {
 	Quantity int     `json:"quantity"`
 }
 
-// Address represents the shipping address for an order
 type Address struct {
 	Street  string  `json:"street"`
 	AptUnit *string `json:"aptUnit"`
@@ -57,7 +54,6 @@ type Address struct {
 	Zipcode string  `json:"zipcode"`
 }
 
-// Contact represents the contact information for an order
 type Contact struct {
 	FirstName string  `json:"firstname"`
 	LastName  string  `json:"lastname"`

@@ -204,3 +204,56 @@ func (s *SockStore) GetSockByID(sockID int) (*types.Sock, error) {
 
 	return &sock, nil
 }
+
+func (s *SockStore) UpdateSock(sockID int, sock types.Sock, variants []types.SockVariant) error {
+	_, err := s.db.Exec(`
+		UPDATE socks
+		SET name = $1, description = $2, preview_image_url = $3
+		WHERE sock_id = $4 AND is_deleted = false`,
+		sock.Name, sock.Description, sock.PreviewImageURL, sockID)
+
+	if err != nil {
+		return fmt.Errorf("failed to update sock: %w", err)
+	}
+
+	for _, variant := range variants {
+		exists, err := s.SockVariantExists(sockID, variant.Size)
+		if err != nil {
+			return err
+		}
+
+		if exists {
+			_, err := s.db.Exec(`
+				UPDATE sock_variants
+				SET price = $1, quantity = $2
+				WHERE sock_id = $3 AND size = $4`,
+				variant.Price, variant.Quantity, sockID, variant.Size)
+
+			if err != nil {
+				return fmt.Errorf("failed to update variant: %w", err)
+			}
+		} else {
+			_, err := s.db.Exec(`
+				INSERT INTO sock_variants (sock_id, price, quantity, size)
+				VALUES ($1, $2, $3, $4)`,
+				sockID, variant.Price, variant.Quantity, variant.Size)
+
+			if err != nil {
+				return fmt.Errorf("failed to insert variant: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+// sockVariantExists checks if a sock variant exists for the given sock ID and size
+func (s *SockStore) SockVariantExists(sockID int, size string) (bool, error) {
+	var exists bool
+	query := `SELECT EXISTS (SELECT 1 FROM sock_variants WHERE sock_id = $1 AND size = $2)`
+	err := s.db.QueryRow(query, sockID, size).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("error checking if sock variant exists: %w", err)
+	}
+	return exists, nil
+}
