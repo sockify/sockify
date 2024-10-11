@@ -1,15 +1,18 @@
+import { useGetAdmins } from "@/api/admins/queries";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 import { Users } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
-import { useGetAdmins } from "./api/admins/queries";
-import { Button } from "./components/ui/button";
-
-export default function App() {
-  const { data: admins, isLoading, error, refetch } = useGetAdmins(false);
+export default function AdminHomePage() {
+  const { data, isLoading, error, refetch } = useGetAdmins(25, 0, false);
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <>
       <h1 className="ml-2 mt-8 text-3xl font-bold underline">Admins</h1>
+      <p>isAuthenticated? {isAuthenticated ? "true" : "false"}</p>
+
       <Button
         onClick={() => {
           refetch();
@@ -25,8 +28,8 @@ export default function App() {
 
         {isLoading ? (
           <p>Loading...</p>
-        ) : admins && admins.length > 0 ? (
-          admins.map((admin) => (
+        ) : data && data.items.length > 0 ? (
+          data.items.map((admin) => (
             <p key={admin.id}>
               {admin.username} ({admin.id})
             </p>
@@ -36,7 +39,7 @@ export default function App() {
         )}
       </ul>
 
-      <Toaster position="top-right" />
+      {isAuthenticated && <Button onClick={() => logout()}>Logout</Button>}
     </>
   );
 }
