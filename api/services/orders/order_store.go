@@ -314,3 +314,30 @@ func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, erro
 
 	return &order, nil
 }
+
+func (s *OrderStore) GetOrderByID(orderID int) (*types.Order, error) {
+	var order types.Order
+	query := `SELECT * FROM orders WHERE order_id = $1`
+
+	row := s.db.QueryRow(query, orderID)
+	err := row.Scan(
+		&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
+		&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
+		&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
+		&order.CreatedAt,
+	)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		log.Printf("Error fetching order by ID %v: %v", orderID, err)
+		return nil, err
+	}
+
+	items, err := s.GetOrderItems(order.ID)
+	if err != nil {
+		return nil, err
+	}
+	order.Items = items
+
+	return &order, nil
+}

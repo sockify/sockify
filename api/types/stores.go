@@ -31,4 +31,5 @@ type OrderStore interface {
 	GetOrderStatusByID(orderID int) (status string, err error)
 	UpdateOrderContact(orderID int, contact UpdateContactRequest, adminID int) error
 	GetOrderByInvoice(invoiceNumber string) (*Order, error)
+	GetOrderByID(orderID int) (*Order, error)
 }

@@ -28,6 +28,8 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.Admin
 	router.HandleFunc("/orders/{order_id}/status", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderStatus)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/{order_id}/contact", middleware.WithJWTAuth(adminStore, h.handleUpdateOrderContact)).Methods(http.MethodPatch)
 	router.HandleFunc("/orders/invoice/{invoice_number}", middleware.WithJWTAuth(adminStore, h.handleGetOrderByInvoice)).Methods(http.MethodGet)
+	router.HandleFunc("/orders/{order_id}", middleware.WithJWTAuth(adminStore, h.handleGetOrderByID)).Methods(http.MethodGet)
+
 }
 
 // @Summary Retrieve all orders
@@ -351,4 +353,38 @@ func isValidStatusUpdate(currentStatus string, newStatus string) error {
 	}
 
 	return fmt.Errorf("order status can not change from '%v' to '%v'", currentStatus, newStatus)
+}
+
+// @Summary Retrieve order by ID
+// @Description Retrieves the details of an order by its ID.
+// @Tags Orders
+// @Produce json
+// @Security Bearer
+// @Param order_id path int true "Order ID"
+// @Success 200 {object} types.Order "Order found"
+// @Failure 400 {object} types.ErrorResponse "Invalid order ID format"
+// @Failure 404 {object} types.ErrorResponse "Order not found"
+// @Failure 500 {object} types.ErrorResponse "Internal server error"
+// @Router /orders/{order_id} [get]
+func (h *OrderHandler) handleGetOrderByID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderIDstr := vars["order_id"]
+
+	orderID, err := strconv.Atoi(orderIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid order ID"))
+		return
+	}
+
+	order, err := h.store.GetOrderByID(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if order == nil {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("order with ID %v not found", orderID))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, order)
 }
