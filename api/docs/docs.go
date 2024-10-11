@@ -569,11 +569,17 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Updates the details of a specific sock including its variants",
-                "tags": [
-                    "Inventory"
+                "description": "Updates an existing sock's details and its variants.",
+                "consumes": [
+                    "application/json"
                 ],
-                "summary": "Update a sock",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Socks"
+                ],
+                "summary": "Updates a sock and its variants",
                 "parameters": [
                     {
                         "type": "integer",
@@ -583,7 +589,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Updated Sock Data",
+                        "description": "Sock update details",
                         "name": "sock",
                         "in": "body",
                         "required": true,
@@ -1119,15 +1125,12 @@ const docTemplate = `{
         "types.UpdateSockRequest": {
             "type": "object",
             "required": [
-                "name",
+                "sock",
                 "variants"
             ],
             "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
+                "sock": {
+                    "$ref": "#/definitions/types.SockDTO"
                 },
                 "variants": {
                     "type": "array",

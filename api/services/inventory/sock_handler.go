@@ -177,16 +177,6 @@ func (h *SockHandler) handleGetSockDetails(w http.ResponseWriter, r *http.Reques
 	utils.WriteJson(w, http.StatusOK, sock)
 }
 
-// @Summary Updates a sock and its variants
-// @Description Updates an existing sock's details and its variants.
-// @Tags Socks
-// @Accept json
-// @Produce json
-// @Security Bearer
-// @Param sock_id path int true "Sock ID"
-// @Param sock body types.UpdateSockRequest true "Sock update details"
-// @Success 200 {object} types.Message
-// @Router /socks/{sock_id} [patch]
 func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sockIDstr := vars["sock_id"]
@@ -219,22 +209,9 @@ func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Convert the UpdateSockRequest to the types.Sock entity
-	sock := types.Sock{
-		Name: req.Name,
-		// Initialize Description with an empty string
-		Description: "",
-	}
-
-	// Check if req.Description is not nil before dereferencing
-	if req.Description != nil {
-		sock.Description = *req.Description
-	}
-
-	// Convert SockVariantDTO to SockVariant using the helper function
+	sock := toSock(req.Sock)
 	variants := toSockVariantArray(req.Variants)
 
-	// Update sock and its variants in the store
 	if err := h.store.UpdateSock(sockID, sock, variants); err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

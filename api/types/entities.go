@@ -77,9 +77,3 @@ type OrderUpdateCreator struct {
 	LastName  string `json:"lastname"`
 	Username  string `json:"username"`
 }
-
-type UpdateSock struct {
-	Name        string        `json:"name"`
-	Description *string       `json:"description"`
-	Variants    []SockVariant `json:"variants"`
-}
