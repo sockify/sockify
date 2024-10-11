@@ -82,6 +82,12 @@ func WithJWTAuth(store types.AdminStore, nextHandler http.HandlerFunc) http.Hand
 			return
 		}
 
+		if admin == nil {
+			log.Printf("no admin found with id: %v", userID)
+			permissionUnauthorized(w)
+			return
+		}
+
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, UserKey, admin.ID)
 		r = r.WithContext(ctx)
