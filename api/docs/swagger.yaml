@@ -361,18 +361,6 @@ definitions:
     - message
     - newStatus
     type: object
-  types.UpdateSockRequest:
-    properties:
-      sock:
-        $ref: '#/definitions/types.SockDTO'
-      variants:
-        items:
-          $ref: '#/definitions/types.SockVariantDTO'
-        type: array
-    required:
-    - sock
-    - variants
-    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -731,34 +719,6 @@ paths:
       summary: Get details of a specific sock
       tags:
       - Inventory
-    patch:
-      consumes:
-      - application/json
-      description: Updates an existing sock's details and its variants.
-      parameters:
-      - description: Sock ID
-        in: path
-        name: sock_id
-        required: true
-        type: integer
-      - description: Sock update details
-        in: body
-        name: sock
-        required: true
-        schema:
-          $ref: '#/definitions/types.UpdateSockRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/types.Message'
-      security:
-      - Bearer: []
-      summary: Updates a sock and its variants
-      tags:
-      - Socks
 securityDefinitions:
   Bearer:
     description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer

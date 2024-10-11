@@ -562,50 +562,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Updates an existing sock's details and its variants.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Socks"
-                ],
-                "summary": "Updates a sock and its variants",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Sock ID",
-                        "name": "sock_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Sock update details",
-                        "name": "sock",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.UpdateSockRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/types.Message"
-                        }
-                    }
-                }
             }
         }
     },
@@ -1119,24 +1075,6 @@ const docTemplate = `{
                         "canceled",
                         "returned"
                     ]
-                }
-            }
-        },
-        "types.UpdateSockRequest": {
-            "type": "object",
-            "required": [
-                "sock",
-                "variants"
-            ],
-            "properties": {
-                "sock": {
-                    "$ref": "#/definitions/types.SockDTO"
-                },
-                "variants": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/types.SockVariantDTO"
-                    }
                 }
             }
         }
