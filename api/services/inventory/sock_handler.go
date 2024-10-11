@@ -177,6 +177,16 @@ func (h *SockHandler) handleGetSockDetails(w http.ResponseWriter, r *http.Reques
 	utils.WriteJson(w, http.StatusOK, sock)
 }
 
+// @Summary Updates the details of a sock
+// @Description Updates all of the details for a sock given a sock ID
+// @Tags Inventory
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param sock_id path int true "Sock ID"
+// @Param details body types.UpdateSockRequest true "Updated sock details"
+// @Success 200 {object} types.Message
+// @Router /socks/{sock_id} [patch]
 func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	sockIDstr := vars["sock_id"]
