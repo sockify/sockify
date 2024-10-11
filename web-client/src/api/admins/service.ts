@@ -44,8 +44,11 @@ export class HttpAdminService implements AdminService {
     // For `getAdminById` to work, `token` must be in local storage ahead of time.
     localStorage.setItem(LOCAL_STORAGE_AUTH_TOKEN_KEY, token);
 
-    const { userId } = decodeJwtToken(token);
-    const admin = await this.getAdminById(userId);
+    const decodedToken = decodeJwtToken(token);
+    if (!decodedToken) {
+      throw new Error(`Unable to decode auth token.`);
+    }
+    const admin = await this.getAdminById(decodedToken.userId);
 
     return { token, admin };
   }

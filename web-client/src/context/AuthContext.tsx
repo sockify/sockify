@@ -25,6 +25,8 @@ interface AuthContextType {
   logout: () => void;
   /** True if the admin is currently logging in. */
   isLoggingIn: boolean;
+  /** True if the token is being fetched from local storage during initialization. */
+  isFetchingToken: boolean;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -36,15 +38,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const navigate = useNavigate();
   const loginMutation = useLoginAdminMutation();
 
+  const [isFetchingToken, setIsFetchingToken] = useState(true);
   const [token, setToken] = useState<string | null>(null);
   const [admin, setAdmin] = useState<Admin | null>(null);
   const isAuthenticated = Boolean(token && !isJwtTokenExpired(token));
   const isLoggingIn = loginMutation.isPending;
 
-  const adminQuery = useGetAdminById(
-    token ? decodeJwtToken(token).userId : 0,
-    Boolean(token && !admin),
-  );
+  const adminId = token ? (decodeJwtToken(token)?.userId ?? 0) : 0;
+  const adminQuery = useGetAdminById(adminId, Boolean(token && !admin));
 
   useEffect(() => {
     const storedToken = localStorage.getItem(LOCAL_STORAGE_AUTH_TOKEN_KEY);
@@ -56,6 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setToken(storedToken);
       }
     }
+    setIsFetchingToken(false);
   }, []);
 
   useEffect(() => {
@@ -92,7 +94,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ token, admin, isAuthenticated, login, logout, isLoggingIn }}
+      value={{
+        token,
+        admin,
+        isAuthenticated,
+        login,
+        logout,
+        isLoggingIn,
+        isFetchingToken,
+      }}
     >
       {children}
     </AuthContext.Provider>
