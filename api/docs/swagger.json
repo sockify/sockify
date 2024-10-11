@@ -242,6 +242,40 @@
                 }
             }
         },
+        "/orders/{order_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all the details for a particular order.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve details for an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Order"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{order_id}/address": {
             "patch": {
                 "security": [
@@ -580,6 +614,50 @@
                         "name": "sock_id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates all of the details for a sock given a sock ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Updates the details of a sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated sock details",
+                        "name": "details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateSockRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -951,6 +1029,7 @@
                     "type": "number"
                 },
                 "quantity": {
+                    "description": "Quantity must be a pointer for the \"required\" validator to work with 0 as an input.",
                     "type": "integer",
                     "minimum": 0
                 },
@@ -1103,6 +1182,24 @@
                         "canceled",
                         "returned"
                     ]
+                }
+            }
+        },
+        "types.UpdateSockRequest": {
+            "type": "object",
+            "required": [
+                "sock",
+                "variants"
+            ],
+            "properties": {
+                "sock": {
+                    "$ref": "#/definitions/types.SockDTO"
+                },
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SockVariantDTO"
+                    }
                 }
             }
         }

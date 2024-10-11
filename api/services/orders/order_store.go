@@ -2,6 +2,7 @@ package orders
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 
@@ -59,6 +60,31 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 	}
 
 	return orders, nil
+}
+
+func (s *OrderStore) GetOrderById(orderID int) (*types.Order, error) {
+	var order types.Order
+	err := s.db.QueryRow("SELECT * FROM orders WHERE order_id = $1",
+		orderID).Scan(&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
+		&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
+		&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
+		&order.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to fetch order with ID %d: %w", orderID, err)
+	}
+
+	items, err := s.GetOrderItems(order.ID)
+	if err != nil {
+		return nil, err
+	}
+	order.Items = items
+
+	return &order, nil
 }
 
 func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {

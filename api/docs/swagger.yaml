@@ -234,6 +234,8 @@ definitions:
       price:
         type: number
       quantity:
+        description: Quantity must be a pointer for the "required" validator to work
+          with 0 as an input.
         minimum: 0
         type: integer
       size:
@@ -360,6 +362,18 @@ definitions:
     required:
     - message
     - newStatus
+    type: object
+  types.UpdateSockRequest:
+    properties:
+      sock:
+        $ref: '#/definitions/types.SockDTO'
+      variants:
+        items:
+          $ref: '#/definitions/types.SockVariantDTO'
+        type: array
+    required:
+    - sock
+    - variants
     type: object
 host: localhost:8080
 info:
@@ -492,6 +506,27 @@ paths:
       security:
       - Bearer: []
       summary: Retrieve all orders
+      tags:
+      - Orders
+  /orders/{order_id}:
+    get:
+      description: Retrieves all the details for a particular order.
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Order'
+      security:
+      - Bearer: []
+      summary: Retrieve details for an order
       tags:
       - Orders
   /orders/{order_id}/address:
@@ -738,6 +773,34 @@ paths:
           schema:
             $ref: '#/definitions/types.Sock'
       summary: Get details of a specific sock
+      tags:
+      - Inventory
+    patch:
+      consumes:
+      - application/json
+      description: Updates all of the details for a sock given a sock ID
+      parameters:
+      - description: Sock ID
+        in: path
+        name: sock_id
+        required: true
+        type: integer
+      - description: Updated sock details
+        in: body
+        name: details
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateSockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      security:
+      - Bearer: []
+      summary: Updates the details of a sock
       tags:
       - Inventory
 securityDefinitions:
