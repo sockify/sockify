@@ -192,7 +192,6 @@ func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
-
 	if !exists {
 		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
 		return
@@ -203,7 +202,6 @@ func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
-
 	if err := utils.Validate.Struct(req); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
@@ -211,7 +209,6 @@ func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 
 	sock := toSock(req.Sock)
 	variants := toSockVariantArray(req.Variants)
-
 	if err := h.store.UpdateSock(sockID, sock, variants); err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return

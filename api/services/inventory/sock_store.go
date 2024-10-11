@@ -206,7 +206,6 @@ func (s *SockStore) GetSockByID(sockID int) (*types.Sock, error) {
 }
 
 func (s *SockStore) UpdateSock(sockID int, sock types.Sock, variants []types.SockVariant) error {
-
 	_, err := s.db.Exec(`
 		UPDATE socks
 		SET name = $1, description = $2, preview_image_url = $3
@@ -224,7 +223,6 @@ func (s *SockStore) UpdateSock(sockID int, sock types.Sock, variants []types.Soc
 		}
 
 		if exists {
-
 			_, err := s.db.Exec(`
 				UPDATE sock_variants
 				SET price = $1, quantity = $2
@@ -235,7 +233,6 @@ func (s *SockStore) UpdateSock(sockID int, sock types.Sock, variants []types.Soc
 				return fmt.Errorf("failed to update variant: %w", err)
 			}
 		} else {
-
 			_, err := s.db.Exec(`
 				INSERT INTO sock_variants (sock_id, price, quantity, size)
 				VALUES ($1, $2, $3, $4)`,

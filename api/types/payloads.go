@@ -60,7 +60,6 @@ type SockVariantDTO struct {
 	Quantity int     `json:"quantity" validate:"required,gte=0"`
 }
 
-// UpdateSockRequest is the payload for updating a sock and its variants.
 type UpdateSockRequest struct {
 	Sock     SockDTO          `json:"sock" validate:"required"`
 	Variants []SockVariantDTO `json:"variants" validate:"required,dive"`
