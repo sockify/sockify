@@ -12,7 +12,7 @@ import "./index.css";
 import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
 import HomePage from "./pages/HomePage";
-import AdminHomePage from "./pages/admin/AdminHomePage";
+import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 
 const queryClient = new QueryClient();
@@ -36,7 +36,12 @@ createRoot(document.getElementById("root")!).render(
             <Route element={<AuthProtectedRoutes />}>
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Navigate to="/admin/home" replace />} />
-                <Route path="home" element={<AdminHomePage />} />
+                {/* For MVP, the inventory page will acts as the home page. */}
+                <Route
+                  path="home"
+                  element={<Navigate to="/admin/inventory" replace />}
+                />
+                <Route path="inventory" element={<AdminInventoryPage />} />
 
                 <Route path="*" element={<NotFound />} />
               </Route>

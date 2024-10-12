@@ -12,7 +12,9 @@ export default function NotFound() {
   const homePath = isAuthenticated && isAdminPath ? "/admin/home" : "/home";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <section
+      className={`flex min-h-[calc(100vh-var(--navbar-height))] items-center justify-center bg-background px-4`}
+    >
       <div className="w-full max-w-md space-y-8 text-center">
         <header className="space-y-2">
           <h1 className="text-7xl font-extrabold text-primary">404</h1>
@@ -61,6 +63,6 @@ export default function NotFound() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
