@@ -1,22 +1,16 @@
 import { useGetAdmins } from "@/api/admins/queries";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
 import { Users } from "lucide-react";
-import toast from "react-hot-toast";
 
-export default function AdminHomePage() {
+export default function AdminInventoryPage() {
   const { data, isLoading, error, refetch } = useGetAdmins(25, 0, false);
-  const { isAuthenticated, logout } = useAuth();
 
   return (
     <>
-      <h1 className="ml-2 mt-8 text-3xl font-bold underline">Admins</h1>
-      <p>isAuthenticated? {isAuthenticated ? "true" : "false"}</p>
-
+      <h1 className="ml-2 mt-8 text-3xl font-bold underline">Inventory</h1>
       <Button
         onClick={() => {
           refetch();
-          toast("Fetching the admins...");
         }}
       >
         <Users className="mr-2 h-4 w-4" />
@@ -38,8 +32,6 @@ export default function AdminHomePage() {
           <p>No admins found.</p>
         )}
       </ul>
-
-      {isAuthenticated && <Button onClick={() => logout()}>Logout</Button>}
     </>
   );
 }

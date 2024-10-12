@@ -1,4 +1,4 @@
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
 
   return (
     <section className="min-w-screen flex min-h-screen justify-center bg-gray-50">
-      <div className="mt-16 h-fit w-full px-4 md:w-2/5">
+      <div className="mt-20 h-fit w-full px-4 md:w-2/5">
         <div className="mb-6 text-center">
           <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
             <Lock className="h-12 w-12 text-primary" />
