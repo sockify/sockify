@@ -1,15 +1,40 @@
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock } from "lucide-react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+
+const adminLoginSchema = z.object({
+  username: z.string().min(1, { message: "Username is required" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
+type AdminLoginForm = z.infer<typeof adminLoginSchema>;
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
   const { login, isLoggingIn, isAuthenticated } = useAuth();
 
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const form = useForm<AdminLoginForm>({
+    resolver: zodResolver(adminLoginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -17,47 +42,79 @@ export default function AdminLoginPage() {
     }
   }, [isAuthenticated]);
 
+  const onSubmit = (data: AdminLoginForm) => {
+    const { username, password } = data;
+
+    if (isAuthenticated) {
+      toast.error("Already logged in");
+      return;
+    }
+
+    login(username, password);
+  };
+
   return (
-    <>
-      <h1>Admin Login</h1>
-      <p>isAuthenticated? {isAuthenticated ? "true" : "false"}</p>
+    <section className="min-w-screen flex min-h-screen justify-center bg-gray-50">
+      <div className="mt-16 h-fit w-full px-4 md:w-2/5">
+        <div className="mb-6 text-center">
+          <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
+            <Lock className="h-12 w-12 text-primary" />
+          </div>
+          <h1 className="mb-2 text-4xl">
+            <strong>Admin Login</strong>
+          </h1>
+          <p className="text-muted-foreground">
+            Enter your credentials to access the admin panel
+          </p>
+        </div>
 
-      <div>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your username"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoggingIn || isAuthenticated}
+            >
+              {isLoggingIn && <LoadingSpinner size={16} className="mr-2" />}
+              {isLoggingIn ? "Logging in..." : "Log In"}
+            </Button>
+          </form>
+        </Form>
       </div>
-
-      <div>
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-
-      <Button
-        onClick={() => {
-          if (!username?.length || !password?.length) {
-            toast.error("Username and password are required to login.");
-            return;
-          }
-
-          if (isAuthenticated) {
-            toast.error("Already logged in.");
-            return;
-          }
-
-          login(username, password);
-        }}
-        disabled={isLoggingIn || isAuthenticated}
-      >
-        {isLoggingIn ? "Logging in..." : "Login"}
-      </Button>
-    </>
+    </section>
   );
 }

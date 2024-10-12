@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAdmin(null);
 
     navigate("/admin/login");
-    toast.success("Logged out.");
+    toast.success("Logged out");
   };
 
   return (

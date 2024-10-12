@@ -52,8 +52,8 @@ export function useLoginAdminMutation(): UseMutationResult<
     onSuccess: (data) => {
       toast.success(`Welcome back, ${data.admin.firstname}!`);
     },
-    onError: (err) => {
-      toast.error(`Failed to login: ${err.message}`);
+    onError: () => {
+      toast.error("Incorrect username or password");
     },
   });
 }
