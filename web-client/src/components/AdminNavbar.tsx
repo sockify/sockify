@@ -11,10 +11,10 @@ import { PROJECT_GITHUB_URL } from "@/shared/constants";
 import { Cloud, Github, LifeBuoy, LogOut, Settings, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { NavLink } from "./NavLink";
+import NavLink from "./NavLink";
 import { Button } from "./ui/button";
 
-export function AdminNavbar() {
+export default function AdminNavbar() {
   const { logout } = useAuth();
 
   return (

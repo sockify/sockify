@@ -1,7 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
-import { LoadingSpinner } from "./LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface AuthRouteProps {
   redirectPath?: string;

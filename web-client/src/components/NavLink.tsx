@@ -10,7 +10,12 @@ interface NavLinkProps extends ButtonProps {
   className?: string;
 }
 
-export function NavLink({ children, to, className, ...props }: NavLinkProps) {
+export default function NavLink({
+  children,
+  to,
+  className,
+  ...props
+}: NavLinkProps) {
   return (
     <Button
       variant="link"
