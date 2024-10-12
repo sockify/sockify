@@ -1,3 +1,4 @@
+import AdminFooter from "@/components/AdminFooter";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,7 +43,7 @@ export default function AdminLoginPage() {
     }
   }, [isAuthenticated]);
 
-  const onSubmit = (data: AdminLoginForm) => {
+  const handleLogin = async (data: AdminLoginForm) => {
     const { username, password } = data;
 
     if (isAuthenticated) {
@@ -50,71 +51,77 @@ export default function AdminLoginPage() {
       return;
     }
 
-    login(username, password);
+    await login(username, password);
   };
 
   return (
-    <section className="min-w-screen flex min-h-screen justify-center bg-gray-50">
-      <div className="mt-20 h-fit w-full px-4 md:w-2/5">
-        <div className="mb-6 text-center">
-          <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
-            <Lock className="h-12 w-12 text-primary" />
+    <>
+      <section className="min-w-screen flex min-h-screen justify-center bg-gray-50">
+        <div className="mt-20 h-fit w-full px-4 md:w-2/5">
+          <div className="mb-6 text-center">
+            <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
+              <Lock className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="mb-2 text-4xl">
+              <strong>Admin Login</strong>
+            </h1>
+            <p className="text-muted-foreground">
+              Enter your credentials to access the admin panel
+            </p>
           </div>
-          <h1 className="mb-2 text-4xl">
-            <strong>Admin Login</strong>
-          </h1>
-          <p className="text-muted-foreground">
-            Enter your credentials to access the admin panel
-          </p>
-        </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your username"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoggingIn || isAuthenticated}
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleLogin)}
+              className="space-y-4"
             >
-              {isLoggingIn && <LoadingSpinner size={16} className="mr-2" />}
-              {isLoggingIn ? "Logging in..." : "Log In"}
-            </Button>
-          </form>
-        </Form>
-      </div>
-    </section>
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter your username"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoggingIn || isAuthenticated}
+              >
+                {isLoggingIn && <LoadingSpinner size={16} className="mr-2" />}
+                {isLoggingIn ? "Logging in..." : "Log In"}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </section>
+      <AdminFooter />
+    </>
   );
 }
