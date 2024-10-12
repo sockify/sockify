@@ -19,7 +19,7 @@ interface AuthContextType {
   admin: Admin | null;
   /** True if the JWT token is valid, and is not expired. */
   isAuthenticated: boolean;
-  /** Logs in an admin. */
+  /** Logs in an admin. Throws an error if logging in was unsuccessful. */
   login: (username: string, password: string) => Promise<void>;
   /** Logs out the currently signed in admin. */
   logout: () => void;

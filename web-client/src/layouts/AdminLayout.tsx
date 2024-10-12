@@ -1,3 +1,4 @@
+import AdminFooter from "@/components/AdminFooter";
 import AdminNavbar from "@/components/AdminNavbar";
 import { Outlet } from "react-router-dom";
 
@@ -10,7 +11,7 @@ export default function AdminLayout() {
       >
         <Outlet />
       </main>
-      <footer>Admin footer</footer>
+      <AdminFooter />
     </>
   );
 }
