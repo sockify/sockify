@@ -20,7 +20,7 @@ export default function AdminNavbar() {
   return (
     <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-sm">
       <section
-        className={`mx-auto flex h-[var(--navbar-height)] w-full max-w-full items-center justify-between px-4 2xl:container`}
+        className={`mx-auto flex h-[var(--navbar-height)] w-full max-w-full items-center justify-between px-4 2xl:container md:px-8`}
       >
         <Link to="/admin/home" className="flex items-center space-x-2">
           <span className="text-2xl font-bold">Sockify</span>
@@ -69,7 +69,7 @@ export default function AdminNavbar() {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                className="text-red-600"
+                className="text-destructive"
                 onClick={() => logout()}
               >
                 <LogOut className="mr-2 h-4 w-4" />
