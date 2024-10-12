@@ -411,6 +411,27 @@ paths:
       summary: Get all admins.
       tags:
       - Admins
+  /admins/{admin_id}:
+    get:
+      description: Retrieves all of an admins relevant information.
+      parameters:
+      - description: Admin ID
+        in: path
+        name: admin_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Admin'
+      security:
+      - Bearer: []
+      summary: Get details of a specific admin
+      tags:
+      - Admins
   /admins/login:
     post:
       consumes:

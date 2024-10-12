@@ -27,16 +27,18 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/" element={<RootLayout />}>
               <Route index element={<Navigate to="/home" replace />} />
               <Route path="home" element={<HomePage />} />
+
+              <Route path="*" element={<NotFound />} />
             </Route>
+            <Route path="/admin/login" element={<AdminLoginPage />} />
 
             {/* ----- Admin dashboard ----- */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Navigate to="/admin/home" replace />} />
-              <Route path="login" element={<AdminLoginPage />} />
-
-              {/* --- Auth protected routes --- */}
-              <Route element={<AuthProtectedRoutes />}>
+            <Route element={<AuthProtectedRoutes />}>
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Navigate to="/admin/home" replace />} />
                 <Route path="home" element={<AdminHomePage />} />
+
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Route>
 

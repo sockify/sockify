@@ -127,6 +127,40 @@
                 }
             }
         },
+        "/admins/{admin_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all of an admins relevant information.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Get details of a specific admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Admin ID",
+                        "name": "admin_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Admin"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "security": [

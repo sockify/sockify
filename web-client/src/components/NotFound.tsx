@@ -1,9 +1,16 @@
+import { useAuth } from "@/context/AuthContext";
 import { Home, Undo2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "./ui/button";
 
 export default function NotFound() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const isAdminPath = window.location.pathname.startsWith("/admin");
+  const homePath = isAuthenticated && isAdminPath ? "/admin/home" : "/home";
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-8 text-center">
@@ -36,10 +43,8 @@ export default function NotFound() {
               <Undo2 className="mr-2 h-4 w-4" /> Back
             </Button>
 
-            <Button asChild>
-              <Link to="/">
-                <Home className="mr-2 h-4 w-4" /> Home
-              </Link>
+            <Button onClick={() => navigate(homePath)}>
+              <Home className="mr-2 h-4 w-4" /> Home
             </Button>
           </div>
         </div>

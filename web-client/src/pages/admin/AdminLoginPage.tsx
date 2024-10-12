@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
-  const { login, isLoading, isAuthenticated } = useAuth();
+  const { login, isLoggingIn, isAuthenticated } = useAuth();
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -54,9 +54,9 @@ export default function AdminLoginPage() {
 
           login(username, password);
         }}
-        disabled={isLoading || isAuthenticated}
+        disabled={isLoggingIn || isAuthenticated}
       >
-        {isLoading ? "Logging in..." : "Login"}
+        {isLoggingIn ? "Logging in..." : "Login"}
       </Button>
     </>
   );

@@ -9,8 +9,8 @@ import toast from "react-hot-toast";
 
 import {
   AdminLoginRequest,
-  AdminLoginResponse,
   AdminsPaginatedResponse,
+  AuthResponse,
 } from "./model";
 import { HttpAdminService } from "./service";
 
@@ -23,7 +23,6 @@ export function useGetAdminsOptions(limit = 50, offset = 0, enabled = true) {
     enabled,
   });
 }
-
 export function useGetAdmins(
   limit?: number,
   offset?: number,
@@ -32,15 +31,26 @@ export function useGetAdmins(
   return useQuery(useGetAdminsOptions(limit, offset, enabled));
 }
 
+export function useGetAdminByIdOptions(adminId: number, enabled = true) {
+  return queryOptions({
+    queryKey: ["admins", { adminId }],
+    queryFn: () => adminService.getAdminById(adminId),
+    enabled,
+  });
+}
+export function useGetAdminById(adminId: number, enabled?: boolean) {
+  return useQuery(useGetAdminByIdOptions(adminId, enabled));
+}
+
 export function useLoginAdminMutation(): UseMutationResult<
-  AdminLoginResponse,
+  AuthResponse,
   Error,
   AdminLoginRequest
 > {
   return useMutation({
     mutationFn: (params) => adminService.login(params),
-    onSuccess: () => {
-      toast.success("Welcome back!");
+    onSuccess: (data) => {
+      toast.success(`Welcome back, ${data.admin.firstname}!`);
     },
     onError: (err) => {
       toast.error(`Failed to login: ${err.message}`);
