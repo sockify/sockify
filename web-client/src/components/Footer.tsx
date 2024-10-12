@@ -45,7 +45,7 @@ export default function Footer() {
     <footer className="bg-primary text-gray-200">
       <div className="mx-auto px-4 py-12 2xl:container md:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          <div className="space-y-4">
+          <section className="space-y-4">
             <h2 className="text-2xl font-bold text-white">Sockify</h2>
             <p className="text-sm">
               Bringing comfort to your feet, one pair at a time.
@@ -61,8 +61,9 @@ export default function Footer() {
                 <span className="sr-only">GitHub</span>
               </a>
             </div>
-          </div>
-          <div>
+          </section>
+
+          <section>
             <h3 className="mb-4 text-lg font-semibold text-white">Products</h3>
             <ul className="space-y-2">
               <li>
@@ -71,8 +72,9 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-          <div>
+          </section>
+
+          <section>
             <h3 className="mb-4 text-lg font-semibold text-white">Company</h3>
             <ul className="space-y-2">
               <li>
@@ -91,8 +93,9 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-          <div>
+          </section>
+
+          <section>
             <h3 className="mb-4 text-lg font-semibold text-white">
               Stay updated
             </h3>
@@ -127,7 +130,7 @@ export default function Footer() {
                 </Button>
               </form>
             </Form>
-          </div>
+          </section>
         </div>
 
         <div className="mt-8 border-t border-gray-300 pt-8 text-center text-sm">

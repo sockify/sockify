@@ -4,7 +4,7 @@ import { Github } from "lucide-react";
 export default function AdminFooter() {
   return (
     <footer className="bg-primary text-gray-200">
-      <div className="mx-auto px-4 py-12 2xl:container md:px-8">
+      <section className="mx-auto px-4 py-12 2xl:container md:px-8">
         <h2 className="mb-2 inline-flex items-center gap-2">
           <span className="text-2xl font-bold text-white">Sockify</span>
           <span className="text-xs text-gray-200">[Admin]</span>
@@ -22,7 +22,7 @@ export default function AdminFooter() {
           <Github size={25} />
           <span className="sr-only">GitHub</span>
         </a>
-      </div>
+      </section>
     </footer>
   );
 }
