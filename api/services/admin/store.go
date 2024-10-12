@@ -2,6 +2,7 @@ package admin
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/sockify/sockify/types"
@@ -46,23 +47,22 @@ func (s *Store) GetAdmins(limit int, offset int) ([]types.Admin, int, error) {
 }
 
 func (s *Store) GetAdminByID(id int) (*types.Admin, error) {
-	rows, err := s.db.Query("SELECT * FROM admins WHERE admin_id = $1", id)
-	if err != nil {
-		return nil, err
-	}
-
 	admin := &types.Admin{}
-	found := false
-	for rows.Next() {
-		admin, err = scanRowsIntoAdmin(rows)
-		if err != nil {
-			return nil, err
-		}
-		found = true
-	}
+	err := s.db.QueryRow("SELECT * FROM admins WHERE admin_id = $1", id).Scan(
+		&admin.ID,
+		&admin.FirstName,
+		&admin.LastName,
+		&admin.Email,
+		&admin.Username,
+		&admin.PasswordHash,
+		&admin.CreatedAt,
+	)
 
-	if !found {
-		return nil, fmt.Errorf("admin not found")
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
 	}
 
 	return admin, nil

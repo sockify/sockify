@@ -24,6 +24,9 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 	router.HandleFunc("/socks", middleware.WithJWTAuth(adminStore, h.handleCreateSock)).Methods(http.MethodPost)
 	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleDeleteSock)).Methods(http.MethodDelete)
 	router.HandleFunc("/socks", h.handleGetAllSocks).Methods(http.MethodGet)
+	router.HandleFunc("/socks/{sock_id}", h.handleGetSockDetails).Methods(http.MethodGet)
+	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleUpdateSock)).Methods(http.MethodPatch)
+
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -143,6 +146,87 @@ func (h *SockHandler) handleGetAllSocks(w http.ResponseWriter, r *http.Request) 
 	})
 }
 
+// @Summary Get details of a specific sock
+// @Description Retrieve the details of a sock by its ID
+// @Tags Inventory
+// @Produce json
+// @Param sock_id path int true "Sock ID"
+// @Success 200 {object} types.Sock
+// @Router /socks/{sock_id} [get]
+func (h *SockHandler) handleGetSockDetails(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sockIDStr := vars["sock_id"]
+
+	sockID, err := strconv.Atoi(sockIDStr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
+	sock, err := h.store.GetSockByID(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if sock == nil {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, sock)
+}
+
+// @Summary Updates the details of a sock
+// @Description Updates all of the details for a sock given a sock ID
+// @Tags Inventory
+// @Accept json
+// @Produce json
+// @Security Bearer
+// @Param sock_id path int true "Sock ID"
+// @Param details body types.UpdateSockRequest true "Updated sock details"
+// @Success 200 {object} types.Message
+// @Router /socks/{sock_id} [patch]
+func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sockIDstr := vars["sock_id"]
+
+	sockID, err := strconv.Atoi(sockIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
+	exists, err := h.store.SockExistsByID(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if !exists {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	var req types.UpdateSockRequest
+	if err := utils.ParseJson(r, &req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	sock := toSock(req.Sock)
+	variants := toSockVariantArray(req.Variants)
+	if err := h.store.UpdateSock(sockID, sock, variants); err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Sock updated successfully"})
+}
+
 func toSock(dto types.SockDTO) types.Sock {
 	return types.Sock{
 		Name:            dto.Name,
@@ -152,10 +236,14 @@ func toSock(dto types.SockDTO) types.Sock {
 }
 
 func toSockVariant(dto types.SockVariantDTO) types.SockVariant {
+	quantity := 0
+	if dto.Quantity != nil {
+		quantity = *dto.Quantity
+	}
 	return types.SockVariant{
 		Size:     dto.Size,
 		Price:    dto.Price,
-		Quantity: dto.Quantity,
+		Quantity: quantity,
 	}
 }
 

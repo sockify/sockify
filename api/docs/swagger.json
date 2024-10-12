@@ -127,6 +127,374 @@
                 }
             }
         },
+        "/admins/{admin_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all of an admins relevant information.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "Get details of a specific admin",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Admin ID",
+                        "name": "admin_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Admin"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all orders from the database with optional filters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve all orders",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "Limit the number of results",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Offset for pagination",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status of the order",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.OrdersPaginatedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/invoice/{invoice_number}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves order details and item list by invoice number.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve order details by invoice number",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Invoice Number",
+                        "name": "invoice_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{order_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all the details for a particular order.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve details for an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Order"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{order_id}/address": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the address for a specific order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update the address of an existing order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Address Data",
+                        "name": "address",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateAddressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{order_id}/contact": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the contact information (name, email, phone) for a specific order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update the contact information of an existing order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Contact Information",
+                        "name": "contact",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateContactRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{order_id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates the status for a specific order by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update the status of an existing order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New order status",
+                        "name": "statusUpdate",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateOrderStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{order_id}/updates": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves all order updates for a particular order. Results are sorted descending by createdAt.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Retrieve updates for an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.OrderUpdate"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Creates a new update for an existing order.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Creates an update for an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New order update",
+                        "name": "address",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CreateOrderUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/socks": {
             "get": {
                 "description": "Returns a list of paginated socks sorted in descending order by created date",
@@ -201,6 +569,33 @@
             }
         },
         "/socks/{sock_id}": {
+            "get": {
+                "description": "Retrieve the details of a sock by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Get details of a specific sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Sock"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -229,10 +624,71 @@
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates all of the details for a sock given a sock ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Updates the details of a sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated sock details",
+                        "name": "details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.UpdateSockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
+        "types.Address": {
+            "type": "object",
+            "properties": {
+                "aptUnit": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "zipcode": {
+                    "type": "string"
+                }
+            }
+        },
         "types.Admin": {
             "type": "object",
             "properties": {
@@ -273,6 +729,34 @@
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "types.Contact": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.CreateOrderUpdateRequest": {
+            "type": "object",
+            "required": [
+                "message"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -330,6 +814,106 @@
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "types.Order": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "contact": {
+                    "$ref": "#/definitions/types.Contact"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "invoiceNumber": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.OrderItem"
+                    }
+                },
+                "orderId": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "types.OrderItem": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.OrderUpdate": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "$ref": "#/definitions/types.OrderUpdateCreator"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.OrderUpdateCreator": {
+            "type": "object",
+            "properties": {
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.OrdersPaginatedResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Order"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
@@ -445,6 +1029,7 @@
                     "type": "number"
                 },
                 "quantity": {
+                    "description": "Quantity must be a pointer for the \"required\" validator to work with 0 as an input.",
                     "type": "integer",
                     "minimum": 0
                 },
@@ -476,6 +1061,145 @@
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "types.UpdateAddressRequest": {
+            "type": "object",
+            "required": [
+                "state",
+                "street",
+                "zipcode"
+            ],
+            "properties": {
+                "aptUnit": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": [
+                        "AL",
+                        "AK",
+                        "AZ",
+                        "AR",
+                        "CA",
+                        "CO",
+                        "CT",
+                        "DE",
+                        "FL",
+                        "GA",
+                        "HI",
+                        "ID",
+                        "IL",
+                        "IN",
+                        "IA",
+                        "KS",
+                        "KY",
+                        "LA",
+                        "ME",
+                        "MD",
+                        "MA",
+                        "MI",
+                        "MN",
+                        "MS",
+                        "MO",
+                        "MT",
+                        "NE",
+                        "NV",
+                        "NH",
+                        "NJ",
+                        "NM",
+                        "NY",
+                        "NC",
+                        "ND",
+                        "OH",
+                        "OK",
+                        "OR",
+                        "PA",
+                        "RI",
+                        "SC",
+                        "SD",
+                        "TN",
+                        "TX",
+                        "UT",
+                        "VT",
+                        "VA",
+                        "WA",
+                        "WV",
+                        "WI",
+                        "WY"
+                    ]
+                },
+                "street": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "zipcode": {
+                    "type": "string",
+                    "maxLength": 10
+                }
+            }
+        },
+        "types.UpdateContactRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "firstName",
+                "lastName",
+                "phone"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.UpdateOrderStatusRequest": {
+            "type": "object",
+            "required": [
+                "message",
+                "newStatus"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "newStatus": {
+                    "type": "string",
+                    "enum": [
+                        "received",
+                        "shipped",
+                        "delivered",
+                        "canceled",
+                        "returned"
+                    ]
+                }
+            }
+        },
+        "types.UpdateSockRequest": {
+            "type": "object",
+            "required": [
+                "sock",
+                "variants"
+            ],
+            "properties": {
+                "sock": {
+                    "$ref": "#/definitions/types.SockDTO"
+                },
+                "variants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.SockVariantDTO"
+                    }
                 }
             }
         }

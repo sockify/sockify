@@ -3,6 +3,7 @@ package admin
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -25,6 +26,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/admins/login", h.handleAdminLogin).Methods(http.MethodPost)
 	router.HandleFunc("/admins/register", middleware.WithJWTAuth(h.store, h.handleAdminRegister)).Methods(http.MethodPost)
 	router.HandleFunc("/admins", middleware.WithJWTAuth(h.store, h.handleGetAdmins)).Methods(http.MethodGet)
+	router.HandleFunc("/admins/{admin_id}", middleware.WithJWTAuth(h.store, h.handleGetAdmin)).Methods(http.MethodGet)
 }
 
 // @Summary Get all admins.
@@ -53,6 +55,38 @@ func (h *Handler) handleGetAdmins(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// @Summary Get details of a specific admin
+// @Description Retrieves all of an admins relevant information.
+// @Tags Admins
+// @Produce json
+// @Security Bearer
+// @Param admin_id path int true "Admin ID"
+// @Success 200 {object} types.Admin
+// @Router /admins/{admin_id} [get]
+func (h *Handler) handleGetAdmin(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	adminIDStr := vars["admin_id"]
+
+	adminID, err := strconv.Atoi(adminIDStr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid admin ID: %v", adminID))
+		return
+	}
+
+	admin, err := h.store.GetAdminByID(adminID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if admin == nil {
+		utils.WriteError(w, http.StatusNotFound, fmt.Errorf("admin with id %v does not exist", adminID))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, admin)
+}
+
 // @Summary Logs in an admin.
 // @Description Logs in an admin using username and password credentials.
 // @Tags Admins
@@ -77,12 +111,12 @@ func (h *Handler) handleAdminLogin(w http.ResponseWriter, r *http.Request) {
 
 	admin, err := h.store.GetAdminByUsername(payload.UserName)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid username or password"))
+		utils.WriteError(w, http.StatusUnauthorized, fmt.Errorf("invalid username or password"))
 		return
 	}
 
 	if !auth.ComparePasswords(admin.PasswordHash, payload.Password) {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid username or password"))
+		utils.WriteError(w, http.StatusUnauthorized, fmt.Errorf("invalid username or password"))
 		return
 	}
 
