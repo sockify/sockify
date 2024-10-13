@@ -7,14 +7,17 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import AuthProtectedRoutes from "./components/AuthProtectedRoutes";
 import NotFound from "./components/NotFound";
+import UnderConstruction from "./components/UnderConstruction";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
+import CartPage from "./pages/CartPage";
 import HomePage from "./pages/HomePage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,29 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/" element={<RootLayout />}>
                 <Route index element={<Navigate to="/home" replace />} />
                 <Route path="home" element={<HomePage />} />
+                <Route path="cart" element={<CartPage />} />
+
+                {/* -- Post MVP -- */}
+                <Route
+                  path="about-us"
+                  element={<UnderConstruction pageName="About us" />}
+                />
+                <Route
+                  path="careers"
+                  element={<UnderConstruction pageName="Careers" />}
+                />
+                <Route
+                  path="support"
+                  element={<UnderConstruction pageName="Support" />}
+                />
+                <Route
+                  path="privacy-policy"
+                  element={<UnderConstruction pageName="Privacy policy" />}
+                />
+                <Route
+                  path="terms-of-service"
+                  element={<UnderConstruction pageName="Terms of service" />}
+                />
 
                 <Route path="*" element={<NotFound />} />
               </Route>
@@ -47,6 +73,17 @@ createRoot(document.getElementById("root")!).render(
                     element={<Navigate to="/admin/inventory" replace />}
                   />
                   <Route path="inventory" element={<AdminInventoryPage />} />
+                  <Route path="orders" element={<AdminOrdersPage />} />
+
+                  {/* -- Post MVP -- */}
+                  <Route
+                    path="profile"
+                    element={<UnderConstruction pageName="Profile" />}
+                  />
+                  <Route
+                    path="team"
+                    element={<UnderConstruction pageName="Team" />}
+                  />
 
                   <Route path="*" element={<NotFound />} />
                 </Route>

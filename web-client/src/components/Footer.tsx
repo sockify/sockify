@@ -78,17 +78,17 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-semibold text-white">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="#" className="hover:text-white">
+                <Link to="/about-us" className="hover:text-white">
                   About us
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-white">
+                <Link to="/careers" className="hover:text-white">
                   Careers
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-white">
+                <Link to="/support" className="hover:text-white">
                   Support
                 </Link>
               </li>
@@ -136,10 +136,10 @@ export default function Footer() {
         <div className="mt-8 border-t border-gray-300 pt-8 text-center text-sm">
           <p>Sockify &copy; {new Date().getFullYear()}. All rights reserved.</p>
           <div className="mt-2 space-x-4">
-            <Link to="#" className="hover:text-white">
+            <Link to="/privacy-policy" className="hover:text-white">
               Privacy policy
             </Link>
-            <Link to="#" className="hover:text-white">
+            <Link to="/terms-of-service" className="hover:text-white">
               Terms of service
             </Link>
           </div>
