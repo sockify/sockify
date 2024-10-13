@@ -26,10 +26,8 @@ export default function AdminNavbar() {
   const { logout } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-sm">
-      <section
-        className={`mx-auto flex h-[var(--navbar-height)] w-full max-w-full items-center justify-between px-4 2xl:container md:px-8`}
-      >
+    <header className="sticky top-0 z-40 w-full bg-background/80 drop-shadow-sm backdrop-blur-sm">
+      <section className="mx-auto flex h-[var(--navbar-height)] w-full max-w-full items-center justify-between px-4 2xl:container md:px-8">
         <Link to="/admin/home" className="flex items-center space-x-2">
           <span className="text-2xl font-bold">Sockify</span>
           <span className="text-xs text-muted-foreground">[Admin]</span>

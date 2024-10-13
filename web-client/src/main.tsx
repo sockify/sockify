@@ -18,6 +18,7 @@ import HomePage from "./pages/HomePage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
+import AdminProfilePage from "./pages/admin/AdminProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -74,12 +75,9 @@ createRoot(document.getElementById("root")!).render(
                   />
                   <Route path="inventory" element={<AdminInventoryPage />} />
                   <Route path="orders" element={<AdminOrdersPage />} />
+                  <Route path="profile" element={<AdminProfilePage />} />
 
                   {/* -- Post MVP -- */}
-                  <Route
-                    path="profile"
-                    element={<UnderConstruction pageName="Profile" />}
-                  />
                   <Route
                     path="team"
                     element={<UnderConstruction pageName="Team" />}

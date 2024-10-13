@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 w-full bg-background/80 drop-shadow-sm backdrop-blur-sm">
       <section
         className={`mx-auto flex h-[var(--navbar-height)] w-full max-w-full items-center justify-between px-4 2xl:container md:px-8`}
       >
