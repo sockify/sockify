@@ -59,12 +59,6 @@ export default function AdminNavbar() {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem asChild>
-                <Link to="/admin/team">
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>Team</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                 <a href={PROJECT_GITHUB_URL} target="_blank">
                   <Github className="mr-2 h-4 w-4" />
                   <span>GitHub</span>
