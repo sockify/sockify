@@ -77,12 +77,6 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="orders" element={<AdminOrdersPage />} />
                   <Route path="profile" element={<AdminProfilePage />} />
 
-                  {/* -- Post MVP -- */}
-                  <Route
-                    path="team"
-                    element={<UnderConstruction pageName="Team" />}
-                  />
-
                   <Route path="*" element={<NotFound />} />
                 </Route>
               </Route>

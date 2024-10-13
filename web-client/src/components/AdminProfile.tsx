@@ -4,6 +4,7 @@ import { AtSign, Calendar, Mail, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Skeleton } from "./ui/skeleton";
 
 interface AdminProfileProps {
   data: Admin;
@@ -20,8 +21,10 @@ export default function AdminProfile({ data }: AdminProfileProps) {
               alt={`${data.firstname} ${data.lastname}`}
             />
             <AvatarFallback>
-              {data.firstname[0]}
-              {data.lastname[0]}
+              <strong>
+                {data.firstname[0]}
+                {data.lastname[0]}
+              </strong>
             </AvatarFallback>
           </Avatar>
         </div>
@@ -60,6 +63,30 @@ export default function AdminProfile({ data }: AdminProfileProps) {
             </dd>
           </div>
         </dl>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function AdminProfileSkeleton() {
+  return (
+    <Card className="mx-auto overflow-hidden">
+      <section className="relative h-32 bg-muted">
+        <div className="absolute -bottom-16 left-6">
+          <Avatar className="h-32 w-32 border-4 border-background">
+            <Skeleton className="h-full w-full rounded-full" />
+          </Avatar>
+        </div>
+      </section>
+
+      <CardHeader className="pt-20">
+        <Skeleton className="h-6 w-32" />
+      </CardHeader>
+
+      <CardContent>
+        <Skeleton className="mb-2 h-4 w-48" />
+        <Skeleton className="mb-2 h-4 w-40" />
+        <Skeleton className="h-4 w-36" />
       </CardContent>
     </Card>
   );
