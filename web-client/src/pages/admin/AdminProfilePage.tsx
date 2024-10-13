@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/pagination";
 import { useAuth } from "@/context/AuthContext";
 import { AlertTriangle, RefreshCcw, Search } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 // Maximum numbers of results per page of the admins table
@@ -40,7 +40,7 @@ export default function AdminProfilePage() {
     (adminsQuery.data?.total ?? 0) / ADMIN_RESULTS_LIMIT,
   );
 
-  const renderPaginationButtons = () => {
+  const renderPaginationButtons = useMemo(() => {
     const buttons: JSX.Element[] = [];
     for (let i = 1; i <= totalPages; i++) {
       buttons.push(
@@ -52,7 +52,7 @@ export default function AdminProfilePage() {
       );
     }
     return buttons;
-  };
+  }, [totalPages, page]);
 
   return (
     <section className="space-y-6 px-4 py-6 md:px-8">
@@ -119,7 +119,7 @@ export default function AdminProfilePage() {
                   />
                 </PaginationItem>
 
-                {renderPaginationButtons()}
+                {renderPaginationButtons}
 
                 <PaginationItem>
                   <PaginationNext
