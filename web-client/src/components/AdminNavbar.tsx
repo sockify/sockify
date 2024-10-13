@@ -8,15 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import { PROJECT_GITHUB_URL } from "@/shared/constants";
-import {
-  Cloud,
-  Github,
-  LifeBuoy,
-  LogOut,
-  Settings,
-  User,
-  Users,
-} from "lucide-react";
+import { Cloud, Github, LifeBuoy, LogOut, Settings, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import NavLink from "./NavLink";

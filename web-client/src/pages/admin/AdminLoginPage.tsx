@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
     if (isAuthenticated) {
       navigate("/admin/home");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (data: AdminLoginForm) => {
     const { username, password } = data;

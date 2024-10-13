@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (adminQuery.data) {
       setAdmin(adminQuery.data);
     }
-  }, [adminQuery.data?.id]);
+  }, [adminQuery.data]);
 
   useEffect(() => {
     if (adminQuery.isError) {
