@@ -163,7 +163,7 @@ The `web-client` and `database` have public URL access, however, the `api` is NO
 
 #### Docker-compose caveat <!-- omit in toc -->
 
-Turns out [Railway does NOT support `docker-compose`](https://docs.railway.app/guides/dockerfiles#docker-compose). As a result, we are unable to simply using our local development workflow.
+Turns out [Railway does NOT support `docker-compose`](https://docs.railway.app/guides/dockerfiles#docker-compose). As a result, we are unable to simply use our local development workflow.
 
 Instead, Railway will use our `Dockerfiles` to independently build the `web-client` and `api`.
 
@@ -175,4 +175,6 @@ To run the migrations to a particular database, run the following command using 
 
 Run all migrations:
 
-`migrate -path ./api/cmd/migrate/migrations -database <database URL> up`
+`migrate -path ./api/cmd/migrate/migrations -database <Railway database URL> up`
+
+_You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_
