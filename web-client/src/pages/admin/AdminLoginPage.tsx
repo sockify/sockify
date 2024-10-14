@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock } from "lucide-react";
-import { useEffect } from "react";
+import { Eye, EyeOff, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +29,7 @@ export default function AdminLoginPage() {
   const navigate = useNavigate();
   const { login, isLoggingIn, isAuthenticated } = useAuth();
 
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<AdminLoginForm>({
     resolver: zodResolver(adminLoginSchema),
     defaultValues: {
@@ -99,11 +100,28 @@ export default function AdminLoginPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          {...field}
+                          className="pr-12"
+                        />
+                        <div
+                          className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-4"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5 text-gray-500">
+                              <span className="sr-only">Hide password</span>
+                            </EyeOff>
+                          ) : (
+                            <Eye className="h-5 w-5 text-gray-500">
+                              <span className="sr-only">Show password</span>
+                            </Eye>
+                          )}
+                        </div>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
