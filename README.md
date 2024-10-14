@@ -132,7 +132,7 @@ We are using [Railway](https://railway.app/) to deploy our application.
 
 #### Architecture <!-- omit in toc -->
 
-Within our [Railway project](https://railway.app/project/de4acaa6-0fa7-45f2-a7d2-938b9a5b9151), we have configured two _independent_ deployment environments: [`dev`](https://sockify-dev.up.railway.app) and [`production`](https://sockify-dev.up.railway.app).
+Within our [Railway project](https://railway.app/project/de4acaa6-0fa7-45f2-a7d2-938b9a5b9151), we have configured two _independent_ deployment environments: [`dev`](https://sockify-dev.up.railway.app) and [`production`](https://sockify.up.railway.app).
 
 Both of these environments have their own `web-client`, `api`, and `database` instances.
 
