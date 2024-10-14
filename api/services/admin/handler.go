@@ -109,7 +109,8 @@ func (h *Handler) handleAdminLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	admin, err := h.store.GetAdminByUsername(payload.UserName)
+	username := utils.Normalize(payload.UserName)
+	admin, err := h.store.GetAdminByUsername(username)
 	if err != nil {
 		utils.WriteError(w, http.StatusUnauthorized, fmt.Errorf("invalid username or password"))
 		return
@@ -153,13 +154,15 @@ func (h *Handler) handleAdminRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	admin, _ := h.store.GetAdminByUsername(payload.UserName)
+	username := utils.Normalize(payload.UserName)
+	admin, _ := h.store.GetAdminByUsername(username)
 	if admin != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("username already exists"))
 		return
 	}
 
-	admin, _ = h.store.GetAdminByEmail(payload.Email)
+	email := utils.Normalize(payload.Email)
+	admin, _ = h.store.GetAdminByEmail(email)
 	if admin != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("email already exists"))
 		return
@@ -180,10 +183,10 @@ func (h *Handler) handleAdminRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = h.store.CreateAdmin(
-		payload.FirstName,
-		payload.LastName,
-		payload.Email,
-		payload.UserName,
+		utils.TitleCase(payload.FirstName),
+		utils.TitleCase(payload.LastName),
+		email,
+		username,
 		passwordHash,
 	)
 	if err != nil {

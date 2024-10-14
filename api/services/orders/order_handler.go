@@ -350,7 +350,7 @@ func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Re
 	vars := mux.Vars(r)
 	invoiceNumber := vars["invoice_number"]
 
-	order, err := h.store.GetOrderByInvoice(invoiceNumber)
+	order, err := h.store.GetOrderByInvoice(utils.Normalize(invoiceNumber))
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
