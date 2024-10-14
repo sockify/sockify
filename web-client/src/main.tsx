@@ -88,7 +88,9 @@ createRoot(document.getElementById("root")!).render(
       </BrowserRouter>
 
       <Toaster position="top-right" />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV !== "production" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
     </QueryClientProvider>
   </StrictMode>,
 );
