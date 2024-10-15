@@ -62,21 +62,21 @@ This is needed since each sock can have multiple sizes and each size has its own
 
 Track user purchases and order details.
 
-| Column           | Type           | Constrains                                       |
-| ---------------- | -------------- | ------------------------------------------------ |
-| `order_id`       | SERIAL         | PRIMARY KEY                                      |
-| `invoice_number` | VARCHAR(36)    | UNIQUE, NOT NULL, **UNIQUE INDEXED**             |
-| `total_price`    | DECIMAL(12, 2) | NOT NULL                                         |
-| `status`         | ENUM           | received, shipped, delivered, canceled, returned |
-| `firstname`      | VARCHAR(32)    | NOT NULL                                         |
-| `lastname`       | VARCHAR(32)    | NOT NULL                                         |
-| `email`          | VARCHAR(100)   | NOT NULL                                         |
-| `phone`          | VARCHAR(16)    |                                                  |
-| `street`         | VARCHAR(100)   | NOT NULL                                         |
-| `apt_unit`       | VARCHAR(16)    |                                                  |
-| `state`          | CHAR(2)        | CHECK IN ENUM('FL', 'OH', etc.), NOT NULL        |
-| `zipcode`        | VARCHAR(10)    | NOT NULL                                         |
-| `created_at`     | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP              |
+| Column           | Type           | Constrains                                                          |
+| ---------------- | -------------- | ------------------------------------------------------------------- |
+| `order_id`       | SERIAL         | PRIMARY KEY                                                         |
+| `invoice_number` | VARCHAR(36)    | UNIQUE, NOT NULL, **UNIQUE INDEXED**                                |
+| `total_price`    | DECIMAL(12, 2) | NOT NULL                                                            |
+| `status`         | ENUM           | pending (default), received, shipped, delivered, canceled, returned |
+| `firstname`      | VARCHAR(32)    | NOT NULL                                                            |
+| `lastname`       | VARCHAR(32)    | NOT NULL                                                            |
+| `email`          | VARCHAR(100)   | NOT NULL                                                            |
+| `phone`          | VARCHAR(16)    |                                                                     |
+| `street`         | VARCHAR(100)   | NOT NULL                                                            |
+| `apt_unit`       | VARCHAR(16)    |                                                                     |
+| `state`          | CHAR(2)        | CHECK IN ENUM('FL', 'OH', etc.), NOT NULL                           |
+| `zipcode`        | VARCHAR(10)    | NOT NULL                                                            |
+| `created_at`     | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP                                 |
 
 ### `order_items`
 

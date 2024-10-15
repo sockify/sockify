@@ -372,10 +372,11 @@ func isValidStatusUpdate(currentStatus string, newStatus string) error {
 		return fmt.Errorf("the new status can not be the same as the old status")
 	}
 
-	// received (default) -> shipped -> delivered -> returned
-	//    |
-	//     > canceled
-	if (newStatus == "shipped" && currentStatus == "received") ||
+	// pending (default) -> received -> shipped -> delivered -> returned
+	//                        |
+	//                        > canceled
+	if (newStatus == "received" && currentStatus == "pending") ||
+		(newStatus == "shipped" && currentStatus == "received") ||
 		(newStatus == "delivered" && currentStatus == "shipped") ||
 		(newStatus == "returned" && currentStatus == "delivered") ||
 		(newStatus == "canceled" && currentStatus == "received") {
