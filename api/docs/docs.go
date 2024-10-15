@@ -167,6 +167,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart/checkout/stripe-session": {
+            "post": {
+                "description": "Creates a new Stripe checkout session after creating a \"pending\" order in the database. The \"orderId\" is attached within the metadata.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Creates a Stripe checkout session",
+                "parameters": [
+                    {
+                        "description": "Order to checkout",
+                        "name": "address",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CheckoutOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.StripeCheckoutResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "security": [
@@ -738,6 +772,44 @@ const docTemplate = `{
                 }
             }
         },
+        "types.CheckoutItem": {
+            "type": "object",
+            "required": [
+                "quantity",
+                "sockVariantId"
+            ],
+            "properties": {
+                "quantity": {
+                    "description": "Quantity must be a pointer for the \"required\" validator to work with 0 as an input.",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "sockVariantId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.CheckoutOrderRequest": {
+            "type": "object",
+            "required": [
+                "contact",
+                "items"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "contact": {
+                    "$ref": "#/definitions/types.Contact"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.CheckoutItem"
+                    }
+                }
+            }
+        },
         "types.Contact": {
             "type": "object",
             "properties": {
@@ -1067,6 +1139,23 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "types.StripeCheckoutResponse": {
+            "type": "object",
+            "properties": {
+                "order": {
+                    "description": "TODO: remove",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/types.Order"
+                        }
+                    ]
+                },
+                "sessionId": {
+                    "description": "Stripe session ID",
+                    "type": "string"
                 }
             }
         },

@@ -19,6 +19,7 @@ type SockStore interface {
 	GetSockVariants(sockID int) ([]SockVariant, error)
 	UpdateSock(sockID int, sock Sock, variants []SockVariant) error
 	SockVariantExists(sockID int, size string) (bool, error)
+	GetSockVariantByID(sockVariantID int) (*SockVariant, error)
 }
 
 type OrderStore interface {

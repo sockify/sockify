@@ -39,6 +39,33 @@ definitions:
       total:
         type: integer
     type: object
+  types.CheckoutItem:
+    properties:
+      quantity:
+        description: Quantity must be a pointer for the "required" validator to work
+          with 0 as an input.
+        minimum: 0
+        type: integer
+      sockVariantId:
+        type: integer
+    required:
+    - quantity
+    - sockVariantId
+    type: object
+  types.CheckoutOrderRequest:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      contact:
+        $ref: '#/definitions/types.Contact'
+      items:
+        items:
+          $ref: '#/definitions/types.CheckoutItem'
+        type: array
+    required:
+    - contact
+    - items
+    type: object
   types.Contact:
     properties:
       email:
@@ -263,6 +290,16 @@ definitions:
       total:
         type: integer
     type: object
+  types.StripeCheckoutResponse:
+    properties:
+      order:
+        allOf:
+        - $ref: '#/definitions/types.Order'
+        description: 'TODO: remove'
+      sessionId:
+        description: Stripe session ID
+        type: string
+    type: object
   types.UpdateAddressRequest:
     properties:
       aptUnit:
@@ -478,6 +515,29 @@ paths:
       summary: Registers new admin credentials.
       tags:
       - Admins
+  /cart/checkout/stripe-session:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new Stripe checkout session after creating a "pending"
+        order in the database. The "orderId" is attached within the metadata.
+      parameters:
+      - description: Order to checkout
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/types.CheckoutOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.StripeCheckoutResponse'
+      summary: Creates a Stripe checkout session
+      tags:
+      - Cart
   /orders:
     get:
       description: Retrieves all orders from the database with optional filters.

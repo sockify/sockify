@@ -257,3 +257,21 @@ func (s *SockStore) SockVariantExists(sockID int, size string) (bool, error) {
 	}
 	return exists, nil
 }
+
+func (s *SockStore) GetSockVariantByID(sockVariantID int) (*types.SockVariant, error) {
+	var sv types.SockVariant
+	err := s.db.QueryRow(`
+    SELECT sock_variant_id, price, quantity, size, created_at
+    FROM sock_variants
+    WHERE sock_variant_id = $1
+  `, sockVariantID).Scan(&sv.ID, &sv.Price, &sv.Quantity, &sv.Size, &sv.CreatedAt)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to fetch sock variant with ID %d: %w", sockVariantID, err)
+	}
+
+	return &sv, nil
+}
