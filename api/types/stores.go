@@ -20,6 +20,8 @@ type SockStore interface {
 	UpdateSock(sockID int, sock Sock, variants []SockVariant) error
 	SockVariantExists(sockID int, size string) (bool, error)
 	GetSockVariantByID(sockVariantID int) (*SockVariant, error)
+	GetSockVariantsByID(sockVariantIDs []int) ([]SockVariant, error)
+	UpdateSockVariantQuantity(sockVariantID int, newQuantity int) error
 }
 
 type OrderStore interface {
@@ -35,4 +37,5 @@ type OrderStore interface {
 	GetOrderStatusByID(orderID int) (status string, err error)
 	UpdateOrderContact(orderID int, contact UpdateContactRequest, adminID int) error
 	GetOrderByInvoice(invoiceNumber string) (*Order, error)
+	CreateOrder(items []CheckoutItem, total float64, addr Address, contact Contact) (orderID int64, err error)
 }

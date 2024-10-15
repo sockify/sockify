@@ -44,7 +44,14 @@ func (h *CartHandler) handleCheckoutWithStripe(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	order, err := h.createOrder(cart)
+	sockVariantIds := getSockVariantIds(cart.Items)
+	sockVariants, err := h.sockStore.GetSockVariantsByID(sockVariantIds)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	orderID, err := h.createOrder(sockVariants, cart)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
@@ -53,5 +60,5 @@ func (h *CartHandler) handleCheckoutWithStripe(w http.ResponseWriter, r *http.Re
 	// TODO: create Stripe session and attach orderID
 
 	// TODO: return correct Stripe order session
-	utils.WriteJson(w, http.StatusOK, types.StripeCheckoutResponse{SessionID: "1 -> " + order.InvoiceNumber})
+	utils.WriteJson(w, http.StatusOK, types.StripeCheckoutResponse{SessionID: fmt.Sprintf("Order ID: %v", orderID)})
 }

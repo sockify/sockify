@@ -10,11 +10,12 @@ import (
 )
 
 type OrderStore struct {
-	db *sql.DB
+	db        *sql.DB
+	sockStore types.SockStore
 }
 
-func NewOrderStore(db *sql.DB) *OrderStore {
-	return &OrderStore{db: db}
+func NewOrderStore(db *sql.DB, ss types.SockStore) types.OrderStore {
+	return &OrderStore{db: db, sockStore: ss}
 }
 
 // GetOrders retrieves orders filtered by status (optional) from the database
@@ -339,4 +340,24 @@ func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, erro
 	order.Items = items
 
 	return &order, nil
+}
+
+func (s *OrderStore) CreateOrder(items []types.CheckoutItem, total float64, addr types.Address, contact types.Contact) (orderID int64, err error) {
+	invoiceNumber := "INV" // TODO: create util to generate UUID
+	res, err := s.db.Exec(`
+    INSERT INTO orders (invoice_number, total_price, firstname, lastname, email, phone, street, apt_unit, state, zipcode)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+  `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.State, addr.Zipcode)
+	if err != nil {
+		return 0, err
+	}
+
+	orderID, err = res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	// TODO: insert order items
+
+	return orderID, nil
 }
