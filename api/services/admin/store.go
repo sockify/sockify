@@ -12,7 +12,7 @@ type Store struct {
 	db *sql.DB
 }
 
-func NewStore(db *sql.DB) *Store {
+func NewStore(db *sql.DB) types.AdminStore {
 	return &Store{db: db}
 }
 
