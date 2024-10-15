@@ -96,8 +96,7 @@ type CheckoutOrderRequest struct {
 }
 type CheckoutItem struct {
 	SockVariantID int `json:"sockVariantId" validate:"required"`
-	// Quantity must be a pointer for the "required" validator to work with 0 as an input.
-	Quantity *int `json:"quantity" validate:"required,gte=0"`
+	Quantity      int `json:"quantity" validate:"required,gte=1"`
 }
 
 type StripeCheckoutResponse struct {
