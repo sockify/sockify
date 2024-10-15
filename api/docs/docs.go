@@ -1147,8 +1147,8 @@ const docTemplate = `{
         "types.StripeCheckoutResponse": {
             "type": "object",
             "properties": {
-                "sessionId": {
-                    "description": "Stripe session ID",
+                "paymentUrl": {
+                    "description": "Stripe payment URL gateway",
                     "type": "string"
                 }
             }

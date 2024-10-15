@@ -100,6 +100,6 @@ type CheckoutItem struct {
 }
 
 type StripeCheckoutResponse struct {
-	// Stripe session ID
-	SessionID string `json:"sessionId"`
+	// Stripe payment URL gateway
+	PaymentURL string `json:"paymentUrl"`
 }

@@ -292,8 +292,8 @@ definitions:
     type: object
   types.StripeCheckoutResponse:
     properties:
-      sessionId:
-        description: Stripe session ID
+      paymentUrl:
+        description: Stripe payment URL gateway
         type: string
     type: object
   types.UpdateAddressRequest:

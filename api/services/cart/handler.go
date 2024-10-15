@@ -2,12 +2,17 @@ package cart
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
+	"github.com/sockify/sockify/config"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
+	"github.com/stripe/stripe-go/v80"
+	"github.com/stripe/stripe-go/v80/checkout/session"
 )
 
 type CartHandler struct {
@@ -57,8 +62,46 @@ func (h *CartHandler) handleCheckoutWithStripe(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// TODO: create Stripe session and attach orderID
+	order, err := h.orderStore.GetOrderById(orderID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
 
-	// TODO: return correct Stripe order session
-	utils.WriteJson(w, http.StatusOK, types.StripeCheckoutResponse{SessionID: fmt.Sprintf("Order ID: %v", orderID)})
+	var lineItems []*stripe.CheckoutSessionLineItemParams
+	for _, item := range order.Items {
+		lineItems = append(lineItems, &stripe.CheckoutSessionLineItemParams{
+			PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+				Currency: stripe.String(string(stripe.CurrencyUSD)),
+				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+					Name:        stripe.String(item.Name),
+					Description: stripe.String("Size: " + item.Size),
+					// TODO: we can add images here
+				},
+				// Stripe expects price to be a whole number (e.g. $12.09 -> 1209)
+				UnitAmount: stripe.Int64(int64(item.Price * 100)),
+			},
+			Quantity: stripe.Int64(int64(item.Quantity)),
+		})
+	}
+
+	params := &stripe.CheckoutSessionParams{
+		PaymentMethodTypes: stripe.StringSlice([]string{"card"}),
+		LineItems:          lineItems,
+		Mode:               stripe.String("payment"),
+		SuccessURL:         stripe.String(config.Envs.WebClientURL + "/cart/checkout/order-confirmation?session_id={CHECKOUT_SESSION_ID}"),
+		CancelURL:          stripe.String(config.Envs.WebClientURL + "/cart/checkout/payment-canceled?session_id={CHECKOUT_SESSION_ID}"),
+		Metadata: map[string]string{
+			"orderId": strconv.Itoa(orderID),
+		},
+	}
+
+	s, err := session.New(params)
+	if err != nil {
+		log.Printf("Failed to create Stripe session: %v", err)
+		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("failed to create Stripe session"))
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, types.StripeCheckoutResponse{PaymentURL: s.URL})
 }
