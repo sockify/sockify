@@ -150,6 +150,8 @@ definitions:
         type: integer
       size:
         type: string
+      sockVariantId:
+        type: integer
     type: object
   types.OrderUpdate:
     properties:

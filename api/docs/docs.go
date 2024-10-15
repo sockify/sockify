@@ -940,6 +940,9 @@ const docTemplate = `{
                 },
                 "size": {
                     "type": "string"
+                },
+                "sockVariantId": {
+                    "type": "integer"
                 }
             }
         },

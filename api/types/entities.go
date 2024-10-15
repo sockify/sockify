@@ -41,10 +41,11 @@ type Order struct {
 }
 
 type OrderItem struct {
-	Name     string  `json:"name"`
-	Size     string  `json:"size"`
-	Price    float64 `json:"price"`
-	Quantity int     `json:"quantity"`
+	SockVariantID int     `json:"sockVariantId"`
+	Name          string  `json:"name"`
+	Size          string  `json:"size"`
+	Price         float64 `json:"price"`
+	Quantity      int     `json:"quantity"`
 }
 
 type Address struct {

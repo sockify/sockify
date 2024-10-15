@@ -91,7 +91,7 @@ func (s *OrderStore) GetOrderById(orderID int) (*types.Order, error) {
 
 func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	rows, err := s.db.Query(`
-		SELECT oi.price, oi.quantity, sv.size, s.name
+		SELECT oi.price, oi.quantity, sv.size, sv.sock_variant_id, s.name
 		FROM order_items oi
 		JOIN sock_variants sv ON sv.sock_variant_id = oi.sock_variant_id
 		JOIN socks s ON s.sock_id = sv.sock_id
@@ -108,7 +108,7 @@ func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	for rows.Next() {
 		var oi types.OrderItem
 
-		if err := rows.Scan(&oi.Price, &oi.Quantity, &oi.Size, &oi.Name); err != nil {
+		if err := rows.Scan(&oi.Price, &oi.Quantity, &oi.Size, &oi.SockVariantID, &oi.Name); err != nil {
 			return nil, err
 		}
 		items = append(items, oi)
