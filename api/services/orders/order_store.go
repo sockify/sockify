@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/sockify/sockify/types"
+	"github.com/sockify/sockify/utils"
 )
 
 type OrderStore struct {
@@ -18,7 +19,7 @@ func NewOrderStore(db *sql.DB, ss types.SockStore) types.OrderStore {
 	return &OrderStore{db: db, sockStore: ss}
 }
 
-// GetOrders retrieves orders filtered by status (optional) from the database
+// GetOrders retrieves orders filtered by status (optional) from the database.
 func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Order, error) {
 	var orders []types.Order
 	var query string
@@ -26,10 +27,10 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 	var err error
 
 	if status == "" {
-		query = "SELECT * FROM orders ORDER BY created_at DESC LIMIT $1 OFFSET $2"
+		query = "SELECT * FROM orders ORDER BY created_at ASC LIMIT $1 OFFSET $2"
 		rows, err = s.db.Query(query, limit, offset)
 	} else {
-		query = "SELECT * FROM orders WHERE status = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"
+		query = "SELECT * FROM orders WHERE status = $1 ORDER BY created_at ASC LIMIT $2 OFFSET $3"
 		rows, err = s.db.Query(query, status, limit, offset)
 	}
 
@@ -342,22 +343,43 @@ func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, erro
 	return &order, nil
 }
 
-func (s *OrderStore) CreateOrder(items []types.CheckoutItem, total float64, addr types.Address, contact types.Contact) (orderID int64, err error) {
-	invoiceNumber := "INV" // TODO: create util to generate UUID
-	res, err := s.db.Exec(`
+func (s *OrderStore) CreateOrder(items []types.CheckoutItem, total float64, addr types.Address, contact types.Contact) (orderID int, err error) {
+	invoiceNumber, err := utils.GenerateUUID()
+	if err != nil {
+		return 0, err
+	}
+
+	err = s.db.QueryRow(`
     INSERT INTO orders (invoice_number, total_price, firstname, lastname, email, phone, street, apt_unit, state, zipcode)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-  `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.State, addr.Zipcode)
+    RETURNING order_id
+  `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.State, addr.Zipcode,
+	).Scan(&orderID)
+
 	if err != nil {
 		return 0, err
 	}
-
-	orderID, err = res.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	// TODO: insert order items
 
 	return orderID, nil
+}
+
+func (s *OrderStore) CreateOrderItem(orderID int, sockVariantID int, price float64, quantity int) error {
+	res, err := s.db.Exec(`
+    INSERT INTO order_items (order_id, sock_variant_id, price, quantity)
+    VALUES ($1, $2, $3, $4)
+  `, orderID, sockVariantID, price, quantity)
+
+	if err != nil {
+		return err
+	}
+
+	val, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if val == 0 {
+		return fmt.Errorf("no rows were affected")
+	}
+
+	return nil
 }

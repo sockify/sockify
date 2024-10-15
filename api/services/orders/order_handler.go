@@ -32,7 +32,7 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.Admin
 }
 
 // @Summary Retrieve all orders
-// @Description Retrieves all orders from the database with optional filters.
+// @Description Retrieves all orders from the database with optional filters. Results are returned oldest to newest by created date.
 // @Tags Orders
 // @Produce json
 // @Security Bearer

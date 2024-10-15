@@ -208,7 +208,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieves all orders from the database with optional filters.",
+                "description": "Retrieves all orders from the database with optional filters. Results are returned oldest to newest by created date.",
                 "produces": [
                     "application/json"
                 ],
@@ -780,9 +780,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "quantity": {
-                    "description": "Quantity must be a pointer for the \"required\" validator to work with 0 as an input.",
                     "type": "integer",
-                    "minimum": 0
+                    "minimum": 1
                 },
                 "sockVariantId": {
                     "type": "integer"
@@ -1145,14 +1144,6 @@ const docTemplate = `{
         "types.StripeCheckoutResponse": {
             "type": "object",
             "properties": {
-                "order": {
-                    "description": "TODO: remove",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/types.Order"
-                        }
-                    ]
-                },
                 "sessionId": {
                     "description": "Stripe session ID",
                     "type": "string"

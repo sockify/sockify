@@ -6,7 +6,7 @@ import (
 	"github.com/sockify/sockify/types"
 )
 
-func (h *CartHandler) createOrder(sockVariants []types.SockVariant, cart types.CheckoutOrderRequest) (orderID int64, err error) {
+func (h *CartHandler) createOrder(sockVariants []types.SockVariant, cart types.CheckoutOrderRequest) (orderID int, err error) {
 	sockVariantsMap := make(map[int]types.SockVariant)
 	for _, sv := range sockVariants {
 		sockVariantsMap[sv.ID] = sv
@@ -27,6 +27,14 @@ func (h *CartHandler) createOrder(sockVariants []types.SockVariant, cart types.C
 	orderID, err = h.orderStore.CreateOrder(cart.Items, total, cart.Address, cart.Contact)
 	if err != nil {
 		return 0, fmt.Errorf("unable to create the order: %v", err)
+	}
+
+	for _, item := range cart.Items {
+		sv := sockVariantsMap[item.SockVariantID]
+		err := h.orderStore.CreateOrderItem(orderID, item.SockVariantID, sv.Price, item.Quantity)
+		if err != nil {
+			return 0, nil
+		}
 	}
 
 	return orderID, nil
@@ -63,7 +71,6 @@ func isInStock(sockVariantsMap map[int]types.SockVariant, items []types.Checkout
 func calculateOrderTotal(sockVariantsMap map[int]types.SockVariant, items []types.CheckoutItem) (total float64) {
 	for _, item := range items {
 		sv := sockVariantsMap[item.SockVariantID]
-
 		total += (sv.Price * float64(item.Quantity))
 	}
 	return total

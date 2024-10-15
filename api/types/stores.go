@@ -37,5 +37,6 @@ type OrderStore interface {
 	GetOrderStatusByID(orderID int) (status string, err error)
 	UpdateOrderContact(orderID int, contact UpdateContactRequest, adminID int) error
 	GetOrderByInvoice(invoiceNumber string) (*Order, error)
-	CreateOrder(items []CheckoutItem, total float64, addr Address, contact Contact) (orderID int64, err error)
+	CreateOrder(items []CheckoutItem, total float64, addr Address, contact Contact) (orderID int, err error)
+	CreateOrderItem(orderID int, sockVariantID int, price float64, quantity int) error
 }

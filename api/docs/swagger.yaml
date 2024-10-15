@@ -42,9 +42,7 @@ definitions:
   types.CheckoutItem:
     properties:
       quantity:
-        description: Quantity must be a pointer for the "required" validator to work
-          with 0 as an input.
-        minimum: 0
+        minimum: 1
         type: integer
       sockVariantId:
         type: integer
@@ -292,10 +290,6 @@ definitions:
     type: object
   types.StripeCheckoutResponse:
     properties:
-      order:
-        allOf:
-        - $ref: '#/definitions/types.Order'
-        description: 'TODO: remove'
       sessionId:
         description: Stripe session ID
         type: string
@@ -540,7 +534,8 @@ paths:
       - Cart
   /orders:
     get:
-      description: Retrieves all orders from the database with optional filters.
+      description: Retrieves all orders from the database with optional filters. Results
+        are returned oldest to newest by created date.
       parameters:
       - default: 50
         description: Limit the number of results
