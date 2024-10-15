@@ -373,13 +373,14 @@ func isValidStatusUpdate(currentStatus string, newStatus string) error {
 	}
 
 	// pending (default) -> received -> shipped -> delivered -> returned
-	//                        |
-	//                        > canceled
+	// |                     |
+	// |----------------------> canceled
 	if (newStatus == "received" && currentStatus == "pending") ||
+		(newStatus == "canceled" && currentStatus == "pending") ||
+		(newStatus == "canceled" && currentStatus == "received") ||
 		(newStatus == "shipped" && currentStatus == "received") ||
 		(newStatus == "delivered" && currentStatus == "shipped") ||
-		(newStatus == "returned" && currentStatus == "delivered") ||
-		(newStatus == "canceled" && currentStatus == "received") {
+		(newStatus == "returned" && currentStatus == "delivered") {
 		return nil
 	}
 
