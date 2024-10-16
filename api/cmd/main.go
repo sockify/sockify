@@ -11,6 +11,7 @@ import (
 	"github.com/sockify/sockify/config"
 	"github.com/sockify/sockify/database"
 	"github.com/sockify/sockify/utils/logging"
+	"github.com/stripe/stripe-go/v80"
 )
 
 // @title           Sockify API
@@ -27,6 +28,8 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token. Example: "Bearer XXX"
 func main() {
+	stripe.Key = config.Envs.StripeAPIKey
+
 	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable TimeZone=UTC connect_timeout=10",
 		config.Envs.DBUser, config.Envs.DBPassword, config.Envs.DBName, config.Envs.DBHost, config.Envs.DBPort,
 	)

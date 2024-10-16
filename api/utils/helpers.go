@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/sockify/sockify/types"
 )
 
@@ -86,4 +87,13 @@ func TitleCase(str string) string {
 	}
 
 	return strings.ToUpper(string(str[0])) + str[1:]
+}
+
+// GenerateUUID generates a new UUID.
+func GenerateUUID() (string, error) {
+	u, err := uuid.NewRandom()
+	if err != nil {
+		return "", err
+	}
+	return u.String(), nil
 }

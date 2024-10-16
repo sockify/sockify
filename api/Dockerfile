@@ -12,5 +12,6 @@ RUN go build -o /app/main ./cmd/main.go
 FROM scratch
 
 COPY --from=builder /app/main /main
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 CMD ["/main"]
