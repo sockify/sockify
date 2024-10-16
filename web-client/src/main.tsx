@@ -15,6 +15,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
 import CartPage from "./pages/CartPage";
 import HomePage from "./pages/HomePage";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PaymentCanceledPage from "./pages/PaymentCanceledPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
@@ -35,6 +36,10 @@ createRoot(document.getElementById("root")!).render(
                 <Route index element={<Navigate to="/home" replace />} />
                 <Route path="home" element={<HomePage />} />
                 <Route path="cart" element={<CartPage />} />
+                <Route
+                  path="cart/checkout/order-confirmation"
+                  element={<OrderConfirmationPage />}
+                />
                 <Route
                   path="cart/checkout/payment-canceled"
                   element={<PaymentCanceledPage />}
