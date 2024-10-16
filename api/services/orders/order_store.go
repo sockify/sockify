@@ -214,6 +214,16 @@ func (s *OrderStore) UpdateOrderStatus(orderID int, adminID int, newStatus strin
 	return nil
 }
 
+// UpdateOrderStatusNoLogs updates an order status without generating an OrderUpdate log. Use with caution.
+func (s *OrderStore) UpdateOrderStatusNoLogs(orderID int, newStatus string) error {
+	_, err := s.db.Exec("UPDATE orders SET status = $1 WHERE order_id = $2", newStatus, orderID)
+	if err != nil {
+		log.Printf("Error updating order ID '%v' status: %v", orderID, err)
+		return err
+	}
+	return nil
+}
+
 func (s *OrderStore) GetOrderStatusByID(orderID int) (status string, err error) {
 	err = s.db.QueryRow("SELECT status FROM orders WHERE order_id = $1", orderID).Scan(&status)
 	if err != nil {

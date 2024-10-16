@@ -140,6 +140,23 @@ definitions:
       total:
         type: number
     type: object
+  types.OrderConfirmation:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      createdAt:
+        type: string
+      invoiceNumber:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/types.OrderItem'
+        type: array
+      status:
+        type: string
+      total:
+        type: number
+    type: object
   types.OrderItem:
     properties:
       name:
@@ -511,6 +528,26 @@ paths:
       summary: Registers new admin credentials.
       tags:
       - Admins
+  /cart/checkout/stripe-confirmation/{session_id}:
+    get:
+      description: Confirms the Stripe checkout status from the session ID. Retrieves
+        the "orderId" from the session metadata and updates the order status.
+      parameters:
+      - description: Stripe checkout session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.OrderConfirmation'
+      summary: Confirms a Stripe checkout session and retrieves the order
+      tags:
+      - Cart
   /cart/checkout/stripe-session:
     post:
       consumes:

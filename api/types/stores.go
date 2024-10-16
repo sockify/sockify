@@ -34,6 +34,7 @@ type OrderStore interface {
 	UpdateOrderAddress(orderID int, address UpdateAddressRequest, adminID int) error
 	OrderExistsByID(orderID int) (bool, error)
 	UpdateOrderStatus(orderID int, adminID int, newStatus string, message string) error
+	UpdateOrderStatusNoLogs(orderID int, newStatus string) error
 	GetOrderStatusByID(orderID int) (status string, err error)
 	UpdateOrderContact(orderID int, contact UpdateContactRequest, adminID int) error
 	GetOrderByInvoice(invoiceNumber string) (*Order, error)

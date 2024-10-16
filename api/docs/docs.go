@@ -167,6 +167,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart/checkout/stripe-confirmation/{session_id}": {
+            "get": {
+                "description": "Confirms the Stripe checkout status from the session ID. Retrieves the \"orderId\" from the session metadata and updates the order status.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Confirms a Stripe checkout session and retrieves the order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stripe checkout session ID",
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderConfirmation"
+                        }
+                    }
+                }
+            }
+        },
         "/cart/checkout/stripe-session": {
             "post": {
                 "description": "Creates a new Stripe checkout session after creating a \"pending\" order in the database. The \"orderId\" is attached within the metadata.",
@@ -917,6 +946,32 @@ const docTemplate = `{
                 },
                 "orderId": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
+        "types.OrderConfirmation": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "invoiceNumber": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.OrderItem"
+                    }
                 },
                 "status": {
                     "type": "string"
