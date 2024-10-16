@@ -35,7 +35,7 @@ func (h *CartHandler) RegisterRoutes(router *mux.Router) {
 // @Tags Cart
 // @Accept json
 // @Produce json
-// @Param address body types.CheckoutOrderRequest true "Order to checkout"
+// @Param payload body types.CheckoutOrderRequest true "Order to checkout"
 // @Success 200 {object} types.StripeCheckoutResponse
 // @Router /cart/checkout/stripe-session [post]
 func (h *CartHandler) handleCheckoutWithStripe(w http.ResponseWriter, r *http.Request) {

@@ -557,7 +557,7 @@ paths:
       parameters:
       - description: Order to checkout
         in: body
-        name: address
+        name: payload
         required: true
         schema:
           $ref: '#/definitions/types.CheckoutOrderRequest'

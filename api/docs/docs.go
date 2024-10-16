@@ -212,7 +212,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Order to checkout",
-                        "name": "address",
+                        "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
