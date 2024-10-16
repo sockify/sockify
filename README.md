@@ -2,8 +2,17 @@
 
 An e-commerce web app to sell custom socks.
 
-- **Production:** https://sockify.up.railway.app
-- **Development:** https://sockify-dev.up.railway.app
+**Production**
+
+- **Store:** <https://sockify.up.railway.app>
+- **Admin dashboard:** <https://sockify.up.railway.app/admin>
+
+**Development**
+
+- **Store:** <https://sockify-dev.up.railway.app>
+- **Admin dashboard:** <https://sockify-dev.up.railway.app/admin>
+  - **Username:** `jdoe`
+  - **Password:** `password`
 
 **Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
 
