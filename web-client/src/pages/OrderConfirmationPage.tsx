@@ -3,6 +3,7 @@ import GenericError from "@/components/GenericError";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SESSION_ID_QUERY_PARAM } from "@/shared/constants";
 import { toShippingAddress } from "@/shared/utils/strings";
 import dayjs from "dayjs";
@@ -31,13 +32,17 @@ export default function OrderConfirmationPage() {
   } = useGetStripeOrderConfirmation(sessionId);
 
   if (isLoading) {
-    return <div className="py-10">Loading...</div>;
+    return (
+      <div className="py-10">
+        <LoadingSkeleton />
+      </div>
+    );
   }
 
   if (isError) {
     return (
       <div className="py-10">
-        <GenericError message={error.message} />
+        <GenericError stackTrace={error.stack} />
       </div>
     );
   }
@@ -120,3 +125,63 @@ export default function OrderConfirmationPage() {
     </section>
   );
 }
+
+const LoadingSkeleton = () => {
+  return (
+    <div className="mx-auto max-w-3xl space-y-8 px-4">
+      <div className="text-center">
+        <div className="mb-4 inline-flex items-center justify-center">
+          <Skeleton className="h-24 w-24 rounded-full" />
+        </div>
+        <Skeleton className="mb-2 h-8 w-3/4" />
+        <Skeleton className="h-6 w-1/2" />
+      </div>
+
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-8 w-1/3" />
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          <section className="grid grid-cols-2 gap-6">
+            <div>
+              <Skeleton className="h-6 w-1/2" />
+            </div>
+
+            <div>
+              <Skeleton className="h-6 w-1/2" />
+            </div>
+          </section>
+          <Separator />
+
+          <section>
+            <h3 className="mb-2">
+              <Skeleton className="h-8 w-1/3" />
+            </h3>
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-2/3" />
+            </div>
+          </section>
+          <Separator />
+
+          <section className="flex justify-between">
+            <Skeleton className="h-6 w-1/3" />
+          </section>
+
+          <section>
+            <h3 className="mb-2">
+              <Skeleton className="h-8 w-1/3" />
+            </h3>
+            <Skeleton className="h-6 w-3/4" />
+          </section>
+        </CardContent>
+      </Card>
+
+      <div>
+        <Skeleton className="h-6 w-2/3" />
+        <Skeleton className="mt-4 h-10 w-1/4" />
+      </div>
+    </div>
+  );
+};
