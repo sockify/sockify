@@ -101,7 +101,7 @@ func (h *CartHandler) handleCheckoutWithStripe(w http.ResponseWriter, r *http.Re
 
 	s, err := session.New(params)
 	if err != nil {
-		log.Printf("Failed to create Stripe session: %v", err)
+		log.Printf("Failed to create Stripe session for order ID %v with params %v: %v", orderID, params, err)
 		utils.WriteError(w, http.StatusInternalServerError, fmt.Errorf("failed to create Stripe session"))
 		return
 	}
