@@ -196,3 +196,11 @@ func toOrderConfirmation(o types.Order) types.OrderConfirmation {
 		CreatedAt:     o.CreatedAt,
 	}
 }
+
+func getSockVariantIds(items []types.CheckoutItem) []int {
+	ids := make([]int, len(items))
+	for i, item := range items {
+		ids[i] = item.SockVariantID
+	}
+	return ids
+}

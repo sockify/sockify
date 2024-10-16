@@ -40,14 +40,6 @@ func (h *CartHandler) createOrder(sockVariants []types.SockVariant, cart types.C
 	return orderID, nil
 }
 
-func getSockVariantIds(items []types.CheckoutItem) []int {
-	ids := make([]int, len(items))
-	for i, item := range items {
-		ids[i] = item.SockVariantID
-	}
-	return ids
-}
-
 func isInStock(sockVariantsMap map[int]types.SockVariant, items []types.CheckoutItem) error {
 	if len(items) == 0 {
 		return fmt.Errorf("cart is empty")
