@@ -103,7 +103,7 @@ export default function CartDemo() {
           empty();
         }}
       >
-        Clear
+        Empty
       </Button>
 
       <div className="flex flex-col gap-6">
