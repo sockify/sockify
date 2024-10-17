@@ -3,6 +3,7 @@ import { LOCAL_STORAGE_CART_ITEMS_KEY } from "@/shared/constants";
 import {
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -114,13 +115,13 @@ export function CartProvider({ children }: CartProviderProps) {
     localStorage.removeItem(LOCAL_STORAGE_CART_ITEMS_KEY);
   };
 
-  const saveToStorage = () => {
+  const saveToStorage = useCallback(() => {
     if (items.length > 0) {
       localStorage.setItem(LOCAL_STORAGE_CART_ITEMS_KEY, JSON.stringify(items));
     }
-  };
+  }, [items]);
 
-  const loadFromStorage = () => {
+  const loadFromStorage = useCallback(() => {
     const stringifiedStoredItems = localStorage.getItem(
       LOCAL_STORAGE_CART_ITEMS_KEY,
     );
@@ -137,16 +138,16 @@ export function CartProvider({ children }: CartProviderProps) {
         empty();
       }
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadFromStorage();
     setIsLoading(false);
-  }, []);
+  }, [loadFromStorage]);
 
   useEffect(() => {
     saveToStorage();
-  }, [JSON.stringify(items)]);
+  }, [items, saveToStorage]);
 
   return (
     <CartContext.Provider
