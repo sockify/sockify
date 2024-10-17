@@ -18,7 +18,9 @@ export default function OrderConfirmationPage() {
     return (
       <div className="py-10">
         <GenericError
-          message={`Unable to retrieve the '${SESSION_ID_QUERY_PARAM}' query parameter.`}
+          message="We are unable to retrieve the order confirmation."
+          stackTrace={`Missing or empty '${SESSION_ID_QUERY_PARAM}' query parameter.`}
+          showRefresh={false}
         />
       </div>
     );

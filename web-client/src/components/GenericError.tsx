@@ -45,7 +45,7 @@ export default function GenericError({
   const homePath = isAuthenticated && isAdminPath ? "/admin/home" : "/home";
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [showFullStack, setShowFullStack] = useState(false);
+  const [showFullStackTrace, setShowFullStackTrace] = useState(false);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -70,20 +70,24 @@ export default function GenericError({
 
           {stackTrace && (
             <div className="overflow-x-auto rounded-lg bg-muted p-4">
+              <p className="text-xs text-muted-foreground">Stack trace</p>
               <code className="whitespace-pre-wrap font-mono text-sm">
-                {showFullStack
+                {showFullStackTrace
                   ? stackTrace
                   : truncate(stackTrace, MAX_STACK_TRACE_CHAR_LENGTH)}
               </code>
               <br />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="mt-2"
-                onClick={() => setShowFullStack(!showFullStack)}
-              >
-                {showFullStack ? "Show less" : "Show more"}
-              </Button>
+
+              {stackTrace?.length > MAX_STACK_TRACE_CHAR_LENGTH && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => setShowFullStackTrace(!showFullStackTrace)}
+                >
+                  {showFullStackTrace ? "Show less" : "Show more"}
+                </Button>
+              )}
             </div>
           )}
         </CardContent>
@@ -105,7 +109,11 @@ export default function GenericError({
           )}
 
           {showContactSupport && (
-            <Button variant="outline" className="w-full" asChild>
+            <Button
+              variant={showRefresh ? "outline" : "default"}
+              className="w-full"
+              asChild
+            >
               <Link to="/support">
                 <MessageCircle className="mr-2 h-4 w-4" /> Contact support
               </Link>
