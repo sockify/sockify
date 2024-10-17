@@ -44,7 +44,7 @@ func (s *Server) Run() error {
 	// Middleware
 	loggedRouter := middleware.BasicHTTPLogging(s.httpLogger, router)
 	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{config.Envs.WebClientURL, swaggerURL}),
+		handlers.AllowedOrigins([]string{config.Envs.WebClientURL, config.Envs.APIURL}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "PATCH"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
 	)(loggedRouter)
