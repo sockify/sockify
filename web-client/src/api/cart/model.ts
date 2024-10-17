@@ -70,10 +70,8 @@ export const orderItemSchema = z.object({
   size: sockSizeEnumSchema,
   sockVariantId: z.number(),
 });
-export type OrderItem = z.infer<typeof orderItemSchema>;
-
 export const orderItemListSchema = z.array(orderItemSchema);
-export type OrderItemList = z.infer<typeof orderItemListSchema>;
+export type OrderItem = z.infer<typeof orderItemSchema>;
 
 export const orderStatusEnumSchema = z.enum([
   "pending",
@@ -94,3 +92,14 @@ export const orderConfirmationSchema = z.object({
   createdAt: z.string(),
 });
 export type OrderConfirmation = z.infer<typeof orderConfirmationSchema>;
+
+export const cartItemSchema = z.object({
+  sockVariantId: z.number(),
+  name: z.string(),
+  quantity: z.number(),
+  price: z.number(),
+  size: sockSizeEnumSchema,
+  imageUrl: z.string(),
+});
+export const cartItemListSchema = z.array(cartItemSchema);
+export type CartItem = z.infer<typeof cartItemSchema>;
