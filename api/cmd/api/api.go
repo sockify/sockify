@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -31,11 +30,10 @@ func NewServer(addr string, db *sql.DB, httpLogger *logging.AsyncHTTPLogger) *Se
 
 func (s *Server) Run() error {
 	router := routes.Router(s.db)
-	swaggerURL := fmt.Sprintf("%s:%s/swagger/doc.json", config.Envs.APIURL, config.Envs.APIPort)
 
 	// Swagger UI
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
-		httpSwagger.URL(swaggerURL),
+		httpSwagger.URL("/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("list"),
 		httpSwagger.DomID("swagger-ui"),
