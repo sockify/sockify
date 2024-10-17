@@ -53,7 +53,7 @@ export default function GenericError({
   };
 
   return (
-    <div className="flex h-full items-center justify-center bg-background">
+    <div className="flex h-full items-center justify-center bg-background px-4">
       <Card className="w-full max-w-3xl">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-destructive/10">
