@@ -1,5 +1,6 @@
 import axiosInstance from "@/shared/axios";
-import { orderSchema, Order } from "./model";
+
+import { Order, orderSchema } from "./model";
 
 export class HttpOrderService {
   async getOrderById(orderId: number): Promise<Order> {
@@ -7,4 +8,3 @@ export class HttpOrderService {
     return orderSchema.parse(data);
   }
 }
-

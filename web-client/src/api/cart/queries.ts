@@ -5,14 +5,15 @@ import { HttpCartService } from "./service";
 
 const cartService = new HttpCartService();
 
-export function useGetStripeOrderConfirmationOptions(sessionId: string) {
+export function useGetStripeOrderConfirmationOptions(sessionId: string | null) {
   return queryOptions({
     queryKey: ["order-confirmation", { sessionId }],
-    queryFn: () => cartService.getStripeOrderConfirmation(sessionId),
+    queryFn: () => cartService.getStripeOrderConfirmation(sessionId!),
+    enabled: Boolean(sessionId),
   });
 }
 export function useGetStripeOrderConfirmation(
-  sessionId: string,
+  sessionId: string | null,
 ): UseQueryResult<OrderConfirmation> {
   return useQuery(useGetStripeOrderConfirmationOptions(sessionId));
 }

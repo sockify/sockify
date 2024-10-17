@@ -14,6 +14,13 @@ export default function OrderConfirmationPage() {
   const [params] = useSearchParams();
 
   const sessionId = params.get(SESSION_ID_QUERY_PARAM);
+  const {
+    data: orderConfirmation,
+    isLoading,
+    isError,
+    error,
+  } = useGetStripeOrderConfirmation(sessionId);
+
   if (!sessionId) {
     return (
       <div className="py-10">
@@ -25,13 +32,6 @@ export default function OrderConfirmationPage() {
       </div>
     );
   }
-
-  const {
-    data: orderConfirmation,
-    isLoading,
-    isError,
-    error,
-  } = useGetStripeOrderConfirmation(sessionId);
 
   if (isLoading) {
     return (
