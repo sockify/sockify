@@ -425,7 +425,6 @@ definitions:
     - sock
     - variants
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API for the Sockify e-commerce store.

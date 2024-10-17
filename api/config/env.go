@@ -10,6 +10,7 @@ const FOUR_HOURS_IN_SECONDS int64 = 3600 * 4
 type Config struct {
 	WebClientURL           string
 	APIPort                string
+	APIURL                 string
 	DBName                 string
 	DBUser                 string
 	DBPassword             string
@@ -28,6 +29,7 @@ func initConfig() Config {
 	return Config{
 		WebClientURL:           getEnv("WEB_CLIENT_URL", "http://localhost:5173"),
 		APIPort:                getEnv("API_PORT", "8080"),
+		APIURL:                 getEnv("API_URL", "http://localhost"), // No port
 		DBName:                 getEnv("DB_NAME", "sockify"),
 		DBUser:                 getEnv("DB_USER", "postgres"),
 		DBPassword:             getEnv("DB_PASSWORD", "password"),

@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -30,10 +31,11 @@ func NewServer(addr string, db *sql.DB, httpLogger *logging.AsyncHTTPLogger) *Se
 
 func (s *Server) Run() error {
 	router := routes.Router(s.db)
+	swaggerURL := fmt.Sprintf("%s:%s/swagger/doc.json", config.Envs.APIURL, config.Envs.APIPort)
 
 	// Swagger UI
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+config.Envs.APIPort+"/swagger/doc.json"),
+		httpSwagger.URL(swaggerURL),
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("list"),
 		httpSwagger.DomID("swagger-ui"),
@@ -42,7 +44,7 @@ func (s *Server) Run() error {
 	// Middleware
 	loggedRouter := middleware.BasicHTTPLogging(s.httpLogger, router)
 	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{config.Envs.WebClientURL}),
+		handlers.AllowedOrigins([]string{config.Envs.WebClientURL, swaggerURL}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "PATCH"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
 	)(loggedRouter)

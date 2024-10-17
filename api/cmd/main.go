@@ -18,7 +18,6 @@ import (
 // @version         1.0
 // @description     API for the Sockify e-commerce store.
 
-// @host      localhost:8080
 // @BasePath  /api/v1
 // @license.name MIT
 // @license.url https://github.com/sockify/sockify/blob/main/LICENSE
