@@ -11,8 +11,8 @@ import { Link } from "react-router-dom";
 
 export default function PaymentCanceledPage() {
   return (
-    <div className="mt-10 flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-xl">
+    <div className="flex items-center justify-center bg-background px-4 py-10">
+      <Card className="w-full max-w-3xl">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-destructive/10">
             <AlertCircle className="h-12 w-12 text-destructive" />
@@ -20,14 +20,14 @@ export default function PaymentCanceledPage() {
           <CardTitle className="text-2xl font-bold">
             Payment cancelled
           </CardTitle>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
           <p className="text-center text-muted-foreground">
             We're sorry, but your payment was not successful. This could be due
             to insufficient funds, an expired card, or other issues with your
             payment method.
           </p>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
           <div className="rounded-lg bg-muted p-4">
             <h3 className="mb-2 font-semibold">What you can do next:</h3>
             <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">

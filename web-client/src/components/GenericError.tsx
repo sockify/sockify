@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 
 import LoadingSpinner from "./LoadingSpinner";
 
-const MAX_STACK_TRACE_CHAR_LENGTH = 400;
+const MAX_STACK_TRACE_CHAR_LENGTH = 325;
 
 interface GenericErrorProps {
   title?: string;
@@ -53,7 +53,7 @@ export default function GenericError({
   };
 
   return (
-    <div className="flex h-full items-center justify-center bg-background p-4">
+    <div className="flex h-full items-center justify-center bg-background">
       <Card className="w-full max-w-3xl">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-destructive/10">
