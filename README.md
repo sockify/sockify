@@ -6,6 +6,7 @@ An e-commerce web app to sell custom socks.
 
 - **Store:** <https://sockify.up.railway.app>
 - **Admin dashboard:** <https://sockify.up.railway.app/admin>
+- **API docs:** <https://sockify-api.up.railway.app/swagger/index.html>
 
 **Development**
 
@@ -13,6 +14,7 @@ An e-commerce web app to sell custom socks.
 - **Admin dashboard:** <https://sockify-dev.up.railway.app/admin>
   - **Username:** `jdoe`
   - **Password:** `password`
+- **API docs:** <https://sockify-api-dev.up.railway.app/swagger/index.html>
 
 **Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
 
@@ -165,10 +167,6 @@ We can manually deploy using the Railway CLI. This is not needed but in case of 
 3. Connect to our project: `railway link -p de4acaa6-0fa7-45f2-a7d2-938b9a5b9151`
 4. Deploy the branch: `railway up`
    1. Make sure to associate the deployment with the correct environment (e.g. `production`, `dev`) and the correct service (e.g. `web-client`, `api`)
-
-#### Server access <!-- omit in toc -->
-
-The `web-client` and `database` have public URL access, however, the `api` is NOT open to the internet (only available though Railway's Virtual Private Network).
 
 #### Docker-compose caveat <!-- omit in toc -->
 
