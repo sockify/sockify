@@ -2,7 +2,7 @@ import axiosInstance from "@/shared/axios";
 
 import { OrderConfirmation, orderConfirmationSchema } from "./model";
 
-interface CartService {
+export interface CartService {
   getStripeOrderConfirmation(sessionId: string): Promise<OrderConfirmation>;
 }
 
