@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import AuthProtectedRoutes from "./components/AuthProtectedRoutes";
+import CartDemo from "./components/CartDemo";
 import NotFound from "./components/NotFound";
 import UnderConstruction from "./components/UnderConstruction";
 import { TooltipProvider } from "./components/ui/tooltip";
@@ -46,6 +47,10 @@ createRoot(document.getElementById("root")!).render(
                     path="cart/checkout/payment-canceled"
                     element={<PaymentCanceledPage />}
                   />
+                  {/* TODO: remove after testing */}
+                  {process.env.NODE_ENV !== "production" && (
+                    <Route path="cart-demo" element={<CartDemo />} />
+                  )}
 
                   {/* -- Post MVP -- */}
                   <Route
