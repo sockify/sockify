@@ -42,7 +42,10 @@ export default function OrderConfirmationPage() {
   if (isError) {
     return (
       <div className="py-10">
-        <GenericError stackTrace={error.stack} />
+        <GenericError
+          message="We were unable to fetch the order confirmation."
+          stackTrace={error.stack}
+        />
       </div>
     );
   }

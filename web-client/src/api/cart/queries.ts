@@ -13,6 +13,6 @@ export function useGetStripeOrderConfirmationOptions(sessionId: string) {
 }
 export function useGetStripeOrderConfirmation(
   sessionId: string,
-): UseQueryResult<OrderConfirmation, Error> {
+): UseQueryResult<OrderConfirmation> {
   return useQuery(useGetStripeOrderConfirmationOptions(sessionId));
 }
