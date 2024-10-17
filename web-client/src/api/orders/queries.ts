@@ -7,7 +7,7 @@ const orderService = new HttpOrderService();
 
 export function useGetOrderByIdOptions(orderId: number, enabled = true) {
   return queryOptions({
-    queryKey: ["order", { orderId }],
+    queryKey: ["orders", { orderId }],
     queryFn: () => orderService.getOrderById(orderId),
     enabled,
   });
@@ -17,4 +17,16 @@ export function useGetOrderById(
   enabled = true,
 ): UseQueryResult<Order> {
   return useQuery(useGetOrderByIdOptions(orderId, enabled));
+}
+
+export function useGetOrderByInvoiceOptions(invoiceNumber: string) {
+  return queryOptions({
+    queryKey: ["orders", { invoiceNumber }],
+    queryFn: () => orderService.getOrderByInvoice(invoiceNumber),
+  });
+}
+export function useGetOrderByInvoice(
+  invoiceNumber: string,
+): UseQueryResult<Order> {
+  return useQuery(useGetOrderByInvoiceOptions(invoiceNumber));
 }
