@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const orderAddressSchema = z.object({
   street: z.string(),
-  aptUnit: z.string(),
+  aptUnit: z.string().nullable(),
   //   city: z.string(),
   state: z.enum([
     "AL",
@@ -102,3 +102,11 @@ export const orderSchema = z.object({
   createdAt: z.string().optional(),
 });
 export type Order = z.infer<typeof orderSchema>;
+
+export const ordersPaginatedResponseSchema = z.object({
+  items: z.array(orderSchema),
+  total: z.number(),
+  limit: z.number(),
+  offset: z.number(),
+});
+export type OrdersPaginatedResponse = z.infer<typeof ordersPaginatedResponseSchema>;
