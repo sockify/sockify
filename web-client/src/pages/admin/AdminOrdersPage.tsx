@@ -158,7 +158,7 @@ export default function AdminOrdersPage() {
         <OrdersTable data={orders?.items ?? []} isFiltered={false} />
       )}
 
-      {!filterText && totalPages >= 1 && (
+      {filter === "status" && totalPages >= 1 && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
