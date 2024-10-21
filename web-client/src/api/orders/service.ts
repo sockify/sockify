@@ -6,6 +6,8 @@ import {
   OrdersPaginatedResponse,
   orderSchema,
   ordersPaginatedResponseSchema,
+  OrderUpdateResponse,
+  orderUpdateResponseSchema
 } from "./model";
 
 export interface OrderService {
@@ -16,6 +18,7 @@ export interface OrderService {
     offset: number,
     status?: OrderStatus,
   ): Promise<OrdersPaginatedResponse>;
+  getOrderUpdates(orderId: number): Promise<OrderUpdateResponse>;
 }
 
 export class HttpOrderService implements OrderService {
@@ -41,4 +44,9 @@ export class HttpOrderService implements OrderService {
     });
     return ordersPaginatedResponseSchema.parse(data);
   }
+
+  async getOrderUpdates(orderId: number): Promise<OrderUpdateResponse> {
+    const { data } = await axiosInstance.get(`/api/v1/orders/${orderId}/updates`);
+    return orderUpdateResponseSchema.parse(data);
+  }  
 }

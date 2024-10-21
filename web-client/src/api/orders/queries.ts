@@ -1,6 +1,7 @@
 import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
 
-import { Order, OrderStatus, OrdersPaginatedResponse } from "./model";
+
+import { Order, OrderStatus, OrdersPaginatedResponse, OrderUpdateResponse } from "./model";
 import { HttpOrderService } from "./service";
 
 const orderService = new HttpOrderService();
@@ -49,3 +50,19 @@ export function useGetOrders(
 ): UseQueryResult<OrdersPaginatedResponse> {
   return useQuery(useGetOrdersOptions(limit, offset, status, enabled));
 }
+
+export function useGetOrderUpdatesOptions(orderId: number, enabled = true) {
+  return queryOptions({
+    queryKey: ["order-updates", { orderId }],
+    queryFn: () => orderService.getOrderUpdates(orderId),
+    enabled,
+  });
+}
+
+export function useGetOrderUpdates(
+  orderId: number,
+  enabled = true
+): UseQueryResult<OrderUpdateResponse> {
+  return useQuery(useGetOrderUpdatesOptions(orderId, enabled));
+}
+
