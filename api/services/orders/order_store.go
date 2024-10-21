@@ -35,6 +35,9 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 	}
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return orders, nil
+		}
 		log.Printf("Error fetching orders by status: %v", err)
 		return nil, err
 	}
@@ -117,8 +120,13 @@ func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	return items, nil
 }
 
-func (s *OrderStore) CountOrders() (total int, err error) {
-	err = s.db.QueryRow(`SELECT COUNT(*) FROM orders`).Scan(&total)
+func (s *OrderStore) CountOrders(status string) (total int, err error) {
+	if status == "" {
+		err = s.db.QueryRow(`SELECT COUNT(*) FROM orders`).Scan(&total)
+	} else {
+		err = s.db.QueryRow(`SELECT COUNT(*) FROM orders WHERE status = $1`, status).Scan(&total)
+	}
+
 	if err != nil {
 		log.Printf("Error counting orders: %v", err)
 		return 0, err
