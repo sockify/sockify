@@ -1,5 +1,6 @@
 import { Order } from "@/api/orders/model";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 import TableEmpty from "./TableEmpty";
 import TableNoResults from "./TableNoResults";
@@ -19,6 +20,7 @@ interface OrdersTableProps {
 }
 
 export default function OrdersTable({ data, isFiltered }: OrdersTableProps) {
+  const navigate = useNavigate();
   return (
     <Table className="h-fit w-full">
       <TableHeader>
@@ -35,7 +37,11 @@ export default function OrdersTable({ data, isFiltered }: OrdersTableProps) {
       <TableBody>
         {data.length > 0 ? (
           data.map((order) => (
-            <TableRow key={order.orderId}>
+            <TableRow
+              key={order.orderId}
+              onClick={() => navigate(`/admin/orders/${order.orderId}`)}
+              className="hover:cursor-pointer"
+            >
               <TableCell className="font-medium">{order.orderId}</TableCell>
               <TableCell>{order.invoiceNumber}</TableCell>
               <TableCell>{`${order.contact.firstname} ${order.contact.lastname}`}</TableCell>
