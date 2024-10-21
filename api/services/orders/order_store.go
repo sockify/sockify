@@ -35,6 +35,9 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 	}
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return orders, nil
+		}
 		log.Printf("Error fetching orders by status: %v", err)
 		return nil, err
 	}
