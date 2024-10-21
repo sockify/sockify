@@ -1,5 +1,4 @@
 import {
-  Order,
   OrderStatus,
   OrdersPaginatedResponse,
   orderStatusEnumSchema,
@@ -19,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQueries } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -121,18 +121,30 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      <p>{isLoading && "Loading..."}</p>
-      {isError && (
+      {isLoading ? (
+        <TableSkeleton />
+      ) : isError ? (
         <GenericError
           message="Unable to load orders."
           stackTrace={queries.map((query) => query.error?.stack).join(",")}
         />
-      )}
-      {filterText ? (
+      ) : filterText ? (
         <OrdersTable data={[...order] as any} isFiltered={true} />
       ) : (
         <OrdersTable data={orders?.items ?? []} isFiltered={false} />
       )}
+    </div>
+  );
+}
+
+function TableSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-12 w-full" />
+      <Skeleton className="h-12 w-4/5" />
+      <Skeleton className="h-12 w-3/5" />
+      <Skeleton className="h-12 w-1/3" />
+      <Skeleton className="h-12 w-4/5" />
     </div>
   );
 }
