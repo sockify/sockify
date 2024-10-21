@@ -85,7 +85,7 @@ export default function AdminOrdersPage() {
   }, [totalPages, page]);
 
   return (
-    <div className="h-full space-y-6 px-4 py-6 md:px-8">
+    <section className="h-full space-y-6 px-4 py-6 md:px-8">
       <h1 className="text-3xl font-bold">Order history</h1>
       <div className="flex flex-col justify-between space-y-4 md:flex-row md:space-x-4 md:space-y-0">
         <div className="flex w-full flex-col space-y-4 md:w-full md:flex-row md:space-x-4 md:space-y-0">
@@ -145,41 +145,43 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      {isLoading ? (
-        <TableSkeleton />
-      ) : isError ? (
-        <GenericError
-          message="Unable to load orders."
-          stackTrace={queries.map((query) => query.error?.stack).join(",")}
-        />
-      ) : filterText ? (
-        <OrdersTable data={[...order] as any} isFiltered={true} />
-      ) : (
-        <OrdersTable data={orders?.items ?? []} isFiltered={false} />
-      )}
+      <div className="flex min-h-[40rem] flex-col justify-between">
+        {isLoading ? (
+          <TableSkeleton />
+        ) : isError ? (
+          <GenericError
+            message="Unable to load orders."
+            stackTrace={queries.map((query) => query.error?.stack).join(",")}
+          />
+        ) : filterText ? (
+          <OrdersTable data={[...order] as any} isFiltered={true} />
+        ) : (
+          <OrdersTable data={orders?.items ?? []} isFiltered={false} />
+        )}
 
-      {filter === "status" && totalPages >= 1 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              />
-            </PaginationItem>
+        {totalPages >= 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                />
+              </PaginationItem>
 
-            {renderPaginationButtons}
+              {renderPaginationButtons}
 
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  setPage((prev) => Math.min(prev + 1, totalPages))
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
-    </div>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+      </div>
+    </section>
   );
 }
 
