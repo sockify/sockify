@@ -12,6 +12,14 @@ import GenericError from "@/components/GenericError";
 import OrdersTable from "@/components/OrdersTable";
 import { Input } from "@/components/ui/input";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -20,9 +28,9 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQueries } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-const ORDERS_LIMIT = 50;
+const ORDERS_RESULTS_LIMIT = 25;
 
 type FilterType = "status" | "orderId" | "invoice";
 type StatusFilter = OrderStatus | "any";
@@ -39,8 +47,8 @@ export default function AdminOrdersPage() {
   const queries = useQueries({
     queries: [
       useGetOrdersOptions(
-        ORDERS_LIMIT,
-        (page - 1) * ORDERS_LIMIT,
+        ORDERS_RESULTS_LIMIT,
+        (page - 1) * ORDERS_RESULTS_LIMIT,
         status === "any" ? undefined : status,
       ),
       useGetOrderByIdOptions(
@@ -53,12 +61,28 @@ export default function AdminOrdersPage() {
   });
 
   const orders: OrdersPaginatedResponse | undefined = queries[0].data;
+  const totalPages = Math.ceil((orders?.total ?? 0) / ORDERS_RESULTS_LIMIT);
+
   const order = queries
     .slice(1)
     .map((query) => query.data)
     .filter(Boolean);
   const isLoading = queries.some((query) => query.isLoading);
   const isError = queries.some((query) => query.isError);
+
+  const renderPaginationButtons = useMemo(() => {
+    const buttons: JSX.Element[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <PaginationItem key={i}>
+          <PaginationLink isActive={i === page} onClick={() => setPage(i)}>
+            {i}
+          </PaginationLink>
+        </PaginationItem>,
+      );
+    }
+    return buttons;
+  }, [totalPages, page]);
 
   return (
     <div className="h-full space-y-6 px-4 py-6 md:px-8">
@@ -132,6 +156,28 @@ export default function AdminOrdersPage() {
         <OrdersTable data={[...order] as any} isFiltered={true} />
       ) : (
         <OrdersTable data={orders?.items ?? []} isFiltered={false} />
+      )}
+
+      {!filterText && totalPages >= 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              />
+            </PaginationItem>
+
+            {renderPaginationButtons}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  setPage((prev) => Math.min(prev + 1, totalPages))
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
     </div>
   );
