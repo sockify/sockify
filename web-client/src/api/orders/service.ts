@@ -1,13 +1,24 @@
 import axiosInstance from "@/shared/axios";
 
-import { Order, orderSchema, OrdersPaginatedResponse, OrderStatus, ordersPaginatedResponseSchema, OrderUpdateResponse, orderUpdateResponseSchema} from "./model";
+import {
+  Order,
+  OrderStatus,
+  OrdersPaginatedResponse,
+  orderSchema,
+  ordersPaginatedResponseSchema,
+  OrderUpdateResponse,
+  orderUpdateResponseSchema
+} from "./model";
 
 export interface OrderService {
   getOrderById(orderId: number): Promise<Order>;
   getOrderByInvoice(invoiceNumber: string): Promise<Order>;
-  getOrders(status: OrderStatus, limit: number, offset: number): Promise<OrdersPaginatedResponse>;
+  getOrders(
+    limit: number,
+    offset: number,
+    status?: OrderStatus,
+  ): Promise<OrdersPaginatedResponse>;
   getOrderUpdates(orderId: number): Promise<OrderUpdateResponse>;
-
 }
 
 export class HttpOrderService implements OrderService {
@@ -23,7 +34,11 @@ export class HttpOrderService implements OrderService {
     return orderSchema.parse(data);
   }
 
-  async getOrders(status: OrderStatus, limit: number, offset: number): Promise<OrdersPaginatedResponse> {
+  async getOrders(
+    limit: number,
+    offset: number,
+    status?: OrderStatus,
+  ): Promise<OrdersPaginatedResponse> {
     const { data } = await axiosInstance.get(`/api/v1/orders`, {
       params: { status, limit, offset },
     });
