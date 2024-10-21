@@ -1,10 +1,16 @@
-import { OrderStatus, orderStatusEnumSchema } from "@/api/orders/model";
+import {
+  Order,
+  OrderStatus,
+  OrdersPaginatedResponse,
+  orderStatusEnumSchema,
+} from "@/api/orders/model";
 import {
   useGetOrderByIdOptions,
   useGetOrderByInvoiceOptions,
   useGetOrdersOptions,
 } from "@/api/orders/queries";
 import GenericError from "@/components/GenericError";
+import OrdersTable from "@/components/OrdersTable";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -22,7 +28,7 @@ type FilterType = "status" | "orderId" | "invoice";
 type StatusFilter = OrderStatus | "any";
 
 const DEFAULT_FILTER: FilterType = "status";
-const DEFAULT_STATUS: StatusFilter = "received";
+const DEFAULT_STATUS: StatusFilter = "any";
 
 export default function AdminOrdersPage() {
   const [filter, setFilter] = useState<FilterType>(DEFAULT_FILTER);
@@ -46,8 +52,11 @@ export default function AdminOrdersPage() {
     ],
   });
 
-  const orders = queries[0].data ?? [];
-  const order = queries.slice(1).flatMap((query) => query.data ?? []);
+  const orders: OrdersPaginatedResponse | undefined = queries[0].data;
+  const order = queries
+    .slice(1)
+    .map((query) => query.data)
+    .filter(Boolean);
   const isLoading = queries.some((query) => query.isLoading);
   const isError = queries.some((query) => query.isError);
 
@@ -119,7 +128,11 @@ export default function AdminOrdersPage() {
           stackTrace={queries.map((query) => query.error?.stack).join(",")}
         />
       )}
-      {filterText ? JSON.stringify(order) : JSON.stringify(orders)}
+      {filterText ? (
+        <OrdersTable data={[...order] as any} isFiltered={true} />
+      ) : (
+        <OrdersTable data={orders?.items ?? []} isFiltered={false} />
+      )}
     </div>
   );
 }
