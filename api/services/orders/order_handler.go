@@ -51,7 +51,7 @@ func (h *OrderHandler) handleGetOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	total, err := h.store.CountOrders()
+	total, err := h.store.CountOrders(status)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
