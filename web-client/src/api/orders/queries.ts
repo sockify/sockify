@@ -53,7 +53,7 @@ export function useGetOrders(
 
 export function useGetOrderUpdatesOptions(orderId: number, enabled = true) {
   return queryOptions({
-    queryKey: ["orderUpdates", { orderId }],
+    queryKey: ["order-updates", { orderId }],
     queryFn: () => orderService.getOrderUpdates(orderId),
     enabled,
   });
