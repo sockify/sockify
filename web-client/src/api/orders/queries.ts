@@ -120,6 +120,9 @@ export function useUpdateOrderAddressMutation(): UseMutationResult<
       queryClient.invalidateQueries({
         queryKey: ["orders", { orderId }],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
     },
     onError: () => {
       toast.error("Unable to update order address");
