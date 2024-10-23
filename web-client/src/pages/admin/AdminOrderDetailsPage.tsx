@@ -3,8 +3,10 @@ import {
   CreateOrderUpdateRequest,
   OrderAddress,
   OrderContact,
+  OrderStatus,
   UpdateOrderAddressDTO,
   UpdateOrderContactDTO,
+  UpdateOrderStatusRequest,
   stateEnumSchema,
 } from "@/api/orders/model";
 import {
@@ -13,6 +15,7 @@ import {
   useGetOrderUpdatesOptions,
   useUpdateOrderAddressMutation,
   useUpdateOrderContactMutation,
+  useUpdateOrderStatusMutation,
 } from "@/api/orders/queries";
 import GenericError from "@/components/GenericError";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -63,6 +66,15 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 
+const STATUS_OPTIONS = [
+  { label: "Pending", value: "pending" },
+  { label: "Received", value: "received" },
+  { label: "Shipped", value: "shipped" },
+  { label: "Delivered", value: "delivered" },
+  { label: "Returned", value: "returned" },
+  { label: "Canceled", value: "canceled" },
+];
+
 const createUpdateFormSchema = z.object({
   message: z.string().min(1, { message: "Message is required" }),
 });
@@ -92,6 +104,10 @@ export default function AdminOrderDetailsPage() {
   const { orderId } = useParams();
   const orderIdNumber = parseInt(orderId!);
 
+  const [currentStatus, setCurrentStatus] = useState<OrderStatus | undefined>(
+    undefined,
+  );
+
   // Modal/popup state controllers
   const [isCreateUpdateOpen, setIsCreateUpdateOpen] = useState(false);
   const [isUpdateAddressOpen, setIsUpdateAddressOpen] = useState(false);
@@ -114,6 +130,7 @@ export default function AdminOrderDetailsPage() {
   const createUpdateMutation = useCreateOrderUpdateMutation();
   const updateAddressMutation = useUpdateOrderAddressMutation();
   const updateContactMutation = useUpdateOrderContactMutation();
+  const updateStatusMutation = useUpdateOrderStatusMutation();
 
   // Forms
   const createUpdateForm = useForm<CreateUpdateForm>({
@@ -165,6 +182,21 @@ export default function AdminOrderDetailsPage() {
     updateContactForm.reset();
   };
 
+  const handleStatusChange = async (newStatus: OrderStatus) => {
+    if (currentStatus && canChangeStatus(currentStatus, newStatus)) {
+      const payload: UpdateOrderStatusRequest = {
+        message: getStatusChangeMessage(newStatus),
+        newStatus,
+      };
+
+      await updateStatusMutation.mutateAsync({
+        orderId: orderIdNumber,
+        payload,
+      });
+      setCurrentStatus(newStatus);
+    }
+  };
+
   useEffect(() => {
     if (order) {
       updateAddressForm.reset({
@@ -186,6 +218,12 @@ export default function AdminOrderDetailsPage() {
       });
     }
   }, [order, updateContactForm]);
+
+  useEffect(() => {
+    if (order) {
+      setCurrentStatus(order.status);
+    }
+  }, [order]);
 
   if (isError) {
     return (
@@ -213,7 +251,32 @@ export default function AdminOrderDetailsPage() {
           <code className="rounded bg-muted p-1">{order!.invoiceNumber}</code>
         </h1>
 
-        <p>Dropdown</p>
+        <Select value={currentStatus} onValueChange={handleStatusChange}>
+          <SelectTrigger
+            className="w-full lg:w-[200px]"
+            disabled={updateStatusMutation.isPending}
+          >
+            <SelectValue placeholder="" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>New status</SelectLabel>
+              {STATUS_OPTIONS.map((option) => (
+                <SelectItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={
+                    currentStatus &&
+                    !canChangeStatus(currentStatus, option.value)
+                  }
+                >
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex flex-col gap-6 md:flex-row">
@@ -575,7 +638,7 @@ export default function AdminOrderDetailsPage() {
               <TableRow>
                 <TableHead className="w-[300px]">Timestamp</TableHead>
                 <TableHead className="w-[300px]">Created by</TableHead>
-                <TableHead>Message</TableHead>
+                <TableHead className="min-w-[600px]">Message</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -673,4 +736,37 @@ function LoadingSkeleton() {
       <Skeleton className="h-12 w-4/5" />
     </div>
   );
+}
+
+function canChangeStatus(currentStatus: string, newStatus: string) {
+  // pending -> received -> shipped -> delivered -> returned
+  // |          |
+  // |-----------> canceled
+  return (
+    (newStatus === "received" && currentStatus === "pending") ||
+    (newStatus === "canceled" && currentStatus === "pending") ||
+    (newStatus === "canceled" && currentStatus === "received") ||
+    (newStatus === "shipped" && currentStatus === "received") ||
+    (newStatus === "delivered" && currentStatus === "shipped") ||
+    (newStatus === "returned" && currentStatus === "delivered")
+  );
+}
+
+function getStatusChangeMessage(newStatus: OrderStatus): string {
+  switch (newStatus) {
+    case "pending":
+      return "The order is pending payment and awaiting further updates.";
+    case "received":
+      return "The order has been received and is being processed.";
+    case "shipped":
+      return "The order has been shipped and is on its way.";
+    case "delivered":
+      return "The order has been delivered to the customer.";
+    case "returned":
+      return "The order has been returned.";
+    case "canceled":
+      return "The order has been canceled.";
+    default:
+      return "Unknown status.";
+  }
 }

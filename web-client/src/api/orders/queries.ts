@@ -17,6 +17,7 @@ import {
   OrdersPaginatedResponse,
   UpdateOrderAddressDTO,
   UpdateOrderContactDTO,
+  UpdateOrderStatusDTO,
 } from "./model";
 import { HttpOrderService } from "./service";
 
@@ -153,6 +154,32 @@ export function useUpdateOrderContactMutation(): UseMutationResult<
     },
     onError: () => {
       toast.error("Unable to update order contact");
+    },
+  });
+}
+
+export function useUpdateOrderStatusMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  UpdateOrderStatusDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, payload }) =>
+      orderService.updateOrderStatus(orderId, payload),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order status updated");
+
+      queryClient.invalidateQueries({
+        queryKey: ["orders", { orderId }],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to update order status");
     },
   });
 }

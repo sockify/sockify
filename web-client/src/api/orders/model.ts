@@ -141,6 +141,14 @@ export type CreateOrderUpdateRequest = z.infer<
   typeof createOrderUpdateRequestSchema
 >;
 
+export const updateOrderStatusRequestSchema = z.object({
+  message: z.string(),
+  newStatus: orderStatusEnumSchema,
+});
+export type UpdateOrderStatusRequest = z.infer<
+  typeof updateOrderStatusRequestSchema
+>;
+
 export interface CreateOrderUpdateDTO {
   orderId: number;
   payload: CreateOrderUpdateRequest;
@@ -152,4 +160,8 @@ export interface UpdateOrderAddressDTO {
 export interface UpdateOrderContactDTO {
   orderId: number;
   contact: OrderContact;
+}
+export interface UpdateOrderStatusDTO {
+  orderId: number;
+  payload: UpdateOrderStatusRequest;
 }
