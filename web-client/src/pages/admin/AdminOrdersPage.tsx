@@ -95,6 +95,7 @@ export default function AdminOrdersPage() {
               setFilter(value);
               setFilterText("");
               setStatus(DEFAULT_STATUS);
+              setPage(1);
             }}
           >
             <SelectTrigger className="w-full md:w-1/6">
@@ -113,7 +114,10 @@ export default function AdminOrdersPage() {
 
           {filter === "status" ? (
             <Select
-              onValueChange={(value: StatusFilter) => setStatus(value)}
+              onValueChange={(value: StatusFilter) => {
+                setPage(1);
+                setStatus(value);
+              }}
               disabled={Boolean(filterText)}
             >
               <SelectTrigger className="w-full md:w-1/3">
@@ -145,7 +149,7 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      <div className="flex min-h-[40rem] flex-col justify-between">
+      <div className="flex min-h-[40rem] flex-col justify-between space-y-6">
         {isLoading ? (
           <TableSkeleton />
         ) : isError ? (
