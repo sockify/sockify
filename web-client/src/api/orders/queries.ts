@@ -15,6 +15,7 @@ import {
   OrderStatus,
   OrderUpdateResponse,
   OrdersPaginatedResponse,
+  UpdateOrderAddressDTO,
 } from "./model";
 import { HttpOrderService } from "./service";
 
@@ -99,6 +100,29 @@ export function useCreateOrderUpdateMutation(): UseMutationResult<
     },
     onError: () => {
       toast.error("Unable to create order update");
+    },
+  });
+}
+
+export function useUpdateOrderAddressMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  UpdateOrderAddressDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, address }) =>
+      orderService.updateOrderAddress(orderId, address),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order address updated");
+
+      queryClient.invalidateQueries({
+        queryKey: ["orders", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to update order address");
     },
   });
 }

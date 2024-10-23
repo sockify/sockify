@@ -4,6 +4,7 @@ import { ServerMessage, serverMessageSchema } from "@/shared/types";
 import {
   CreateOrderUpdateRequest,
   Order,
+  OrderAddress,
   OrderStatus,
   OrderUpdateResponse,
   OrdersPaginatedResponse,
@@ -24,6 +25,10 @@ export interface OrderService {
   createOrderUpdate(
     orderId: number,
     payload: CreateOrderUpdateRequest,
+  ): Promise<ServerMessage>;
+  updateOrderAddress(
+    orderId: number,
+    payload: OrderAddress,
   ): Promise<ServerMessage>;
 }
 
@@ -64,6 +69,17 @@ export class HttpOrderService implements OrderService {
   ): Promise<ServerMessage> {
     const { data } = await axiosInstance.post(
       `/api/v1/orders/${orderId}/updates`,
+      payload,
+    );
+    return serverMessageSchema.parse(data);
+  }
+
+  async updateOrderAddress(
+    orderId: number,
+    payload: OrderAddress,
+  ): Promise<ServerMessage> {
+    const { data } = await axiosInstance.patch(
+      `/api/v1/orders/${orderId}/address`,
       payload,
     );
     return serverMessageSchema.parse(data);
