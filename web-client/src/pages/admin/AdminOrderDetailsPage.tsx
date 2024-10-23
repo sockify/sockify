@@ -1,10 +1,31 @@
 import {
+  CreateOrderUpdateDTO,
+  CreateOrderUpdateRequest,
+} from "@/api/orders/model";
+import {
+  useCreateOrderUpdateMutation,
   useGetOrderByIdOptions,
   useGetOrderUpdatesOptions,
 } from "@/api/orders/queries";
 import GenericError from "@/components/GenericError";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import TableEmpty from "@/components/TableEmpty";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -14,14 +35,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueries } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { z } from "zod";
+
+const createOrderUpdateFormSchema = z.object({
+  message: z.string().min(1, { message: "Message is required" }),
+});
+type CreateOrderUpdateForm = z.infer<typeof createOrderUpdateFormSchema>;
 
 export default function AdminOrderDetailsPage() {
   const { orderId } = useParams();
   const orderIdNumber = parseInt(orderId!);
 
+  // Forms
+  const createOrderUpdateForm = useForm<CreateOrderUpdateForm>({
+    resolver: zodResolver(createOrderUpdateFormSchema),
+    defaultValues: {
+      message: "",
+    },
+  });
+
+  // Modal/popup state controllers
+  const [createOrderUpdateOpen, setCreateOrderUpdateOpen] = useState(false);
+
+  // Queries
   const queries = useQueries({
     queries: [
       useGetOrderByIdOptions(orderIdNumber),
@@ -33,6 +76,21 @@ export default function AdminOrderDetailsPage() {
 
   const isError = queries.some((query) => query.isError);
   const isLoading = queries.some((query) => query.isLoading);
+
+  // Mutations
+  const createOrderUpdateMutation = useCreateOrderUpdateMutation();
+
+  const handleAddUpdate = async (data: CreateOrderUpdateForm) => {
+    const payload: CreateOrderUpdateRequest = {
+      message: data.message,
+    };
+    const params: CreateOrderUpdateDTO = { orderId: orderIdNumber, payload };
+
+    await createOrderUpdateMutation.mutateAsync(params);
+
+    setCreateOrderUpdateOpen(false);
+    createOrderUpdateForm.reset();
+  };
 
   if (isError) {
     return (
@@ -210,6 +268,63 @@ export default function AdminOrderDetailsPage() {
               )}
             </TableBody>
           </Table>
+
+          <Dialog
+            open={createOrderUpdateOpen}
+            onOpenChange={setCreateOrderUpdateOpen}
+          >
+            <Button
+              className="mt-4"
+              onClick={() => setCreateOrderUpdateOpen(true)}
+            >
+              Add update
+            </Button>
+
+            <DialogContent className="max-w-4xl">
+              <DialogHeader>
+                <DialogTitle>Create order update</DialogTitle>
+              </DialogHeader>
+              <Form {...createOrderUpdateForm}>
+                <form
+                  onSubmit={createOrderUpdateForm.handleSubmit(handleAddUpdate)}
+                  className="space-y-6"
+                >
+                  <div className="grid gap-2">
+                    <FormField
+                      control={createOrderUpdateForm.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Enter your message"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        disabled={createOrderUpdateMutation.isPending}
+                      >
+                        {createOrderUpdateMutation.isPending && (
+                          <LoadingSpinner size={16} className="mr-2" />
+                        )}
+                        {createOrderUpdateMutation.isPending
+                          ? "Creating..."
+                          : "Create"}
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
     </section>
