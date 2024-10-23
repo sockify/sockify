@@ -21,6 +21,7 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PaymentCanceledPage from "./pages/PaymentCanceledPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
 
@@ -88,6 +89,10 @@ createRoot(document.getElementById("root")!).render(
                     />
                     <Route path="inventory" element={<AdminInventoryPage />} />
                     <Route path="orders" element={<AdminOrdersPage />} />
+                    <Route
+                      path="orders/:orderId"
+                      element={<AdminOrderDetailsPage />}
+                    />
                     <Route path="profile" element={<AdminProfilePage />} />
 
                     <Route path="*" element={<NotFound />} />

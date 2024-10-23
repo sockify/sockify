@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS orders (
             'CA',
             'CO',
             'CT',
+            -- TODO: add "DC"
             'DE',
             'FL',
             'GA',
