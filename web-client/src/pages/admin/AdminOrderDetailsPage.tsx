@@ -245,7 +245,7 @@ export default function AdminOrderDetailsPage() {
 
   return (
     <section className="h-full space-y-6 px-4 py-6 md:px-8">
-      <div className="flex flex-col justify-between gap-6 md:flex-row">
+      <div className="flex flex-col justify-between gap-6 lg:flex-row">
         <h1 className="text-2xl lg:text-3xl">
           <span className="font-bold">Invoice #:</span>{" "}
           <code className="rounded bg-muted p-1">{order!.invoiceNumber}</code>
@@ -279,7 +279,7 @@ export default function AdminOrderDetailsPage() {
         </Select>
       </div>
 
-      <div className="flex flex-col gap-6 md:flex-row">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="w-full">
           <CardHeader className="text-2xl font-bold">
             Order information
@@ -437,141 +437,145 @@ export default function AdminOrderDetailsPage() {
             </Dialog>
           </CardContent>
         </Card>
-      </div>
 
-      <Card className="w-full">
-        <CardHeader className="text-2xl font-bold">Shipping address</CardHeader>
-        <CardContent>
-          <p>{order!.address.street}</p>
-          <p>Apt/unit: {order!.address.aptUnit}</p>
-          {/* TODO: add city */}
-          <p>
-            {order!.address.state}, {order!.address.zipcode}
-          </p>
+        <Card className="w-full">
+          <CardHeader className="text-2xl font-bold">
+            Shipping address
+          </CardHeader>
+          <CardContent>
+            <p>{order!.address.street}</p>
+            <p>Apt/unit: {order!.address.aptUnit}</p>
+            {/* TODO: add city */}
+            <p>
+              {order!.address.state}, {order!.address.zipcode}
+            </p>
 
-          <Dialog
-            open={isUpdateAddressOpen}
-            onOpenChange={setIsUpdateAddressOpen}
-          >
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-2"
-              onClick={() => setIsUpdateAddressOpen(true)}
+            <Dialog
+              open={isUpdateAddressOpen}
+              onOpenChange={setIsUpdateAddressOpen}
             >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit address
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => setIsUpdateAddressOpen(true)}
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit address
+              </Button>
 
-            <DialogContent className="max-w-4xl">
-              <DialogHeader>
-                <DialogTitle>Update address</DialogTitle>
-              </DialogHeader>
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle>Update address</DialogTitle>
+                </DialogHeader>
 
-              <Form {...updateAddressForm}>
-                <form
-                  onSubmit={updateAddressForm.handleSubmit(handleUpdateAddress)}
-                  className="space-y-6"
-                >
-                  <div className="grid gap-4">
-                    <FormField
-                      control={updateAddressForm.control}
-                      name="street"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Street</FormLabel>
-                          <FormControl>
-                            <Input placeholder="123 E Street" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={updateAddressForm.control}
-                      name="aptUnit"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Apt/unit</FormLabel>
-                          <FormControl>
-                            <Input placeholder="C4" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="flex gap-6">
+                <Form {...updateAddressForm}>
+                  <form
+                    onSubmit={updateAddressForm.handleSubmit(
+                      handleUpdateAddress,
+                    )}
+                    className="space-y-6"
+                  >
+                    <div className="grid gap-4">
                       <FormField
                         control={updateAddressForm.control}
-                        name="state"
+                        name="street"
                         render={({ field }) => (
-                          <FormItem className="w-full">
-                            <FormLabel>State</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              name="select-state"
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a state" />
-                                </SelectTrigger>
-                              </FormControl>
-
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>States</SelectLabel>
-                                  {US_STATES.map((state) => (
-                                    <SelectItem
-                                      key={state.value}
-                                      value={state.value}
-                                    >
-                                      {state.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={updateAddressForm.control}
-                        name="zipcode"
-                        render={({ field }) => (
-                          <FormItem className="w-full">
-                            <FormLabel>Zipcode</FormLabel>
+                          <FormItem>
+                            <FormLabel>Street</FormLabel>
                             <FormControl>
-                              <Input placeholder="33094" {...field} />
+                              <Input placeholder="123 E Street" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </div>
-
-                    <div className="flex justify-end">
-                      <Button
-                        type="submit"
-                        disabled={updateAddressMutation.isPending}
-                      >
-                        {updateAddressMutation.isPending && (
-                          <LoadingSpinner size={16} className="mr-2" />
+                      <FormField
+                        control={updateAddressForm.control}
+                        name="aptUnit"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Apt/unit</FormLabel>
+                            <FormControl>
+                              <Input placeholder="C4" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
-                        {updateAddressMutation.isPending
-                          ? "Updating..."
-                          : "Update"}
-                      </Button>
+                      />
+
+                      <div className="flex gap-6">
+                        <FormField
+                          control={updateAddressForm.control}
+                          name="state"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>State</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                name="select-state"
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a state" />
+                                  </SelectTrigger>
+                                </FormControl>
+
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>States</SelectLabel>
+                                    {US_STATES.map((state) => (
+                                      <SelectItem
+                                        key={state.value}
+                                        value={state.value}
+                                      >
+                                        {state.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={updateAddressForm.control}
+                          name="zipcode"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Zipcode</FormLabel>
+                              <FormControl>
+                                <Input placeholder="33094" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex justify-end">
+                        <Button
+                          type="submit"
+                          disabled={updateAddressMutation.isPending}
+                        >
+                          {updateAddressMutation.isPending && (
+                            <LoadingSpinner size={16} className="mr-2" />
+                          )}
+                          {updateAddressMutation.isPending
+                            ? "Updating..."
+                            : "Update"}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        </CardContent>
-      </Card>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card className="w-full">
         <CardHeader className="text-2xl font-bold">Order items</CardHeader>
