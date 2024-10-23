@@ -39,7 +39,7 @@ const CartPage: React.FC = () => {
   };
 
   return (
-    <div className="cart-page w-full mx-auto mt-6">
+    <div className="cart-page mx-auto px-4 py-12 2xl:container md:px-8">
       {items.length > 0 ? (
         items.map((item) => (
           <CartItem
