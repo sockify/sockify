@@ -1,11 +1,15 @@
 import {
   CreateOrderUpdateDTO,
   CreateOrderUpdateRequest,
+  OrderAddress,
+  UpdateOrderAddressDTO,
+  stateEnumSchema,
 } from "@/api/orders/model";
 import {
   useCreateOrderUpdateMutation,
   useGetOrderByIdOptions,
   useGetOrderUpdatesOptions,
+  useUpdateOrderAddressMutation,
 } from "@/api/orders/queries";
 import GenericError from "@/components/GenericError";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -26,6 +30,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -36,10 +50,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { US_STATES } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueries } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { Edit } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
@@ -49,20 +65,25 @@ const createOrderUpdateFormSchema = z.object({
 });
 type CreateOrderUpdateForm = z.infer<typeof createOrderUpdateFormSchema>;
 
+const updateOrderAddressFormSchema = z.object({
+  street: z.string().min(1, { message: "Street is required" }),
+  aptUnit: z.string().optional(),
+  // TODO: add city
+  state: stateEnumSchema,
+  zipcode: z
+    .string()
+    .min(1, { message: "Zipcode is required" })
+    .max(10, { message: "Zipcode must be at most 10 characters long" }),
+});
+type UpdateOrderAddressForm = z.infer<typeof updateOrderAddressFormSchema>;
+
 export default function AdminOrderDetailsPage() {
   const { orderId } = useParams();
   const orderIdNumber = parseInt(orderId!);
 
-  // Forms
-  const createOrderUpdateForm = useForm<CreateOrderUpdateForm>({
-    resolver: zodResolver(createOrderUpdateFormSchema),
-    defaultValues: {
-      message: "",
-    },
-  });
-
   // Modal/popup state controllers
   const [createOrderUpdateOpen, setCreateOrderUpdateOpen] = useState(false);
+  const [updateOrderAddressOpen, setUpdateOrderAddressOpen] = useState(false);
 
   // Queries
   const queries = useQueries({
@@ -79,18 +100,51 @@ export default function AdminOrderDetailsPage() {
 
   // Mutations
   const createOrderUpdateMutation = useCreateOrderUpdateMutation();
+  const updateOrderAddressMutation = useUpdateOrderAddressMutation();
 
-  const handleAddUpdate = async (data: CreateOrderUpdateForm) => {
+  // Forms
+  const createOrderUpdateForm = useForm<CreateOrderUpdateForm>({
+    resolver: zodResolver(createOrderUpdateFormSchema),
+  });
+  const updateOrderAddressForm = useForm<UpdateOrderAddressForm>({
+    resolver: zodResolver(updateOrderAddressFormSchema),
+  });
+
+  const handleCreateOrderUpdate = async (data: CreateOrderUpdateForm) => {
     const payload: CreateOrderUpdateRequest = {
       message: data.message,
     };
     const params: CreateOrderUpdateDTO = { orderId: orderIdNumber, payload };
 
     await createOrderUpdateMutation.mutateAsync(params);
-
     setCreateOrderUpdateOpen(false);
     createOrderUpdateForm.reset();
   };
+
+  const handleUpdateOrderAddress = async (data: UpdateOrderAddressForm) => {
+    const address: OrderAddress = {
+      street: data.street,
+      aptUnit: data.aptUnit,
+      state: data.state,
+      zipcode: data.zipcode,
+    };
+    const params: UpdateOrderAddressDTO = { orderId: orderIdNumber, address };
+
+    await updateOrderAddressMutation.mutateAsync(params);
+    setUpdateOrderAddressOpen(false);
+    updateOrderAddressForm.reset();
+  };
+
+  useEffect(() => {
+    if (order) {
+      updateOrderAddressForm.reset({
+        street: order.address.street,
+        aptUnit: order.address.aptUnit ?? "",
+        state: order.address.state,
+        zipcode: order.address.zipcode,
+      });
+    }
+  }, [order, updateOrderAddressForm]);
 
   if (isError) {
     return (
@@ -178,6 +232,130 @@ export default function AdminOrderDetailsPage() {
           <p>
             {order!.address.state}, {order!.address.zipcode}
           </p>
+
+          <Dialog
+            open={updateOrderAddressOpen}
+            onOpenChange={setUpdateOrderAddressOpen}
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => setUpdateOrderAddressOpen(true)}
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit address
+            </Button>
+
+            <DialogContent className="max-w-4xl">
+              <DialogHeader>
+                <DialogTitle>Update address</DialogTitle>
+              </DialogHeader>
+
+              <Form {...updateOrderAddressForm}>
+                <form
+                  onSubmit={updateOrderAddressForm.handleSubmit(
+                    handleUpdateOrderAddress,
+                  )}
+                  className="space-y-6"
+                >
+                  <div className="grid gap-2">
+                    <FormField
+                      control={updateOrderAddressForm.control}
+                      name="street"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Street</FormLabel>
+                          <FormControl>
+                            <Input placeholder="123 E Street" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={updateOrderAddressForm.control}
+                      name="aptUnit"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Apt/unit</FormLabel>
+                          <FormControl>
+                            <Input placeholder="C4" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex gap-6">
+                      <FormField
+                        control={updateOrderAddressForm.control}
+                        name="state"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>State</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              name="select-state"
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a state" />
+                                </SelectTrigger>
+                              </FormControl>
+
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>States</SelectLabel>
+                                  {US_STATES.map((state) => (
+                                    <SelectItem
+                                      key={state.value}
+                                      value={state.value}
+                                    >
+                                      {state.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={updateOrderAddressForm.control}
+                        name="zipcode"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>Zipcode</FormLabel>
+                            <FormControl>
+                              <Input placeholder="33094" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        disabled={updateOrderAddressMutation.isPending}
+                      >
+                        {updateOrderAddressMutation.isPending && (
+                          <LoadingSpinner size={16} className="mr-2" />
+                        )}
+                        {updateOrderAddressMutation.isPending
+                          ? "Updating..."
+                          : "Update"}
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
 
@@ -284,9 +462,12 @@ export default function AdminOrderDetailsPage() {
               <DialogHeader>
                 <DialogTitle>Create order update</DialogTitle>
               </DialogHeader>
+
               <Form {...createOrderUpdateForm}>
                 <form
-                  onSubmit={createOrderUpdateForm.handleSubmit(handleAddUpdate)}
+                  onSubmit={createOrderUpdateForm.handleSubmit(
+                    handleCreateOrderUpdate,
+                  )}
                   className="space-y-6"
                 >
                   <div className="grid gap-2">
