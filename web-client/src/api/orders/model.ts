@@ -109,12 +109,22 @@ export const ordersPaginatedResponseSchema = z.object({
   limit: z.number(),
   offset: z.number(),
 });
-export type OrdersPaginatedResponse = z.infer<typeof ordersPaginatedResponseSchema>;
+export type OrdersPaginatedResponse = z.infer<
+  typeof ordersPaginatedResponseSchema
+>;
+
+export const orderUpdateCreatorSchema = z.object({
+  firstname: z.string(),
+  lastname: z.string(),
+  username: z.string(),
+});
+export type OrderUpdateCreator = z.infer<typeof orderUpdateCreatorSchema>;
 
 export const orderUpdateSchema = z.object({
   id: z.number(),
   message: z.string(),
   createdAt: z.string(),
+  createdBy: orderUpdateCreatorSchema,
 });
 export type OrderUpdate = z.infer<typeof orderUpdateSchema>;
 
