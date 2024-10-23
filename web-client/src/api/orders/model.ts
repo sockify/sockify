@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const orderAddressSchema = z.object({
   street: z.string(),
@@ -130,3 +130,15 @@ export type OrderUpdate = z.infer<typeof orderUpdateSchema>;
 
 export const orderUpdateResponseSchema = z.array(orderUpdateSchema);
 export type OrderUpdateResponse = z.infer<typeof orderUpdateResponseSchema>;
+
+export const createOrderUpdateRequestSchema = z.object({
+  message: z.string(),
+});
+export type CreateOrderUpdateRequest = z.infer<
+  typeof createOrderUpdateRequestSchema
+>;
+
+export interface CreateOrderUpdateDTO {
+  orderId: number;
+  payload: CreateOrderUpdateRequest;
+}

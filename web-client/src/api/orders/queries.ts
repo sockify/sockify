@@ -1,7 +1,21 @@
-import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
+import { ServerMessage } from "@/shared/types";
+import {
+  UseMutationResult,
+  UseQueryResult,
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
-
-import { Order, OrderStatus, OrdersPaginatedResponse, OrderUpdateResponse } from "./model";
+import {
+  CreateOrderUpdateDTO,
+  Order,
+  OrderStatus,
+  OrderUpdateResponse,
+  OrdersPaginatedResponse,
+} from "./model";
 import { HttpOrderService } from "./service";
 
 const orderService = new HttpOrderService();
@@ -61,8 +75,30 @@ export function useGetOrderUpdatesOptions(orderId: number, enabled = true) {
 
 export function useGetOrderUpdates(
   orderId: number,
-  enabled = true
+  enabled = true,
 ): UseQueryResult<OrderUpdateResponse> {
   return useQuery(useGetOrderUpdatesOptions(orderId, enabled));
 }
 
+export function useCreateOrderUpdateMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  CreateOrderUpdateDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, payload }) =>
+      orderService.createOrderUpdate(orderId, payload),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order update created");
+
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to create order update");
+    },
+  });
+}
