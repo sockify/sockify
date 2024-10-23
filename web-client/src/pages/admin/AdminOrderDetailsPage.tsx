@@ -63,12 +63,12 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 
-const createOrderUpdateFormSchema = z.object({
+const createUpdateFormSchema = z.object({
   message: z.string().min(1, { message: "Message is required" }),
 });
-type CreateOrderUpdateForm = z.infer<typeof createOrderUpdateFormSchema>;
+type CreateUpdateForm = z.infer<typeof createUpdateFormSchema>;
 
-const updateOrderAddressFormSchema = z.object({
+const updateAddressFormSchema = z.object({
   street: z.string().min(1, { message: "Street is required" }),
   aptUnit: z.string().optional(),
   // TODO: add city
@@ -78,24 +78,24 @@ const updateOrderAddressFormSchema = z.object({
     .min(1, { message: "Zipcode is required" })
     .max(10, { message: "Zipcode must be at most 10 characters long" }),
 });
-type UpdateOrderAddressForm = z.infer<typeof updateOrderAddressFormSchema>;
+type UpdateAddressForm = z.infer<typeof updateAddressFormSchema>;
 
-const updateOrderContactFormSchema = z.object({
+const updateContactFormSchema = z.object({
   firstname: z.string().min(1, { message: "Firstname is required" }),
   lastname: z.string().min(1, { message: "Lastname is required" }),
   phone: z.string().min(1, { message: "Phone number is required" }),
   email: z.string().email().min(1, { message: "Email is required" }),
 });
-type UpdateOrderContactForm = z.infer<typeof updateOrderContactFormSchema>;
+type UpdateContactForm = z.infer<typeof updateContactFormSchema>;
 
 export default function AdminOrderDetailsPage() {
   const { orderId } = useParams();
   const orderIdNumber = parseInt(orderId!);
 
   // Modal/popup state controllers
-  const [createOrderUpdateOpen, setCreateOrderUpdateOpen] = useState(false);
-  const [updateOrderAddressOpen, setUpdateOrderAddressOpen] = useState(false);
-  const [updateOrderContactOpen, setUpdateOrderContactOpen] = useState(false);
+  const [isCreateUpdateOpen, setIsCreateUpdateOpen] = useState(false);
+  const [isUpdateAddressOpen, setIsUpdateAddressOpen] = useState(false);
+  const [isUpdateContactOpen, setIsUpdateContactOpen] = useState(false);
 
   // Queries
   const queries = useQueries({
@@ -111,33 +111,33 @@ export default function AdminOrderDetailsPage() {
   const isLoading = queries.some((query) => query.isLoading);
 
   // Mutations
-  const createOrderUpdateMutation = useCreateOrderUpdateMutation();
-  const updateOrderAddressMutation = useUpdateOrderAddressMutation();
-  const updateOrderContactMutation = useUpdateOrderContactMutation();
+  const createUpdateMutation = useCreateOrderUpdateMutation();
+  const updateAddressMutation = useUpdateOrderAddressMutation();
+  const updateContactMutation = useUpdateOrderContactMutation();
 
   // Forms
-  const createOrderUpdateForm = useForm<CreateOrderUpdateForm>({
-    resolver: zodResolver(createOrderUpdateFormSchema),
+  const createUpdateForm = useForm<CreateUpdateForm>({
+    resolver: zodResolver(createUpdateFormSchema),
   });
-  const updateOrderAddressForm = useForm<UpdateOrderAddressForm>({
-    resolver: zodResolver(updateOrderAddressFormSchema),
+  const updateAddressForm = useForm<UpdateAddressForm>({
+    resolver: zodResolver(updateAddressFormSchema),
   });
-  const updateOrderContactForm = useForm<UpdateOrderContactForm>({
-    resolver: zodResolver(updateOrderContactFormSchema),
+  const updateContactForm = useForm<UpdateContactForm>({
+    resolver: zodResolver(updateContactFormSchema),
   });
 
-  const handleCreateOrderUpdate = async (data: CreateOrderUpdateForm) => {
+  const handleCreateUpdate = async (data: CreateUpdateForm) => {
     const payload: CreateOrderUpdateRequest = {
       message: data.message.trim(),
     };
     const params: CreateOrderUpdateDTO = { orderId: orderIdNumber, payload };
 
-    await createOrderUpdateMutation.mutateAsync(params);
-    setCreateOrderUpdateOpen(false);
-    createOrderUpdateForm.reset();
+    await createUpdateMutation.mutateAsync(params);
+    setIsCreateUpdateOpen(false);
+    createUpdateForm.reset();
   };
 
-  const handleUpdateOrderAddress = async (data: UpdateOrderAddressForm) => {
+  const handleUpdateAddress = async (data: UpdateAddressForm) => {
     const address: OrderAddress = {
       street: data.street.trim(),
       aptUnit: data.aptUnit?.trim(),
@@ -146,12 +146,12 @@ export default function AdminOrderDetailsPage() {
     };
     const params: UpdateOrderAddressDTO = { orderId: orderIdNumber, address };
 
-    await updateOrderAddressMutation.mutateAsync(params);
-    setUpdateOrderAddressOpen(false);
-    updateOrderAddressForm.reset();
+    await updateAddressMutation.mutateAsync(params);
+    setIsUpdateAddressOpen(false);
+    updateAddressForm.reset();
   };
 
-  const handleUpdateOrderContact = async (data: UpdateOrderContactForm) => {
+  const handleUpdateContact = async (data: UpdateContactForm) => {
     const contact: OrderContact = {
       firstname: data.firstname.trim(),
       lastname: data.lastname.trim(),
@@ -160,32 +160,32 @@ export default function AdminOrderDetailsPage() {
     };
     const params: UpdateOrderContactDTO = { orderId: orderIdNumber, contact };
 
-    await updateOrderContactMutation.mutateAsync(params);
-    setUpdateOrderContactOpen(false);
-    updateOrderContactForm.reset();
+    await updateContactMutation.mutateAsync(params);
+    setIsUpdateContactOpen(false);
+    updateContactForm.reset();
   };
 
   useEffect(() => {
     if (order) {
-      updateOrderAddressForm.reset({
+      updateAddressForm.reset({
         street: order.address.street,
         aptUnit: order.address.aptUnit ?? "",
         state: order.address.state,
         zipcode: order.address.zipcode,
       });
     }
-  }, [order, updateOrderAddressForm]);
+  }, [order, updateAddressForm]);
 
   useEffect(() => {
     if (order) {
-      updateOrderContactForm.reset({
+      updateContactForm.reset({
         firstname: order.contact.firstname,
         lastname: order.contact.lastname,
         phone: order.contact.phone,
         email: order.contact.email,
       });
     }
-  }, [order, updateOrderContactForm]);
+  }, [order, updateContactForm]);
 
   if (isError) {
     return (
@@ -262,14 +262,14 @@ export default function AdminOrderDetailsPage() {
             </p>
 
             <Dialog
-              open={updateOrderContactOpen}
-              onOpenChange={setUpdateOrderContactOpen}
+              open={isUpdateContactOpen}
+              onOpenChange={setIsUpdateContactOpen}
             >
               <Button
                 variant="outline"
                 size="sm"
                 className="mt-2"
-                onClick={() => setUpdateOrderContactOpen(true)}
+                onClick={() => setIsUpdateContactOpen(true)}
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit contact
@@ -280,17 +280,17 @@ export default function AdminOrderDetailsPage() {
                   <DialogTitle>Update contact</DialogTitle>
                 </DialogHeader>
 
-                <Form {...updateOrderContactForm}>
+                <Form {...updateContactForm}>
                   <form
-                    onSubmit={updateOrderContactForm.handleSubmit(
-                      handleUpdateOrderContact,
+                    onSubmit={updateContactForm.handleSubmit(
+                      handleUpdateContact,
                     )}
                     className="space-y-6"
                   >
                     <div className="grid gap-4">
                       <div className="flex gap-6">
                         <FormField
-                          control={updateOrderContactForm.control}
+                          control={updateContactForm.control}
                           name="firstname"
                           render={({ field }) => (
                             <FormItem className="w-full">
@@ -303,7 +303,7 @@ export default function AdminOrderDetailsPage() {
                           )}
                         />
                         <FormField
-                          control={updateOrderContactForm.control}
+                          control={updateContactForm.control}
                           name="lastname"
                           render={({ field }) => (
                             <FormItem className="w-full">
@@ -319,7 +319,7 @@ export default function AdminOrderDetailsPage() {
 
                       <div className="flex gap-6">
                         <FormField
-                          control={updateOrderContactForm.control}
+                          control={updateContactForm.control}
                           name="phone"
                           render={({ field }) => (
                             <FormItem className="w-full">
@@ -336,7 +336,7 @@ export default function AdminOrderDetailsPage() {
                           )}
                         />
                         <FormField
-                          control={updateOrderContactForm.control}
+                          control={updateContactForm.control}
                           name="email"
                           render={({ field }) => (
                             <FormItem className="w-full">
@@ -357,12 +357,12 @@ export default function AdminOrderDetailsPage() {
                       <div className="flex justify-end">
                         <Button
                           type="submit"
-                          disabled={updateOrderContactMutation.isPending}
+                          disabled={updateContactMutation.isPending}
                         >
-                          {updateOrderContactMutation.isPending && (
+                          {updateContactMutation.isPending && (
                             <LoadingSpinner size={16} className="mr-2" />
                           )}
-                          {updateOrderContactMutation.isPending
+                          {updateContactMutation.isPending
                             ? "Updating..."
                             : "Update"}
                         </Button>
@@ -387,14 +387,14 @@ export default function AdminOrderDetailsPage() {
           </p>
 
           <Dialog
-            open={updateOrderAddressOpen}
-            onOpenChange={setUpdateOrderAddressOpen}
+            open={isUpdateAddressOpen}
+            onOpenChange={setIsUpdateAddressOpen}
           >
             <Button
               variant="outline"
               size="sm"
               className="mt-2"
-              onClick={() => setUpdateOrderAddressOpen(true)}
+              onClick={() => setIsUpdateAddressOpen(true)}
             >
               <Edit className="mr-2 h-4 w-4" />
               Edit address
@@ -405,16 +405,14 @@ export default function AdminOrderDetailsPage() {
                 <DialogTitle>Update address</DialogTitle>
               </DialogHeader>
 
-              <Form {...updateOrderAddressForm}>
+              <Form {...updateAddressForm}>
                 <form
-                  onSubmit={updateOrderAddressForm.handleSubmit(
-                    handleUpdateOrderAddress,
-                  )}
+                  onSubmit={updateAddressForm.handleSubmit(handleUpdateAddress)}
                   className="space-y-6"
                 >
                   <div className="grid gap-4">
                     <FormField
-                      control={updateOrderAddressForm.control}
+                      control={updateAddressForm.control}
                       name="street"
                       render={({ field }) => (
                         <FormItem>
@@ -427,7 +425,7 @@ export default function AdminOrderDetailsPage() {
                       )}
                     />
                     <FormField
-                      control={updateOrderAddressForm.control}
+                      control={updateAddressForm.control}
                       name="aptUnit"
                       render={({ field }) => (
                         <FormItem>
@@ -442,7 +440,7 @@ export default function AdminOrderDetailsPage() {
 
                     <div className="flex gap-6">
                       <FormField
-                        control={updateOrderAddressForm.control}
+                        control={updateAddressForm.control}
                         name="state"
                         render={({ field }) => (
                           <FormItem className="w-full">
@@ -477,7 +475,7 @@ export default function AdminOrderDetailsPage() {
                         )}
                       />
                       <FormField
-                        control={updateOrderAddressForm.control}
+                        control={updateAddressForm.control}
                         name="zipcode"
                         render={({ field }) => (
                           <FormItem className="w-full">
@@ -494,12 +492,12 @@ export default function AdminOrderDetailsPage() {
                     <div className="flex justify-end">
                       <Button
                         type="submit"
-                        disabled={updateOrderAddressMutation.isPending}
+                        disabled={updateAddressMutation.isPending}
                       >
-                        {updateOrderAddressMutation.isPending && (
+                        {updateAddressMutation.isPending && (
                           <LoadingSpinner size={16} className="mr-2" />
                         )}
-                        {updateOrderAddressMutation.isPending
+                        {updateAddressMutation.isPending
                           ? "Updating..."
                           : "Update"}
                       </Button>
@@ -527,7 +525,9 @@ export default function AdminOrderDetailsPage() {
             <TableBody>
               {order!.items.map((item) => (
                 <TableRow key={item.sockVariantId}>
-                  <TableCell>{item.name}</TableCell>
+                  <TableCell>
+                    {item.name} ({item.size})
+                  </TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>${item.price.toFixed(2)}</TableCell>
                   <TableCell>
@@ -601,12 +601,12 @@ export default function AdminOrderDetailsPage() {
           </Table>
 
           <Dialog
-            open={createOrderUpdateOpen}
-            onOpenChange={setCreateOrderUpdateOpen}
+            open={isCreateUpdateOpen}
+            onOpenChange={setIsCreateUpdateOpen}
           >
             <Button
               className="mt-4"
-              onClick={() => setCreateOrderUpdateOpen(true)}
+              onClick={() => setIsCreateUpdateOpen(true)}
             >
               Add update
             </Button>
@@ -616,16 +616,14 @@ export default function AdminOrderDetailsPage() {
                 <DialogTitle>Create order update</DialogTitle>
               </DialogHeader>
 
-              <Form {...createOrderUpdateForm}>
+              <Form {...createUpdateForm}>
                 <form
-                  onSubmit={createOrderUpdateForm.handleSubmit(
-                    handleCreateOrderUpdate,
-                  )}
+                  onSubmit={createUpdateForm.handleSubmit(handleCreateUpdate)}
                   className="space-y-6"
                 >
                   <div className="grid gap-4">
                     <FormField
-                      control={createOrderUpdateForm.control}
+                      control={createUpdateForm.control}
                       name="message"
                       render={({ field }) => (
                         <FormItem>
@@ -644,12 +642,12 @@ export default function AdminOrderDetailsPage() {
                     <div className="flex justify-end">
                       <Button
                         type="submit"
-                        disabled={createOrderUpdateMutation.isPending}
+                        disabled={createUpdateMutation.isPending}
                       >
-                        {createOrderUpdateMutation.isPending && (
+                        {createUpdateMutation.isPending && (
                           <LoadingSpinner size={16} className="mr-2" />
                         )}
-                        {createOrderUpdateMutation.isPending
+                        {createUpdateMutation.isPending
                           ? "Creating..."
                           : "Create"}
                       </Button>
