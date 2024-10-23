@@ -2,7 +2,9 @@ import {
   CreateOrderUpdateDTO,
   CreateOrderUpdateRequest,
   OrderAddress,
+  OrderContact,
   UpdateOrderAddressDTO,
+  UpdateOrderContactDTO,
   stateEnumSchema,
 } from "@/api/orders/model";
 import {
@@ -10,6 +12,7 @@ import {
   useGetOrderByIdOptions,
   useGetOrderUpdatesOptions,
   useUpdateOrderAddressMutation,
+  useUpdateOrderContactMutation,
 } from "@/api/orders/queries";
 import GenericError from "@/components/GenericError";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -77,6 +80,14 @@ const updateOrderAddressFormSchema = z.object({
 });
 type UpdateOrderAddressForm = z.infer<typeof updateOrderAddressFormSchema>;
 
+const updateOrderContactFormSchema = z.object({
+  firstname: z.string().min(1, { message: "Firstname is required" }),
+  lastname: z.string().min(1, { message: "Lastname is required" }),
+  phone: z.string().min(1, { message: "Phone number is required" }),
+  email: z.string().email().min(1, { message: "Email is required" }),
+});
+type UpdateOrderContactForm = z.infer<typeof updateOrderContactFormSchema>;
+
 export default function AdminOrderDetailsPage() {
   const { orderId } = useParams();
   const orderIdNumber = parseInt(orderId!);
@@ -84,6 +95,7 @@ export default function AdminOrderDetailsPage() {
   // Modal/popup state controllers
   const [createOrderUpdateOpen, setCreateOrderUpdateOpen] = useState(false);
   const [updateOrderAddressOpen, setUpdateOrderAddressOpen] = useState(false);
+  const [updateOrderContactOpen, setUpdateOrderContactOpen] = useState(false);
 
   // Queries
   const queries = useQueries({
@@ -101,6 +113,7 @@ export default function AdminOrderDetailsPage() {
   // Mutations
   const createOrderUpdateMutation = useCreateOrderUpdateMutation();
   const updateOrderAddressMutation = useUpdateOrderAddressMutation();
+  const updateOrderContactMutation = useUpdateOrderContactMutation();
 
   // Forms
   const createOrderUpdateForm = useForm<CreateOrderUpdateForm>({
@@ -109,10 +122,13 @@ export default function AdminOrderDetailsPage() {
   const updateOrderAddressForm = useForm<UpdateOrderAddressForm>({
     resolver: zodResolver(updateOrderAddressFormSchema),
   });
+  const updateOrderContactForm = useForm<UpdateOrderContactForm>({
+    resolver: zodResolver(updateOrderContactFormSchema),
+  });
 
   const handleCreateOrderUpdate = async (data: CreateOrderUpdateForm) => {
     const payload: CreateOrderUpdateRequest = {
-      message: data.message,
+      message: data.message.trim(),
     };
     const params: CreateOrderUpdateDTO = { orderId: orderIdNumber, payload };
 
@@ -123,16 +139,30 @@ export default function AdminOrderDetailsPage() {
 
   const handleUpdateOrderAddress = async (data: UpdateOrderAddressForm) => {
     const address: OrderAddress = {
-      street: data.street,
-      aptUnit: data.aptUnit,
+      street: data.street.trim(),
+      aptUnit: data.aptUnit?.trim(),
       state: data.state,
-      zipcode: data.zipcode,
+      zipcode: data.zipcode.trim(),
     };
     const params: UpdateOrderAddressDTO = { orderId: orderIdNumber, address };
 
     await updateOrderAddressMutation.mutateAsync(params);
     setUpdateOrderAddressOpen(false);
     updateOrderAddressForm.reset();
+  };
+
+  const handleUpdateOrderContact = async (data: UpdateOrderContactForm) => {
+    const contact: OrderContact = {
+      firstname: data.firstname.trim(),
+      lastname: data.lastname.trim(),
+      phone: data.phone.trim(),
+      email: data.email.trim(),
+    };
+    const params: UpdateOrderContactDTO = { orderId: orderIdNumber, contact };
+
+    await updateOrderContactMutation.mutateAsync(params);
+    setUpdateOrderContactOpen(false);
+    updateOrderContactForm.reset();
   };
 
   useEffect(() => {
@@ -145,6 +175,17 @@ export default function AdminOrderDetailsPage() {
       });
     }
   }, [order, updateOrderAddressForm]);
+
+  useEffect(() => {
+    if (order) {
+      updateOrderContactForm.reset({
+        firstname: order.contact.firstname,
+        lastname: order.contact.lastname,
+        phone: order.contact.phone,
+        email: order.contact.email,
+      });
+    }
+  }, [order, updateOrderContactForm]);
 
   if (isError) {
     return (
@@ -167,7 +208,7 @@ export default function AdminOrderDetailsPage() {
   return (
     <section className="h-full space-y-6 px-4 py-6 md:px-8">
       <div className="flex flex-col justify-between gap-6 md:flex-row">
-        <h1 className="text-3xl">
+        <h1 className="text-2xl lg:text-3xl">
           <span className="font-bold">Invoice #:</span>{" "}
           <code className="rounded bg-muted p-1">{order!.invoiceNumber}</code>
         </h1>
@@ -219,6 +260,118 @@ export default function AdminOrderDetailsPage() {
             <p>
               <strong>Email:</strong> {order!.contact.email}
             </p>
+
+            <Dialog
+              open={updateOrderContactOpen}
+              onOpenChange={setUpdateOrderContactOpen}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => setUpdateOrderContactOpen(true)}
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit contact
+              </Button>
+
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle>Update contact</DialogTitle>
+                </DialogHeader>
+
+                <Form {...updateOrderContactForm}>
+                  <form
+                    onSubmit={updateOrderContactForm.handleSubmit(
+                      handleUpdateOrderContact,
+                    )}
+                    className="space-y-6"
+                  >
+                    <div className="grid gap-4">
+                      <div className="flex gap-6">
+                        <FormField
+                          control={updateOrderContactForm.control}
+                          name="firstname"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Firstname</FormLabel>
+                              <FormControl>
+                                <Input placeholder="John" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={updateOrderContactForm.control}
+                          name="lastname"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Lastname</FormLabel>
+                              <FormControl>
+                                <Input placeholder="John" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex gap-6">
+                        <FormField
+                          control={updateOrderContactForm.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Phone</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="phone"
+                                  placeholder="333-323-9320"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={updateOrderContactForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="jdoe@google.com"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="flex justify-end">
+                        <Button
+                          type="submit"
+                          disabled={updateOrderContactMutation.isPending}
+                        >
+                          {updateOrderContactMutation.isPending && (
+                            <LoadingSpinner size={16} className="mr-2" />
+                          )}
+                          {updateOrderContactMutation.isPending
+                            ? "Updating..."
+                            : "Update"}
+                        </Button>
+                      </div>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
           </CardContent>
         </Card>
       </div>
@@ -259,7 +412,7 @@ export default function AdminOrderDetailsPage() {
                   )}
                   className="space-y-6"
                 >
-                  <div className="grid gap-2">
+                  <div className="grid gap-4">
                     <FormField
                       control={updateOrderAddressForm.control}
                       name="street"
@@ -470,7 +623,7 @@ export default function AdminOrderDetailsPage() {
                   )}
                   className="space-y-6"
                 >
-                  <div className="grid gap-2">
+                  <div className="grid gap-4">
                     <FormField
                       control={createOrderUpdateForm.control}
                       name="message"

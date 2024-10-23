@@ -5,6 +5,7 @@ import {
   CreateOrderUpdateRequest,
   Order,
   OrderAddress,
+  OrderContact,
   OrderStatus,
   OrderUpdateResponse,
   OrdersPaginatedResponse,
@@ -29,6 +30,10 @@ export interface OrderService {
   updateOrderAddress(
     orderId: number,
     payload: OrderAddress,
+  ): Promise<ServerMessage>;
+  updateOrderContact(
+    orderId: number,
+    payload: OrderContact,
   ): Promise<ServerMessage>;
 }
 
@@ -80,6 +85,17 @@ export class HttpOrderService implements OrderService {
   ): Promise<ServerMessage> {
     const { data } = await axiosInstance.patch(
       `/api/v1/orders/${orderId}/address`,
+      payload,
+    );
+    return serverMessageSchema.parse(data);
+  }
+
+  async updateOrderContact(
+    orderId: number,
+    payload: OrderContact,
+  ): Promise<ServerMessage> {
+    const { data } = await axiosInstance.patch(
+      `/api/v1/orders/${orderId}/contact`,
       payload,
     );
     return serverMessageSchema.parse(data);

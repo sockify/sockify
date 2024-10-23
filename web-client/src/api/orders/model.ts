@@ -145,8 +145,11 @@ export interface CreateOrderUpdateDTO {
   orderId: number;
   payload: CreateOrderUpdateRequest;
 }
-
 export interface UpdateOrderAddressDTO {
   orderId: number;
   address: OrderAddress;
+}
+export interface UpdateOrderContactDTO {
+  orderId: number;
+  contact: OrderContact;
 }
