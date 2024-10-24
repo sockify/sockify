@@ -33,7 +33,7 @@ export default function CartItem({
                     <div className="text-lg font-semibold">
                         <h3>{name}</h3>
                         <p className="text-sm">Size: {size}</p>
-                        <p className="text-base font-bold">${price}</p>
+                        <p className="text-base font-bold">${price.toFixed(2)}</p>
                     </div>
                 </div>
                 <div className="flex gap-4 items-center">

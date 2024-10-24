@@ -67,7 +67,7 @@ const CartPage: React.FC = () => {
 
           {/* Subtotal section */}
           <Card className="p-4">
-            <div className="flex justify-between text-xl font-semibold">
+            <div className="flex justify-between text-xl font-extrabold">
               <span>Subtotal:</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
