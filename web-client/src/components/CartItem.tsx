@@ -29,7 +29,7 @@ export default function CartItem({
         <Card className="w-full mx-auto mb-4" >
             <CardContent className="flex flex-col gap-4 md:flex-row justify-between p-4">
                 <div className="flex gap-4 items-center">
-                    <img src={imageUrl} alt={name} className="w-20 h-20 object-cover rounded-md" />
+                    <img src={imageUrl} alt={name} className="w-24 h-24 object-cover rounded-md" />
                     <div className="text-lg font-semibold">
                         <h3>{name}</h3>
                         <p className="text-sm">Size: {size}</p>
