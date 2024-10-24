@@ -38,7 +38,6 @@ const CartPage: React.FC = () => {
     console.log(`Removed product ID ${id} from the cart.`);
   };
 
-  // Calculate the subtotal (sum of all items' total prices)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
@@ -66,7 +65,6 @@ const CartPage: React.FC = () => {
             />
           ))}
 
-          {/* Subtotal section */}
           <Card className="p-4">
             <div className="flex justify-between text-xl font-extrabold">
               <span>Subtotal:</span>
@@ -74,7 +72,6 @@ const CartPage: React.FC = () => {
             </div>
           </Card>
 
-          {/* Proceed to Checkout Button */}
           <div className="flex justify-end mt-6">
             <Button
               className="bg-black text-white px-6 py-3 rounded-lg font-bold"
