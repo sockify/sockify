@@ -41,6 +41,10 @@ const CartPage: React.FC = () => {
   // Calculate the subtotal (sum of all items' total prices)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  const handleCheckout = () => {
+    console.log('Proceeding to checkout')
+  };
+
   return (
     <div className="cart-page mx-auto px-4 py-12 2xl:container md:px-8">
       {items.length > 0 ? (
@@ -71,7 +75,10 @@ const CartPage: React.FC = () => {
 
           {/* Proceed to Checkout Button */}
           <div className="flex justify-end mt-6">
-            <Button className="bg-black text-white px-6 py-3 rounded-lg font-bold">
+            <Button
+              className="bg-black text-white px-6 py-3 rounded-lg font-bold"
+              onClick={handleCheckout}
+            >
               Proceed to Checkout
             </Button>
           </div>
