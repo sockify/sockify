@@ -47,6 +47,7 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="cart-page mx-auto px-4 py-12 2xl:container md:px-8">
+      <h1 className="text-3xl font-extrabold mb-8">Your cart</h1>
       {items.length > 0 ? (
         <>
           {items.map((item) => (
