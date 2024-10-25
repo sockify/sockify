@@ -11,13 +11,15 @@ interface CartItemProps {
 }
 
 export default function CartItem({
-    item,
+    name,
+    size,
+    price,
+    quantity,
+    imageUrl,
     onIncrease,
     onDecrease,
     onRemove
 }: CartItemProps) {
-
-    const { name, size, price, quantity, imageUrl } = item;
 
     return (
         <Card className="w-full mx-auto mb-4">

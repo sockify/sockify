@@ -52,7 +52,13 @@ const CartPage: React.FC = () => {
           {items.map((item) => (
             <CartItem
               key={item.sockVariantId}
-              item={item}
+              sockId={item.sockId}
+              sockVariantId={item.sockVariantId}
+              name={item.name}
+              size={item.size}
+              price={item.price}
+              quantity={item.quantity}
+              imageUrl={item.imageUrl}
               onIncrease={() => handleIncrease(item.sockVariantId)}
               onDecrease={() => handleDecrease(item.sockVariantId)}
               onRemove={() => handleRemove(item.sockVariantId)}
