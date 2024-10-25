@@ -1,15 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Trash2 } from "lucide-react";
+import { CartItem as CartItemType } from "@/api/cart/model";
 
 interface CartItemProps {
-    sockId: number;
-    sockVariantId: number;
-    name: string;
-    size: string;
-    price: number;
-    quantity: number;
-    imageUrl: string;
+    item: CartItemType;
     onIncrease: () => void;
     onDecrease: () => void;
     onRemove: () => void;
