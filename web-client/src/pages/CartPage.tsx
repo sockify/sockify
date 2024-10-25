@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 // Hard-coded items for testing purposes
-const items = [
+const items: CartItemType[] = [
   {
     sockId: 1,
     sockVariantId: 12,
@@ -25,7 +25,7 @@ const items = [
   },
 ];
 
-const CartPage: React.FC = () => {
+export default function CartPage() {
   const handleIncrease = (id: number) => {
     console.log(`Increased product ID ${id} by 1.`);
   };
@@ -90,4 +90,4 @@ const CartPage: React.FC = () => {
   );
 };
 
-export default CartPage;
+
