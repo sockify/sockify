@@ -74,7 +74,6 @@ export default function CartPage() {
 
           <div className="flex justify-end mt-6">
             <Button
-              className="bg-black text-white px-6 py-3 rounded-lg font-bold"
               onClick={handleCheckout}
             >
               Proceed to Checkout
