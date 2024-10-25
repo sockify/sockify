@@ -41,7 +41,7 @@ const CartPage: React.FC = () => {
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    console.log('Proceeding to checkout')
+    console.log('Proceeding to checkout');
   };
 
   return (
@@ -52,13 +52,7 @@ const CartPage: React.FC = () => {
           {items.map((item) => (
             <CartItem
               key={item.sockVariantId}
-              sockId={item.sockId}
-              sockVariantId={item.sockVariantId}
-              name={item.name}
-              size={item.size}
-              price={item.price}
-              quantity={item.quantity}
-              imageUrl={item.imageUrl}
+              item={item}
               onIncrease={() => handleIncrease(item.sockVariantId)}
               onDecrease={() => handleDecrease(item.sockVariantId)}
               onRemove={() => handleRemove(item.sockVariantId)}
