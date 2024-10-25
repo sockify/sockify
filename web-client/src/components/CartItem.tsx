@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItem as CartItemType } from "@/api/cart/model";
 
 interface CartItemProps {
@@ -36,12 +36,20 @@ export default function CartItem({
                 </div>
                 <div className="flex gap-4 items-center">
                     <div className="flex items-center gap-4">
-                        <Button variant="outline" onClick={onDecrease} aria-label={`Decrease quantity of ${name}`}>
-                            -
+                        <Button
+                            variant="outline"
+                            onClick={onDecrease}
+                            aria-label={`Decrease quantity of ${name} by 1`}
+                        >
+                            <Minus size="16" />
                         </Button>
                         <span className="text-lg font-semibold">{quantity}</span>
-                        <Button variant="outline" onClick={onIncrease} aria-label={`Increase quantity of ${name}`}>
-                            +
+                        <Button
+                            variant="outline"
+                            onClick={onIncrease}
+                            aria-label={`Increase quantity of ${name} by 1`}
+                        >
+                            <Plus size="16" />
                         </Button>
                     </div>
                     <Button variant="destructive" onClick={onRemove} aria-label={`Remove ${name} from cart`}>
