@@ -16,6 +16,7 @@ import "./index.css";
 import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
 import CartPage from "./pages/CartPage";
+import SockDetailsPage from './pages/socks/SockDetailsPage'; 
 import HomePage from "./pages/HomePage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PaymentCanceledPage from "./pages/PaymentCanceledPage";
@@ -48,7 +49,7 @@ createRoot(document.getElementById("root")!).render(
                     path="cart/checkout/payment-canceled"
                     element={<PaymentCanceledPage />}
                   />
-
+                  <Route path="socks/:sock_id" element={<SockDetailsPage />} />
                   {/* -- Post MVP -- */}
                   <Route
                     path="about-us"
