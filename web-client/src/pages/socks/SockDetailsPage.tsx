@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Minus, Plus } from 'lucide-react'; 
 import toast from 'react-hot-toast';
 
 const sock = {
@@ -34,7 +35,6 @@ export default function SockDetailsPage() {
   return (
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
-        {/* Removed Card wrapping the image */}
         <div className="w-full md:w-1/2">
           <img
             src={sock.preview_image_url}
@@ -43,13 +43,11 @@ export default function SockDetailsPage() {
           />
         </div>
 
-        {/* Removed Card wrapping the description */}
         <div className="w-full md:w-1/2 space-y-4">
           <h1 className="text-3xl font-bold">{sock.name}</h1>
           <p className="text-xl text-gray-500">${selectedVariant.price}</p>
           <p>{sock.description}</p>
 
-          {/* Select Size */}
           <div className="my-4">
             <label className="block text-lg font-medium">Select Size</label>
             <div className="flex space-x-4">
@@ -69,7 +67,6 @@ export default function SockDetailsPage() {
             </div>
           </div>
 
-          {/* Quantity Selector */}
           <div className="my-4">
             <label className="block text-lg font-medium">Quantity</label>
             <div className="flex items-center space-x-2">
@@ -77,19 +74,18 @@ export default function SockDetailsPage() {
                 variant="outline"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
               >
-                -
+                <Minus className="w-5 h-5" /> 
               </Button>
-              <div className="w-12 text-center">{quantity}</div> {/* Regular style for quantity */}
+              <div className="w-12 text-center">{quantity}</div> 
               <Button
                 variant="outline"
                 onClick={() => setQuantity(quantity + 1)}
               >
-                +
+                <Plus className="w-5 h-5" /> 
               </Button>
             </div>
           </div>
 
-          {/* Add to Cart Button */}
           <Button
             onClick={handleAddToCart}
             className="bg-indigo-600 text-white px-4 py-2 rounded w-full mt-4"
