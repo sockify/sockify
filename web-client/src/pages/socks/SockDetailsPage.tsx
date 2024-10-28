@@ -40,7 +40,7 @@ const relatedProducts = [
 ];
 
 export default function SockDetailsPage() {
-  const [selectedVariant, setSelectedVariant] = useState(sock.variants[1]); // Default to 'M'
+  const [selectedVariant, setSelectedVariant] = useState(sock.variants[1]);
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
 
@@ -76,7 +76,6 @@ export default function SockDetailsPage() {
           <p className="text-xl text-gray-500">${selectedVariant.price}</p>
           <p>{sock.description}</p>
 
-          {/* Select Size */}
           <div className="my-4">
             <label className="block text-lg font-medium">Select Size</label>
             <div className="flex space-x-4">
@@ -96,7 +95,6 @@ export default function SockDetailsPage() {
             </div>
           </div>
 
-          {/* Quantity Selector */}
           <div className="my-4">
             <label className="block text-lg font-medium">Quantity</label>
             <div className="flex items-center space-x-2">
@@ -116,7 +114,6 @@ export default function SockDetailsPage() {
             </div>
           </div>
 
-          {/* Add to Cart Button */}
           <Button
             onClick={handleAddToCart}
             className="bg-indigo-600 text-white px-4 py-2 rounded w-full mt-4"
@@ -126,7 +123,6 @@ export default function SockDetailsPage() {
         </div>
       </div>
 
-      {/* Related Products Section */}
       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-4">Related Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
