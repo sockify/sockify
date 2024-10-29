@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Form,
   FormControl,
   FormField,
@@ -14,6 +8,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { US_STATES } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -74,7 +77,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto px-4 py-6 2xl:container md:px-8">
+    <div className="mx-auto px-4 py-8 2xl:container md:px-8">
       <div className="flex items-center justify-center gap-6 pb-12">
         <Form {...form}>
           <form
@@ -179,23 +182,28 @@ export default function CheckoutPage() {
                   <FormItem className="w-1/2">
                     <FormLabel className="font-bold">State</FormLabel>
                     <FormControl>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" className="w-full">
-                            {field.value || "Select a state"}
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="max-h-60 w-full overflow-auto">
-                          {US_STATES.map((state) => (
-                            <DropdownMenuItem
-                              key={state.value}
-                              onSelect={() => field.onChange(state.value)}
-                            >
-                              {state.label}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        name="select-state"
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a state" />
+                          </SelectTrigger>
+                        </FormControl>
+
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>States</SelectLabel>
+                            {US_STATES.map((state) => (
+                              <SelectItem key={state.value} value={state.value}>
+                                {state.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

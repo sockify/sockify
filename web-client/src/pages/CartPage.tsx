@@ -32,7 +32,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="cart-page mx-auto px-4 py-6 2xl:container md:px-8">
+    <div className="cart-page mx-auto px-4 py-8 2xl:container md:px-8">
       <h1 className="mb-8 text-3xl font-extrabold">Your cart</h1>
       {isLoading ? (
         <p>Loading...</p>
