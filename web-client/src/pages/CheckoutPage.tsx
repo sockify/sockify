@@ -50,132 +50,136 @@ export default function CheckoutPage() {
     };
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                {/* Container for First Name and Last Name */}
-                <div className="flex space-x-4">
-                    <FormField
-                        control={form.control}
-                        name="firstname"
-                        render={({ field }) => (
-                            <FormItem className="w-1/2">
-                                <FormLabel>First Name</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+        <div className="mx-auto px-4 py-12 2xl:container md:px-8">
+            <div className="flex justify-center items-center min-h-screen">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-[48rem]">
+                        {/* Container for First Name and Last Name */}
+                        <div className="flex space-x-4">
+                            <FormField
+                                control={form.control}
+                                name="firstname"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/2">
+                                        <FormLabel>First Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="w-full" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <FormField
-                        control={form.control}
-                        name="lastname"
-                        render={({ field }) => (
-                            <FormItem className="w-1/2">
-                                <FormLabel>Last Name</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                            <FormField
+                                control={form.control}
+                                name="lastname"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/2">
+                                        <FormLabel>Last Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="w-full" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input type="email" {...field} className="w-full" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Phone</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="phone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Phone</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} className="w-full" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="street"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Street Address</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="street"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Street Address</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} className="w-full" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="apt_unit"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Apartment/Unit (optional)</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="apt_unit"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Apartment/Unit (optional)</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} className="w-full" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="state"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>State</FormLabel>
-                            <FormControl>
-                                <Select placeholder="Select a state" {...field}>
-                                    <option value="FL">Florida</option>
-                                    <option value="OH">Ohio</option>
-                                    <option value="CA">California</option>
-                                    <option value="NY">New York</option>
-                                    <option value="TX">Texas</option>
-                                    {/* Add more options as needed */}
-                                </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="state"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>State</FormLabel>
+                                    <FormControl>
+                                        <Select placeholder="Select a state" {...field} className="w-full">
+                                            <option value="FL">Florida</option>
+                                            <option value="OH">Ohio</option>
+                                            <option value="CA">California</option>
+                                            <option value="NY">New York</option>
+                                            <option value="TX">Texas</option>
+                                            {/* Add more options as needed */}
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="zipcode"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Zipcode</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Zipcode" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="zipcode"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Zipcode</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Zipcode" {...field} className="w-full" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <Button type="submit">Pay with Stripe</Button>
-            </form>
-        </Form>
+                        <Button type="submit" className="w-full">Pay with Stripe</Button>
+                    </form>
+                </Form>
+            </div>
+        </div>
     );
 }
