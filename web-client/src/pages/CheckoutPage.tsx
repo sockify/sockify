@@ -49,7 +49,6 @@ export default function CheckoutPage() {
 
     const onSubmit = (data: CheckoutFormValues) => {
         console.log("Form data:", data);
-        // Add your Stripe integration logic for payment here
     };
 
     const states = [
@@ -65,7 +64,7 @@ export default function CheckoutPage() {
             <div className="flex justify-center items-center">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-[48rem]">
-                        {/* Container for First Name and Last Name */}
+
                         <div className="flex space-x-4 font-semibold">
                             <FormField
                                 control={form.control}
@@ -152,7 +151,6 @@ export default function CheckoutPage() {
                             )}
                         />
 
-                        {/* Container for State and Zipcode */}
                         <div className="flex space-x-4">
                             <FormField
                                 control={form.control}
@@ -199,11 +197,11 @@ export default function CheckoutPage() {
                             />
                         </div>
 
-                        <p className="text-gray-500 mt-6 mb-6">
+                        <p className="text-gray-500 mt-8 mb-8">
                             Shipping information and order updates will be sent to your email address.
                         </p>
 
-                        <Button type="submit" className="w-full">Pay with Stripe</Button>
+                        <Button type="submit" className="w-full bg-black text-white">Pay with Stripe</Button>
                     </form>
                 </Form>
             </div>
