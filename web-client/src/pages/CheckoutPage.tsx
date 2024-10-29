@@ -25,7 +25,7 @@ const checkoutSchema = z.object({
     email: z.string().email("Invalid email address"),
     phone: z.string().min(10, "Phone number must be at least 10 digits").max(16, "Phone number must be 16 digits or less").optional(),
     street: z.string().min(1, "Street address is required").max(100, "Street address must be 100 characters or less"),
-    apt_unit: z.string().max(16, "Apartment/Unit must be 16 characters or less").optional(),
+    aptUnit: z.string().max(16, "Apartment/Unit must be 16 characters or less").optional(),
     state: z.string().min(2, "State is required").max(2, "State must be a valid abbreviation"),
     zipcode: z.string().min(5, "Zipcode must be at least 5 digits").max(10, "Zipcode must be 10 digits or less"),
 });
@@ -41,7 +41,7 @@ export default function CheckoutPage() {
             email: "",
             phone: "",
             street: "",
-            apt_unit: "",
+            aptUnit: "",
             state: "",
             zipcode: "",
         },
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
 
                         <FormField
                             control={form.control}
-                            name="apt_unit"
+                            name="aptUnit"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="font-bold">Apartment/Unit (optional)</FormLabel>
