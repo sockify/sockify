@@ -14,7 +14,12 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const checkoutSchema = z.object({
     firstname: z.string().min(1, "First name is required").max(32, "First name must be 32 characters or less"),
@@ -48,6 +53,8 @@ export default function CheckoutPage() {
         console.log("Form data:", data);
         // Add your Stripe integration logic for payment here
     };
+
+    const states = ["FL", "OH", "CA", "NY", "TX"]; // Add more states as needed
 
     return (
         <div className="mx-auto px-4 py-12 2xl:container md:px-8">
@@ -149,19 +156,29 @@ export default function CheckoutPage() {
                                 <FormItem>
                                     <FormLabel>State</FormLabel>
                                     <FormControl>
-                                        <Select placeholder="Select a state" {...field} className="w-full">
-                                            <option value="FL">Florida</option>
-                                            <option value="OH">Ohio</option>
-                                            <option value="CA">California</option>
-                                            <option value="NY">New York</option>
-                                            <option value="TX">Texas</option>
-                                            {/* Add more options as needed */}
-                                        </Select>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="outline" className="w-full">
+                                                    {field.value || "Select a state"}
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="w-full">
+                                                {states.map((state) => (
+                                                    <DropdownMenuItem
+                                                        key={state}
+                                                        onSelect={() => field.onChange(state)}
+                                                    >
+                                                        {state}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+
 
                         <FormField
                             control={form.control}
