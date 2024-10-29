@@ -51,17 +51,18 @@ export default function CheckoutPage() {
 
     return (
         <div className="mx-auto px-4 py-12 2xl:container md:px-8">
+            <h1 className="text-3xl font-extrabold mb-6">Checkout</h1>
             <div className="flex justify-center items-center min-h-screen">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-[48rem]">
                         {/* Container for First Name and Last Name */}
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-4 font-semibold">
                             <FormField
                                 control={form.control}
                                 name="firstname"
                                 render={({ field }) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel>First Name</FormLabel>
+                                        <FormLabel className="font-bold">First Name</FormLabel>
                                         <FormControl>
                                             <Input {...field} className="w-full" />
                                         </FormControl>
@@ -75,7 +76,7 @@ export default function CheckoutPage() {
                                 name="lastname"
                                 render={({ field }) => (
                                     <FormItem className="w-1/2">
-                                        <FormLabel>Last Name</FormLabel>
+                                        <FormLabel className="font-bold">Last Name</FormLabel>
                                         <FormControl>
                                             <Input {...field} className="w-full" />
                                         </FormControl>
@@ -90,7 +91,7 @@ export default function CheckoutPage() {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel className="font-bold">Email</FormLabel>
                                     <FormControl>
                                         <Input type="email" {...field} className="w-full" />
                                     </FormControl>
@@ -104,7 +105,7 @@ export default function CheckoutPage() {
                             name="phone"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Phone</FormLabel>
+                                    <FormLabel className="font-bold">Phone</FormLabel>
                                     <FormControl>
                                         <Input {...field} className="w-full" />
                                     </FormControl>
@@ -118,7 +119,7 @@ export default function CheckoutPage() {
                             name="street"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Street Address</FormLabel>
+                                    <FormLabel className="font-bold">Street Address</FormLabel>
                                     <FormControl>
                                         <Input {...field} className="w-full" />
                                     </FormControl>
@@ -132,7 +133,7 @@ export default function CheckoutPage() {
                             name="apt_unit"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Apartment/Unit (optional)</FormLabel>
+                                    <FormLabel className="font-bold">Apartment/Unit (optional)</FormLabel>
                                     <FormControl>
                                         <Input {...field} className="w-full" />
                                     </FormControl>
