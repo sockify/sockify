@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                                                         {field.value || "Select a state"}
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent className="w-full">
+                                                <DropdownMenuContent className="w-full max-h-60 overflow-auto">
                                                     {states.map((state) => (
                                                         <DropdownMenuItem
                                                             key={state}
