@@ -62,7 +62,7 @@ export default function CheckoutPage() {
     return (
         <div className="mx-auto px-4 py-12 2xl:container md:px-8">
             <h1 className="text-3xl font-extrabold mb-6">Checkout</h1>
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex justify-center items-center">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-[48rem]">
                         {/* Container for First Name and Last Name */}
