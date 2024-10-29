@@ -1,5 +1,3 @@
-// "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -54,7 +52,12 @@ export default function CheckoutPage() {
         // Add your Stripe integration logic for payment here
     };
 
-    const states = ["FL", "OH", "CA", "NY", "TX"]; // Add more states as needed
+    const states = [
+        "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL",
+        "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT",
+        "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI",
+        "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+    ];
 
     return (
         <div className="mx-auto px-4 py-12 2xl:container md:px-8">
@@ -149,50 +152,52 @@ export default function CheckoutPage() {
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="state"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>State</FormLabel>
-                                    <FormControl>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="outline" className="w-full">
-                                                    {field.value || "Select a state"}
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent className="w-full">
-                                                {states.map((state) => (
-                                                    <DropdownMenuItem
-                                                        key={state}
-                                                        onSelect={() => field.onChange(state)}
-                                                    >
-                                                        {state}
-                                                    </DropdownMenuItem>
-                                                ))}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {/* Container for State and Zipcode */}
+                        <div className="flex space-x-4">
+                            <FormField
+                                control={form.control}
+                                name="state"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/2">
+                                        <FormLabel className="font-bold">State</FormLabel>
+                                        <FormControl>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="outline" className="w-full">
+                                                        {field.value || "Select a state"}
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent className="w-full">
+                                                    {states.map((state) => (
+                                                        <DropdownMenuItem
+                                                            key={state}
+                                                            onSelect={() => field.onChange(state)}
+                                                        >
+                                                            {state}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-
-                        <FormField
-                            control={form.control}
-                            name="zipcode"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Zipcode</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Zipcode" {...field} className="w-full" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <FormField
+                                control={form.control}
+                                name="zipcode"
+                                render={({ field }) => (
+                                    <FormItem className="w-1/2">
+                                        <FormLabel className="font-bold">Zipcode</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="w-full" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
                         <Button type="submit" className="w-full">Pay with Stripe</Button>
                     </form>
