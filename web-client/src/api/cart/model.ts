@@ -1,10 +1,11 @@
 import { z } from "zod";
 
+import { sockSizeEnumSchema } from "../inventory/model";
 import {
   orderAddressSchema,
+  orderContactSchema,
   orderItemListSchema,
   orderStatusEnumSchema,
-  sockSizeEnumSchema,
 } from "../orders/model";
 
 export const orderConfirmationSchema = z.object({
@@ -27,3 +28,23 @@ export const cartItemSchema = z.object({
 });
 export const cartItemListSchema = z.array(cartItemSchema);
 export type CartItem = z.infer<typeof cartItemSchema>;
+
+export const checkoutItemSchema = z.object({
+  sockVariantId: z.number(),
+  quantity: z.number(),
+});
+export type CheckoutItem = z.infer<typeof checkoutItemSchema>;
+
+export const checkoutOrderRequestSchema = z.object({
+  address: orderAddressSchema,
+  contact: orderContactSchema,
+  items: z.array(checkoutItemSchema),
+});
+export type CheckoutOrderRequest = z.infer<typeof checkoutOrderRequestSchema>;
+
+export const stripeCheckoutResponseSchema = z.object({
+  paymentUrl: z.string().url(),
+});
+export type StripeCheckoutResponse = z.infer<
+  typeof stripeCheckoutResponseSchema
+>;

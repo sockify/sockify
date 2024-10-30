@@ -1,67 +1,51 @@
-import React from 'react';
-import CartItem from '../components/CartItem';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { CartItem as CartItemType } from "@/api/cart/model";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useCart } from "@/context/CartContext";
+import { Box, ShoppingCart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-// Hard-coded items for testing purposes
-const items: CartItemType[] = [
-  {
-    sockId: 1,
-    sockVariantId: 12,
-    name: 'Socks (awesome)',
-    size: 'XL',
-    price: 21.20,
-    quantity: 2,
-    imageUrl: 'https://via.placeholder.com/150',
-  },
-  {
-    sockId: 2,
-    sockVariantId: 13,
-    name: 'Retro Socks',
-    size: 'M',
-    price: 15.50,
-    quantity: 1,
-    imageUrl: 'https://via.placeholder.com/150',
-  },
-];
+import CartItem from "../components/CartItem";
 
 export default function CartPage() {
-  const handleIncrease = (id: number) => {
-    console.log(`Increased product ID ${id} by 1.`);
+  const navigate = useNavigate();
+  const { items, updateItem, removeItem, isLoading } = useCart();
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
+  const handleIncrease = (item: CartItemType) => {
+    updateItem(item.sockVariantId, { ...item, quantity: item.quantity + 1 });
   };
 
-  const handleDecrease = (id: number) => {
-    console.log(`Decreased product ID ${id} by 1.`);
+  const handleDecrease = (item: CartItemType) => {
+    updateItem(item.sockVariantId, { ...item, quantity: item.quantity - 1 });
   };
 
-  const handleRemove = (id: number) => {
-    console.log(`Removed product ID ${id} from the cart.`);
+  const handleRemove = (item: CartItemType) => {
+    removeItem(item);
   };
-
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    console.log('Proceeding to checkout');
+    navigate("/cart/checkout");
   };
 
   return (
-    <div className="cart-page mx-auto px-4 py-12 2xl:container md:px-8">
-      <h1 className="text-3xl font-extrabold mb-8">Your cart</h1>
-      {items.length > 0 ? (
+    <div className="mx-auto px-4 py-10 2xl:container md:px-8">
+      <h1 className="mb-8 text-3xl font-extrabold">Your cart</h1>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : items.length > 0 ? (
         <>
           {items.map((item) => (
             <CartItem
               key={item.sockVariantId}
-              sockId={item.sockId}
-              sockVariantId={item.sockVariantId}
-              name={item.name}
-              size={item.size}
-              price={item.price}
-              quantity={item.quantity}
-              imageUrl={item.imageUrl}
-              onIncrease={() => handleIncrease(item.sockVariantId)}
-              onDecrease={() => handleDecrease(item.sockVariantId)}
-              onRemove={() => handleRemove(item.sockVariantId)}
+              item={item}
+              onIncrease={() => handleIncrease(item)}
+              onDecrease={() => handleDecrease(item)}
+              onRemove={() => handleRemove(item)}
             />
           ))}
 
@@ -72,21 +56,21 @@ export default function CartPage() {
             </div>
           </Card>
 
-          <div className="flex justify-end mt-6">
-            <Button
-              onClick={handleCheckout}
-            >
-              Proceed to Checkout
-            </Button>
+          <div className="mt-6 flex justify-end">
+            <Button onClick={handleCheckout}>Proceed to checkout</Button>
           </div>
         </>
       ) : (
-        <Card className="text-center p-4">
-          <p>Your cart is empty.</p>
-        </Card>
+        <div className="flex flex-col items-center gap-8 p-4 text-center">
+          <ShoppingCart className="h-64 w-64 text-muted" />
+          <div className="space-y-2 text-center">
+            <h3 className="text-2xl font-semibold">Cart is empty</h3>
+            <p className="text-muted-foreground">
+              Keep browsing to find the pair for you!
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );
-};
-
-
+}

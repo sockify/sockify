@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { sockSizeEnumSchema } from "../inventory/model";
+
 export const stateEnumSchema = z.enum([
   "AL",
   "AK",
@@ -70,9 +72,6 @@ export const orderContactSchema = z.object({
   phone: z.string(),
 });
 export type OrderContact = z.infer<typeof orderContactSchema>;
-
-export const sockSizeEnumSchema = z.enum(["S", "M", "LG", "XL"]);
-export type SockSize = z.infer<typeof sockSizeEnumSchema>;
 
 export const orderItemSchema = z.object({
   name: z.string(),
