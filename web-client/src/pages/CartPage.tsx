@@ -62,7 +62,7 @@ export default function CartPage() {
         </>
       ) : (
         <div className="flex flex-col items-center gap-8 p-4 text-center">
-          <ShoppingCart className="h-48 w-48 text-muted" />
+          <ShoppingCart className="h-64 w-64 text-muted" />
           <div className="space-y-2 text-center">
             <h3 className="text-2xl font-semibold">Cart is empty</h3>
             <p className="text-muted-foreground">

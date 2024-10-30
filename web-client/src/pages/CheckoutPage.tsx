@@ -5,6 +5,7 @@ import {
   OrderContact,
   stateEnumSchema,
 } from "@/api/orders/model";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,8 +28,10 @@ import {
 import { useCart } from "@/context/CartContext";
 import { US_STATES } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronLeft, CreditCard } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -63,6 +66,7 @@ const checkoutSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
+  const navigate = useNavigate();
   const { items, empty } = useCart();
   const checkoutMutation = useCheckoutWithStripeMutation();
 
@@ -126,7 +130,12 @@ export default function CheckoutPage() {
             onSubmit={form.handleSubmit(handleCheckout)}
             className="w-[48rem] space-y-4"
           >
-            <h1 className="self-start text-3xl font-extrabold">Checkout</h1>
+            <div className="flex gap-3">
+              <Button variant="ghost" onClick={() => navigate("/cart")}>
+                <ChevronLeft className="h-5 w-5 animate-pulse" />
+              </Button>
+              <h1 className="self-start text-3xl font-extrabold">Checkout</h1>
+            </div>
 
             <div className="flex space-x-4 font-semibold">
               <FormField
@@ -272,8 +281,17 @@ export default function CheckoutPage() {
               address.
             </p>
 
-            <Button type="submit" className="w-full">
-              Pay with Stripe
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={checkoutMutation.isPending}
+            >
+              {checkoutMutation.isPending ? (
+                <LoadingSpinner size={16} className="mr-3" />
+              ) : (
+                <CreditCard className="mr-3 h-5 w-5" />
+              )}
+              {checkoutMutation.isPending ? "Processing..." : "Pay with Stripe"}
             </Button>
           </form>
         </Form>
