@@ -201,7 +201,7 @@ export default function CheckoutPage() {
                             Shipping information and order updates will be sent to your email address.
                         </p>
 
-                        <Button type="submit" className="w-full bg-black text-white">Pay with Stripe</Button>
+                        <Button type="submit" className="w-full">Pay with Stripe</Button>
                     </form>
                 </Form>
             </div>
