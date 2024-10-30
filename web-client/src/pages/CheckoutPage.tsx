@@ -1,3 +1,10 @@
+import { CheckoutItem, CheckoutOrderRequest } from "@/api/cart/model";
+import { useCheckoutWithStripeMutation } from "@/api/cart/queries";
+import {
+  OrderAddress,
+  OrderContact,
+  stateEnumSchema,
+} from "@/api/orders/model";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,9 +24,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCart } from "@/context/CartContext";
 import { US_STATES } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -35,8 +44,7 @@ const checkoutSchema = z.object({
   phone: z
     .string()
     .min(10, "Phone number must be at least 10 digits")
-    .max(16, "Phone number must be 16 digits or less")
-    .optional(),
+    .max(16, "Phone number must be 16 digits or less"),
   street: z
     .string()
     .min(1, "Street address is required")
@@ -45,10 +53,7 @@ const checkoutSchema = z.object({
     .string()
     .max(16, "Apartment/Unit must be 16 characters or less")
     .optional(),
-  state: z
-    .string()
-    .min(2, "State is required")
-    .max(2, "State must be a valid abbreviation"),
+  state: stateEnumSchema,
   zipcode: z
     .string()
     .min(5, "Zipcode must be at least 5 digits")
@@ -58,6 +63,9 @@ const checkoutSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
+  const { items, empty } = useCart();
+  const checkoutMutation = useCheckoutWithStripeMutation();
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -67,13 +75,47 @@ export default function CheckoutPage() {
       phone: "",
       street: "",
       aptUnit: "",
-      state: "",
       zipcode: "",
     },
   });
 
-  const onSubmit = (data: CheckoutFormValues) => {
-    console.log("Form data:", data);
+  const handleCheckout = async (data: CheckoutFormValues) => {
+    if (items.length < 1) {
+      toast.error("Unable to checkout without any items in the cart");
+      return;
+    }
+
+    const address: OrderAddress = {
+      street: data.street,
+      aptUnit: data.aptUnit,
+      state: data.state,
+      zipcode: data.zipcode,
+    };
+    const contact: OrderContact = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      phone: data.phone,
+    };
+    const orderItems: CheckoutItem[] = items.map((item) => ({
+      sockVariantId: item.sockVariantId,
+      quantity: item.quantity,
+    }));
+
+    const order: CheckoutOrderRequest = {
+      address,
+      contact,
+      items: orderItems,
+    };
+
+    try {
+      const result = await checkoutMutation.mutateAsync({ ...order });
+      form.reset();
+      empty();
+      window.location.replace(result.paymentUrl);
+    } catch (error) {
+      toast.error("Checkout failed. Please try again.");
+    }
   };
 
   return (
@@ -81,7 +123,7 @@ export default function CheckoutPage() {
       <div className="flex items-center justify-center gap-6 pb-12">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleCheckout)}
             className="w-[48rem] space-y-4"
           >
             <h1 className="self-start text-3xl font-extrabold">Checkout</h1>
