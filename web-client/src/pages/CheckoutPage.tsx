@@ -28,7 +28,8 @@ import {
 import { useCart } from "@/context/CartContext";
 import { US_STATES } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft, CreditCard } from "lucide-react";
+import { ChevronLeft, CreditCard, DollarSign } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -69,6 +70,8 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const { items, empty } = useCart();
   const checkoutMutation = useCheckoutWithStripeMutation();
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -114,6 +117,7 @@ export default function CheckoutPage() {
 
     try {
       const result = await checkoutMutation.mutateAsync({ ...order });
+      setIsRedirecting(true);
       form.reset();
       empty();
       window.location.replace(result.paymentUrl);
@@ -121,6 +125,19 @@ export default function CheckoutPage() {
       toast.error("Checkout failed. Please try again.");
     }
   };
+
+  if (isRedirecting) {
+    return (
+      <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center space-y-6 px-4 py-10 md:px-8">
+        <div className="animate-pulse text-primary">
+          <DollarSign className="h-48 w-48" />
+        </div>
+        <p className="text-lg font-semibold text-muted-foreground">
+          Redirecting to Stripe...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto px-4 py-10 2xl:container md:px-8">
@@ -143,7 +160,7 @@ export default function CheckoutPage() {
                 name="firstname"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className="font-bold">First Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
                       <Input {...field} className="w-full" />
                     </FormControl>
@@ -157,7 +174,7 @@ export default function CheckoutPage() {
                 name="lastname"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className="font-bold">Last Name</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input {...field} className="w-full" />
                     </FormControl>
@@ -172,7 +189,7 @@ export default function CheckoutPage() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold">Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input type="email" {...field} className="w-full" />
                   </FormControl>
@@ -186,7 +203,7 @@ export default function CheckoutPage() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold">Phone</FormLabel>
+                  <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input {...field} className="w-full" />
                   </FormControl>
@@ -200,7 +217,7 @@ export default function CheckoutPage() {
               name="street"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold">Street Address</FormLabel>
+                  <FormLabel>Street address</FormLabel>
                   <FormControl>
                     <Input {...field} className="w-full" />
                   </FormControl>
@@ -231,7 +248,7 @@ export default function CheckoutPage() {
                 name="state"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className="font-bold">State</FormLabel>
+                    <FormLabel>State</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
@@ -266,7 +283,7 @@ export default function CheckoutPage() {
                 name="zipcode"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className="font-bold">Zipcode</FormLabel>
+                    <FormLabel>Zipcode</FormLabel>
                     <FormControl>
                       <Input {...field} className="w-full" />
                     </FormControl>
@@ -276,7 +293,7 @@ export default function CheckoutPage() {
               />
             </div>
 
-            <p className="pb-3 text-gray-500">
+            <p className="pb-3 text-muted-foreground">
               Shipping information and order updates will be sent to your email
               address.
             </p>
