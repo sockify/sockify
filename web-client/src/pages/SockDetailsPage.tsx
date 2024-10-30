@@ -50,6 +50,7 @@ export default function SockDetailsPage() {
 
   const handleSizeChange = (variant: SockVariant) => {
     setSelectedVariant(variant || sock!.variants[0]);
+    setSelectedQuantity(1);
   };
 
   const handleAddToCart = () => {
