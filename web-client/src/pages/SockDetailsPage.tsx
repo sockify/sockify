@@ -4,6 +4,7 @@ import { useGetSockById } from "@/api/socks/queries";
 import GenericError from "@/components/GenericError";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -85,7 +86,7 @@ export default function SockDetailsPage() {
   }, [sock]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <ItemLoadingSkeleton />;
   }
 
   if (isError) {
@@ -178,6 +179,33 @@ export default function SockDetailsPage() {
               </Button>
             </Card>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ItemLoadingSkeleton() {
+  return (
+    <div className="mx-auto px-4 py-10 md:px-8">
+      <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
+        <div className="w-full md:w-1/2">
+          <Skeleton className="h-80 w-full rounded" />
+        </div>
+
+        <div className="w-full space-y-4 md:w-1/2">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-24 w-full" />
+
+          <div className="my-4">
+            <Skeleton className="mb-3 h-5 w-20" />
+            <div className="flex space-x-4">
+              <Skeleton className="h-10 w-12" />
+              <Skeleton className="h-10 w-12" />
+              <Skeleton className="h-10 w-12" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
