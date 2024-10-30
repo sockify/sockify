@@ -2,6 +2,7 @@ import { CartItem as CartItemType } from "@/api/cart/model";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
+import { Box, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import CartItem from "../components/CartItem";
@@ -60,9 +61,15 @@ export default function CartPage() {
           </div>
         </>
       ) : (
-        <Card className="p-4 text-center">
-          <p>Your cart is empty.</p>
-        </Card>
+        <div className="flex flex-col items-center gap-8 p-4 text-center">
+          <ShoppingCart className="h-48 w-48 text-muted" />
+          <div className="space-y-2 text-center">
+            <h3 className="text-2xl font-semibold">Cart is empty</h3>
+            <p className="text-muted-foreground">
+              Keep browsing to find the pair for you!
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );
