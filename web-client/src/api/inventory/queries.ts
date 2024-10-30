@@ -1,9 +1,9 @@
 import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
 
 import { Sock } from "./model";
-import { HttpSockService } from "./service";
+import { HttpInventoryService } from "./service";
 
-const sockService = new HttpSockService();
+const sockService = new HttpInventoryService();
 
 export function useGetSockByIdOptions(sockId?: number) {
   return queryOptions({
