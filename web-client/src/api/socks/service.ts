@@ -1,5 +1,6 @@
-import axiosInstance from '@/shared/axios';
-import { Sock, sockSchema } from './model';
+import axiosInstance from "@/shared/axios";
+
+import { Sock, sockSchema } from "./model";
 
 export interface SockService {
   getSockById(sockId: number): Promise<Sock>;
@@ -7,9 +8,7 @@ export interface SockService {
 
 export class HttpSockService implements SockService {
   async getSockById(sockId: number): Promise<Sock> {
-    const { data } = await axiosInstance.get(`/api/socks/${sockId}`);
-    return sockSchema.parse(data); // Validate data
+    const { data } = await axiosInstance.get(`/api/v1/socks/${sockId}`);
+    return sockSchema.parse(data);
   }
 }
-
-

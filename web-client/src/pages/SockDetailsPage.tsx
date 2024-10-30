@@ -1,148 +1,182 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-
-// Hardcoded sock details for testing purposes
-const sock = {
-  name: 'Cozy Striped Socks',
-  description:
-    'Experience ultimate comfort with our Cozy Striped Socks. Made from a blend of premium cotton and elastane, these socks offer a perfect fit and all-day comfort. The stylish stripe pattern adds a touch of flair to your everyday look. With reinforced heel and toe for durability, seamless toe closure for added comfort, and a ribbed cuff to prevent slipping, these socks are designed to meet all your needs. Made in the USA with high-quality materials, they’re breathable, soft, and long-lasting. Ideal for both casual and professional wear.',
-  preview_image_url: 'https://via.placeholder.com/500',
-  variants: [
-    { size: 'S', price: 10.99 },
-    { size: 'M', price: 12.99 },
-    { size: 'L', price: 13.99 },
-    { size: 'XL', price: 15.99 },
-  ],
-};
+import { CartItem } from "@/api/cart/model";
+import { SockVariant } from "@/api/socks/model";
+import { useGetSockById } from "@/api/socks/queries";
+import GenericError from "@/components/GenericError";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/CartContext";
+import { Minus, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Dummy related products
 const relatedProducts = [
   {
     id: 1,
-    name: 'Classic Black Socks',
+    name: "Classic Black Socks",
     price: 9.99,
-    imageUrl: 'https://via.placeholder.com/300',
+    imageUrl: "https://via.placeholder.com/300",
   },
   {
     id: 2,
-    name: 'Colorful Polka Dot Socks',
+    name: "Colorful Polka Dot Socks",
     price: 11.99,
-    imageUrl: 'https://via.placeholder.com/300',
+    imageUrl: "https://via.placeholder.com/300",
   },
   {
     id: 3,
-    name: 'Warm Wool Socks',
+    name: "Warm Wool Socks",
     price: 14.99,
-    imageUrl: 'https://via.placeholder.com/300',
+    imageUrl: "https://via.placeholder.com/300",
   },
 ];
 
 export default function SockDetailsPage() {
-  const [selectedVariant, setSelectedVariant] = useState(sock.variants[1]);
-  const [quantity, setQuantity] = useState(1);
+  const params = useParams();
   const navigate = useNavigate();
+  const { addItem } = useCart();
 
-  const handleSizeChange = (size: string) => {
-    const variant = sock.variants.find((v) => v.size === size);
-    setSelectedVariant(variant || sock.variants[0]);
+  const sockIdStr = params["sockId"];
+  const sockId = parseInt(sockIdStr!);
+
+  const { data: sock, isLoading, isError, error } = useGetSockById(sockId);
+
+  const [selectedVariant, setSelectedVariant] = useState<
+    SockVariant | undefined
+  >(undefined);
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+
+  const handleSizeChange = (variant: SockVariant) => {
+    setSelectedVariant(variant || sock!.variants[0]);
   };
 
   const handleAddToCart = () => {
-    console.log(
-      `Adding to cart: ${selectedVariant.size} size, ${quantity} quantity, price $${selectedVariant.price}`
-    );
-    toast.success('Item added to cart!');
+    if (!selectedVariant) {
+      toast.error("Please select a size");
+      return;
+    }
+
+    if (!sock) {
+      toast.error("No sock has been selected");
+      return;
+    }
+
+    const item: CartItem = {
+      sockVariantId: selectedVariant.id!,
+      name: sock.name,
+      imageUrl: sock.previewImageUrl,
+      quantity: selectedQuantity,
+      price: selectedVariant.price,
+      size: selectedVariant.size,
+    };
+
+    addItem(item);
   };
 
   const handleViewProduct = (id: number) => {
     navigate(`/socks/${id}`);
   };
 
+  useEffect(() => {
+    if (sock?.variants && sock.variants.length > 0) {
+      setSelectedVariant(sock?.variants[0]);
+    }
+  }, [sock]);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return (
+      <GenericError
+        message={`Unable to load sock details for ID ${sockIdStr}`}
+        stackTrace={error.stack}
+      />
+    );
+  }
+
   return (
-    <div className="max-w-7xl mx-auto p-8">
-      <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
+    <div className="mx-auto px-4 py-10 md:px-8">
+      <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
         <div className="w-full md:w-1/2">
           <img
-            src={sock.preview_image_url}
-            alt={sock.name}
-            className="w-full h-full object-cover"
+            src={sock!.previewImageUrl}
+            alt={sock!.name}
+            className="h-full w-full object-cover"
           />
         </div>
 
-        <div className="w-full md:w-1/2 space-y-4">
-          <h1 className="text-3xl font-bold">{sock.name}</h1>
-          <p className="text-xl text-gray-500">${selectedVariant.price}</p>
-          <p>{sock.description}</p>
+        <div className="w-full space-y-4 md:w-1/2">
+          <h1 className="text-3xl font-bold">{sock!.name}</h1>
+          <p className="text-xl text-gray-500">${selectedVariant?.price}</p>
+          <p>{sock!.description}</p>
 
           <div className="my-4">
-            <label className="block text-lg font-medium">Select Size</label>
+            <label className="mb-1 block font-medium">Size</label>
             <div className="flex space-x-4">
-              {sock.variants.map((variant) => (
-                <button
-                  key={variant.size}
-                  onClick={() => handleSizeChange(variant.size)}
-                  className={`px-4 py-2 rounded border ${
-                    selectedVariant.size === variant.size
-                      ? 'bg-gray-300 border-black'
-                      : 'border-gray-300'
-                  }`}
+              {sock!.variants.map((variant) => (
+                <Button
+                  variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
+                  key={variant.id!}
+                  onClick={() => handleSizeChange(variant)}
+                  className="min-w-12"
                 >
                   {variant.size}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           <div className="my-4">
-            <label className="block text-lg font-medium">Quantity</label>
+            <label className="mb-1 block font-medium">Quantity</label>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                onClick={() =>
+                  setSelectedQuantity(Math.max(1, selectedQuantity - 1))
+                }
               >
-                -
+                <Minus size={16} />
               </Button>
-              <div className="w-12 text-center">{quantity}</div>
+              <div className="w-12 text-center">{selectedQuantity}</div>
               <Button
                 variant="outline"
-                onClick={() => setQuantity(quantity + 1)}
+                onClick={() => setSelectedQuantity(selectedQuantity + 1)}
               >
-                +
+                <Plus size={16} />
               </Button>
             </div>
           </div>
 
-          <Button
-            onClick={handleAddToCart}
-            className="bg-indigo-600 text-white px-4 py-2 rounded w-full mt-4"
-          >
-            Add to Cart
-          </Button>
+          <div className="pt-8">
+            <Button onClick={handleAddToCart} className="w-full">
+              Add to cart
+            </Button>
+          </div>
         </div>
       </div>
 
       <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-4">Related Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <h2 className="mb-4 text-2xl font-bold">Related products</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {relatedProducts.map((product) => (
             <div
               key={product.id}
-              className="border p-4 rounded-lg hover:shadow-lg"
+              className="rounded-lg border p-4 hover:shadow-lg"
             >
               <img
                 src={product.imageUrl}
                 alt={product.name}
-                className="w-full h-48 object-cover"
+                className="h-48 w-full object-cover"
               />
               <h3 className="mt-4 text-lg font-semibold">{product.name}</h3>
               <p className="text-gray-600">${product.price}</p>
               <Button
-                className="mt-4 bg-indigo-600 text-white w-full"
+                className="mt-4 w-full"
                 onClick={() => handleViewProduct(product.id)}
               >
-                View Product
+                View product
               </Button>
             </div>
           ))}

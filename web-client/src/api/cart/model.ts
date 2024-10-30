@@ -4,8 +4,8 @@ import {
   orderAddressSchema,
   orderItemListSchema,
   orderStatusEnumSchema,
-  sockSizeEnumSchema,
 } from "../orders/model";
+import { sockSizeEnumSchema } from "../socks/model";
 
 export const orderConfirmationSchema = z.object({
   invoiceNumber: z.string(),

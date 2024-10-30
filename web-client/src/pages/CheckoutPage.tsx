@@ -77,7 +77,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto px-4 py-8 2xl:container md:px-8">
+    <div className="mx-auto px-4 py-10 2xl:container md:px-8">
       <div className="flex items-center justify-center gap-6 pb-12">
         <Form {...form}>
           <form
