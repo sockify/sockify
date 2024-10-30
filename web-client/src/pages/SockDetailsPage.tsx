@@ -1,6 +1,6 @@
 import { CartItem } from "@/api/cart/model";
-import { SockVariant } from "@/api/socks/model";
-import { useGetSockById } from "@/api/socks/queries";
+import { SockVariant } from "@/api/inventory/model";
+import { useGetSockById } from "@/api/inventory/queries";
 import GenericError from "@/components/GenericError";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

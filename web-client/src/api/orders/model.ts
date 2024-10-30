@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { sockSizeEnumSchema } from "../socks/model";
+import { sockSizeEnumSchema } from "../inventory/model";
 
 export const stateEnumSchema = z.enum([
   "AL",

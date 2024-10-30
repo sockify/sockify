@@ -1,11 +1,11 @@
 import { z } from "zod";
 
+import { sockSizeEnumSchema } from "../inventory/model";
 import {
   orderAddressSchema,
   orderItemListSchema,
   orderStatusEnumSchema,
 } from "../orders/model";
-import { sockSizeEnumSchema } from "../socks/model";
 
 export const orderConfirmationSchema = z.object({
   invoiceNumber: z.string(),
