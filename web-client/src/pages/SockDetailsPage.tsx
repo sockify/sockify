@@ -3,8 +3,9 @@ import { SockVariant } from "@/api/socks/model";
 import { useGetSockById } from "@/api/socks/queries";
 import GenericError from "@/components/GenericError";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -103,7 +104,7 @@ export default function SockDetailsPage() {
           <img
             src={sock!.previewImageUrl}
             alt={sock!.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full rounded object-cover"
           />
         </div>
 
@@ -151,7 +152,7 @@ export default function SockDetailsPage() {
 
           <div className="pt-8">
             <Button onClick={handleAddToCart} className="w-full">
-              Add to cart
+              <ShoppingCart className="h-8 w-8 pr-3" /> Add to cart
             </Button>
           </div>
         </div>
@@ -159,16 +160,13 @@ export default function SockDetailsPage() {
 
       <div className="mt-12">
         <h2 className="mb-4 text-2xl font-bold">Related products</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {relatedProducts.map((product) => (
-            <div
-              key={product.id}
-              className="rounded-lg border p-4 hover:shadow-lg"
-            >
+            <Card key={product.id} className="p-4">
               <img
                 src={product.imageUrl}
                 alt={product.name}
-                className="h-48 w-full object-cover"
+                className="h-48 w-full rounded object-cover"
               />
               <h3 className="mt-4 text-lg font-semibold">{product.name}</h3>
               <p className="text-gray-600">${product.price}</p>
@@ -178,7 +176,7 @@ export default function SockDetailsPage() {
               >
                 View product
               </Button>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
