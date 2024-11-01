@@ -2,7 +2,7 @@ import { CartItem as CartItemType } from "@/api/cart/model";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
-import { Box, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import CartItem from "../components/CartItem";

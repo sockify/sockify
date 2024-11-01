@@ -121,7 +121,7 @@ export default function CheckoutPage() {
       form.reset();
       empty();
       window.location.replace(result.paymentUrl);
-    } catch (error) {
+    } catch {
       toast.error("Checkout failed. Please try again.");
     }
   };
