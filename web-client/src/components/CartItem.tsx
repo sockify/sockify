@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface CartItemProps {
   item: CartItemType;
@@ -30,7 +31,9 @@ export default function CartItem({
             }}
           />
           <div className="text-lg font-semibold">
-            <h3 className="mb-1">{item.name}</h3>
+            <Link to={`/socks/${item.sockId}`}>
+              <h3 className="mb-1">{item.name}</h3>
+            </Link>
             <p className="mb-1 text-sm text-gray-400">
               <strong>Size:</strong> {item.size}
             </p>

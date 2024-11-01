@@ -19,6 +19,7 @@ export const orderConfirmationSchema = z.object({
 export type OrderConfirmation = z.infer<typeof orderConfirmationSchema>;
 
 export const cartItemSchema = z.object({
+  sockId: z.number(),
   sockVariantId: z.number(),
   name: z.string(),
   quantity: z.number(),

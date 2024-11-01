@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Dummy related products
-const relatedProducts = [
+// FIXME: remove dummy similar products
+const similarProducts = [
   {
     id: 1,
     name: "Classic Black Socks",
@@ -66,6 +66,7 @@ export default function SockDetailsPage() {
     }
 
     const item: CartItem = {
+      sockId: sock.id!,
       sockVariantId: selectedVariant.id!,
       name: sock.name,
       imageUrl: sock.previewImageUrl,
@@ -197,9 +198,9 @@ export default function SockDetailsPage() {
       </div>
 
       <div className="mt-12">
-        <h2 className="mb-4 text-2xl font-bold">Related products</h2>
+        <h2 className="mb-4 text-2xl font-bold">Similar products</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {relatedProducts.map((product) => (
+          {similarProducts.map((product) => (
             <Card key={product.id} className="p-4">
               <img
                 src={product.imageUrl}
