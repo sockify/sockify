@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
-import { Heart, Minus, Plus, Share2, ShoppingCart } from "lucide-react";
+import { Heart, Minus, Plus, Share2, ShoppingCart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -116,7 +116,18 @@ export default function SockDetailsPage() {
 
         <div className="w-full space-y-4 md:w-1/2">
           <h1 className="text-3xl font-bold">{sock!.name}</h1>
-          <p className="text-xl text-gray-500">${selectedVariant?.price}</p>
+          <div className="flex items-center space-x-2">
+            {/* TODO: work on the review features */}
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} className="h-5 w-5 text-primary" />
+              ))}
+            </div>
+            <span className="text-sm text-muted-foreground">(0 reviews)</span>
+          </div>
+          <p className="text-xl text-muted-foreground">
+            ${selectedVariant?.price}
+          </p>
           <p>{sock!.description}</p>
 
           <div className="my-4">
@@ -166,6 +177,7 @@ export default function SockDetailsPage() {
               <ShoppingCart className="h-8 w-8 pr-3" /> Add to cart
             </Button>
 
+            {/* TODO: add the share and add to wishlist functionalities */}
             <Button variant="outline" size="icon" disabled={true}>
               <span className="sr-only">Add to wishlist</span>
               <Heart className="h-4 w-4" />
