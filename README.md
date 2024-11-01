@@ -184,4 +184,4 @@ Run all migrations:
 
 `migrate -path ./api/cmd/migrate/migrations -database <Railway database URL> up`
 
-_You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_
+_You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_.
