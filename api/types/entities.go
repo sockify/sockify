@@ -41,10 +41,20 @@ type Order struct {
 }
 
 type OrderItem struct {
-	Name     string  `json:"name"`
-	Size     string  `json:"size"`
-	Price    float64 `json:"price"`
-	Quantity int     `json:"quantity"`
+	SockVariantID int     `json:"sockVariantId"`
+	Name          string  `json:"name"`
+	Size          string  `json:"size"`
+	Price         float64 `json:"price"`
+	Quantity      int     `json:"quantity"`
+}
+
+type OrderConfirmation struct {
+	InvoiceNumber string      `json:"invoiceNumber"`
+	Status        string      `json:"status"`
+	Total         float64     `json:"total"`
+	Address       Address     `json:"address"`
+	Items         []OrderItem `json:"items"`
+	CreatedAt     time.Time   `json:"createdAt"`
 }
 
 type Address struct {

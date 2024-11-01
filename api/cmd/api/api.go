@@ -33,7 +33,7 @@ func (s *Server) Run() error {
 
 	// Swagger UI
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+config.Envs.APIPort+"/swagger/doc.json"),
+		httpSwagger.URL("/swagger/doc.json"),
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("list"),
 		httpSwagger.DomID("swagger-ui"),
@@ -42,7 +42,7 @@ func (s *Server) Run() error {
 	// Middleware
 	loggedRouter := middleware.BasicHTTPLogging(s.httpLogger, router)
 	corsHandler := handlers.CORS(
-		handlers.AllowedOrigins([]string{config.Envs.WebClientURL}),
+		handlers.AllowedOrigins([]string{config.Envs.WebClientURL, config.Envs.APIURL}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "PATCH"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
 	)(loggedRouter)

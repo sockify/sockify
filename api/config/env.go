@@ -10,6 +10,7 @@ const FOUR_HOURS_IN_SECONDS int64 = 3600 * 4
 type Config struct {
 	WebClientURL           string
 	APIPort                string
+	APIURL                 string
 	DBName                 string
 	DBUser                 string
 	DBPassword             string
@@ -18,6 +19,7 @@ type Config struct {
 	JWTSecret              string
 	JWTExpirationInSeconds int64
 	DisableAuth            bool
+	StripeAPIKey           string
 }
 
 // Envs is the global configuration for the application.
@@ -27,6 +29,7 @@ func initConfig() Config {
 	return Config{
 		WebClientURL:           getEnv("WEB_CLIENT_URL", "http://localhost:5173"),
 		APIPort:                getEnv("API_PORT", "8080"),
+		APIURL:                 getEnv("API_URL", "http://localhost"), // No port
 		DBName:                 getEnv("DB_NAME", "sockify"),
 		DBUser:                 getEnv("DB_USER", "postgres"),
 		DBPassword:             getEnv("DB_PASSWORD", "password"),
@@ -35,6 +38,7 @@ func initConfig() Config {
 		JWTSecret:              getEnv("JWT_SECRET", "c3VwZXIgc2VjcmV0IEpXVCB0b2tlbiE="),
 		JWTExpirationInSeconds: getEnvInt("JWT_EXPIRATION_IN_SECONDS", FOUR_HOURS_IN_SECONDS),
 		DisableAuth:            getEnvBool("DISABLE_AUTH", false),
+		StripeAPIKey:           getEnv("STRIPE_API_KEY", "FIXME"),
 	}
 }
 

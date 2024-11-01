@@ -32,7 +32,7 @@ func (h *OrderHandler) RegisterRoutes(router *mux.Router, adminStore types.Admin
 }
 
 // @Summary Retrieve all orders
-// @Description Retrieves all orders from the database with optional filters.
+// @Description Retrieves all orders from the database with optional filters. Results are returned oldest to newest by created date.
 // @Tags Orders
 // @Produce json
 // @Security Bearer
@@ -51,7 +51,7 @@ func (h *OrderHandler) handleGetOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	total, err := h.store.CountOrders()
+	total, err := h.store.CountOrders(status)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -350,7 +350,7 @@ func (h *OrderHandler) handleGetOrderByInvoice(w http.ResponseWriter, r *http.Re
 	vars := mux.Vars(r)
 	invoiceNumber := vars["invoice_number"]
 
-	order, err := h.store.GetOrderByInvoice(invoiceNumber)
+	order, err := h.store.GetOrderByInvoice(utils.Normalize(invoiceNumber))
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
@@ -372,13 +372,15 @@ func isValidStatusUpdate(currentStatus string, newStatus string) error {
 		return fmt.Errorf("the new status can not be the same as the old status")
 	}
 
-	// received (default) -> shipped -> delivered -> returned
-	//    |
-	//     > canceled
-	if (newStatus == "shipped" && currentStatus == "received") ||
+	// pending (default) -> received -> shipped -> delivered -> returned
+	// |                     |
+	// |----------------------> canceled
+	if (newStatus == "received" && currentStatus == "pending") ||
+		(newStatus == "canceled" && currentStatus == "pending") ||
+		(newStatus == "canceled" && currentStatus == "received") ||
+		(newStatus == "shipped" && currentStatus == "received") ||
 		(newStatus == "delivered" && currentStatus == "shipped") ||
-		(newStatus == "returned" && currentStatus == "delivered") ||
-		(newStatus == "canceled" && currentStatus == "received") {
+		(newStatus == "returned" && currentStatus == "delivered") {
 		return nil
 	}
 

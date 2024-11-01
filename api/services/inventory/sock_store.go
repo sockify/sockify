@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/sockify/sockify/types"
 )
@@ -256,4 +257,81 @@ func (s *SockStore) SockVariantExists(sockID int, size string) (bool, error) {
 		return false, fmt.Errorf("error checking if sock variant exists: %w", err)
 	}
 	return exists, nil
+}
+
+func (s *SockStore) GetSockVariantByID(sockVariantID int) (*types.SockVariant, error) {
+	var sv types.SockVariant
+	err := s.db.QueryRow(`
+    SELECT sock_variant_id, price, quantity, size, created_at
+    FROM sock_variants
+    WHERE sock_variant_id = $1
+  `, sockVariantID).Scan(&sv.ID, &sv.Price, &sv.Quantity, &sv.Size, &sv.CreatedAt)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to fetch sock variant with ID %d: %w", sockVariantID, err)
+	}
+
+	return &sv, nil
+}
+
+func (s *SockStore) GetSockVariantsByID(sockVariantIDs []int) ([]types.SockVariant, error) {
+	if len(sockVariantIDs) == 0 {
+		return nil, fmt.Errorf("no sock variant IDs provided")
+	}
+
+	placeholders := make([]string, len(sockVariantIDs))
+	for i := range sockVariantIDs {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+	}
+
+	query := fmt.Sprintf("SELECT sock_variant_id, size, price, quantity, created_at FROM sock_variants WHERE sock_variant_id IN (%s)", strings.Join(placeholders, ", "))
+	args := make([]any, len(sockVariantIDs))
+	for i, svID := range sockVariantIDs {
+		args[i] = svID
+	}
+
+	rows, err := s.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	sockVariants := make([]types.SockVariant, 0)
+	for rows.Next() {
+		var sv types.SockVariant
+		if err := rows.Scan(&sv.ID, &sv.Size, &sv.Price, &sv.Quantity, &sv.CreatedAt); err != nil {
+			return nil, err
+		}
+		sockVariants = append(sockVariants, sv)
+	}
+
+	return sockVariants, nil
+}
+
+func (s *SockStore) UpdateSockVariantQuantity(sockVariantID int, newQuantity int) error {
+	sv, err := s.GetSockVariantByID(sockVariantID)
+	if err != nil {
+		return err
+	}
+	if sv == nil {
+		return fmt.Errorf("sock variant with ID %v does not exist", sockVariantID)
+	}
+
+	res, err := s.db.Exec("UPDATE sock_variants SET quantity = $1 WHERE sock_variant_id = $2", newQuantity, sockVariantID)
+	if err != nil {
+		return err
+	}
+
+	val, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if val == 0 {
+		return fmt.Errorf("no rows were affected")
+	}
+
+	return nil
 }

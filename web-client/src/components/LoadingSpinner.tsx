@@ -1,11 +1,11 @@
 import { cn } from "@/shared/utils/css";
 
 interface LoadingSpinnerProps extends React.SVGProps<SVGSVGElement> {
-  size?: 24 | 32 | 48 | 64 | 96;
+  size?: 16 | 24 | 32 | 48 | 64 | 96;
   className?: string;
 }
 
-export function LoadingSpinner({
+export default function LoadingSpinner({
   size = 32,
   className,
   ...props

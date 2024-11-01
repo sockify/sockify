@@ -167,6 +167,69 @@ const docTemplate = `{
                 }
             }
         },
+        "/cart/checkout/stripe-confirmation/{session_id}": {
+            "get": {
+                "description": "Confirms the Stripe checkout status from the session ID. Retrieves the \"orderId\" from the session metadata and updates the order status.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Confirms a Stripe checkout session and retrieves the order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stripe checkout session ID",
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderConfirmation"
+                        }
+                    }
+                }
+            }
+        },
+        "/cart/checkout/stripe-session": {
+            "post": {
+                "description": "Creates a new Stripe checkout session after creating a \"pending\" order in the database. The \"orderId\" is attached within the metadata.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Creates a Stripe checkout session",
+                "parameters": [
+                    {
+                        "description": "Order to checkout",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.CheckoutOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.StripeCheckoutResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "security": [
@@ -174,7 +237,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieves all orders from the database with optional filters.",
+                "description": "Retrieves all orders from the database with optional filters. Results are returned oldest to newest by created date.",
                 "produces": [
                     "application/json"
                 ],
@@ -738,6 +801,43 @@ const docTemplate = `{
                 }
             }
         },
+        "types.CheckoutItem": {
+            "type": "object",
+            "required": [
+                "quantity",
+                "sockVariantId"
+            ],
+            "properties": {
+                "quantity": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "sockVariantId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.CheckoutOrderRequest": {
+            "type": "object",
+            "required": [
+                "contact",
+                "items"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "contact": {
+                    "$ref": "#/definitions/types.Contact"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.CheckoutItem"
+                    }
+                }
+            }
+        },
         "types.Contact": {
             "type": "object",
             "properties": {
@@ -855,6 +955,32 @@ const docTemplate = `{
                 }
             }
         },
+        "types.OrderConfirmation": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/types.Address"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "invoiceNumber": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.OrderItem"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                }
+            }
+        },
         "types.OrderItem": {
             "type": "object",
             "properties": {
@@ -869,6 +995,9 @@ const docTemplate = `{
                 },
                 "size": {
                     "type": "string"
+                },
+                "sockVariantId": {
+                    "type": "integer"
                 }
             }
         },
@@ -1070,6 +1199,15 @@ const docTemplate = `{
                 }
             }
         },
+        "types.StripeCheckoutResponse": {
+            "type": "object",
+            "properties": {
+                "paymentUrl": {
+                    "description": "Stripe payment URL gateway",
+                    "type": "string"
+                }
+            }
+        },
         "types.UpdateAddressRequest": {
             "type": "object",
             "required": [
@@ -1223,7 +1361,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Sockify API",

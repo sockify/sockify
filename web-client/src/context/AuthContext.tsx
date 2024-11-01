@@ -19,7 +19,7 @@ interface AuthContextType {
   admin: Admin | null;
   /** True if the JWT token is valid, and is not expired. */
   isAuthenticated: boolean;
-  /** Logs in an admin. */
+  /** Logs in an admin. Throws an error if logging in was unsuccessful. */
   login: (username: string, password: string) => Promise<void>;
   /** Logs out the currently signed in admin. */
   logout: () => void;
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (adminQuery.data) {
       setAdmin(adminQuery.data);
     }
-  }, [adminQuery.data?.id]);
+  }, [adminQuery.data]);
 
   useEffect(() => {
     if (adminQuery.isError) {
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAdmin(null);
 
     navigate("/admin/login");
-    toast.success("Logged out.");
+    toast.success("Logged out");
   };
 
   return (

@@ -8,6 +8,7 @@ import { UseMutationResult } from "node_modules/@tanstack/react-query/build/lega
 import toast from "react-hot-toast";
 
 import {
+  Admin,
   AdminLoginRequest,
   AdminsPaginatedResponse,
   AuthResponse,
@@ -27,7 +28,7 @@ export function useGetAdmins(
   limit?: number,
   offset?: number,
   enabled?: boolean,
-): UseQueryResult<AdminsPaginatedResponse, Error> {
+): UseQueryResult<AdminsPaginatedResponse> {
   return useQuery(useGetAdminsOptions(limit, offset, enabled));
 }
 
@@ -38,7 +39,10 @@ export function useGetAdminByIdOptions(adminId: number, enabled = true) {
     enabled,
   });
 }
-export function useGetAdminById(adminId: number, enabled?: boolean) {
+export function useGetAdminById(
+  adminId: number,
+  enabled?: boolean,
+): UseQueryResult<Admin> {
   return useQuery(useGetAdminByIdOptions(adminId, enabled));
 }
 
@@ -52,8 +56,8 @@ export function useLoginAdminMutation(): UseMutationResult<
     onSuccess: (data) => {
       toast.success(`Welcome back, ${data.admin.firstname}!`);
     },
-    onError: (err) => {
-      toast.error(`Failed to login: ${err.message}`);
+    onError: () => {
+      toast.error("Incorrect username or password");
     },
   });
 }

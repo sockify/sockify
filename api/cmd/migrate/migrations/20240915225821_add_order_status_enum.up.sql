@@ -3,6 +3,8 @@ DO $$ BEGIN IF NOT EXISTS (
     FROM pg_type
     WHERE typname = 'order_status'
 ) THEN CREATE TYPE order_status AS ENUM (
+    -- Not confirmed as paid
+    'pending',
     'received',
     'shipped',
     'delivered',

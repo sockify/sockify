@@ -39,6 +39,31 @@ definitions:
       total:
         type: integer
     type: object
+  types.CheckoutItem:
+    properties:
+      quantity:
+        minimum: 1
+        type: integer
+      sockVariantId:
+        type: integer
+    required:
+    - quantity
+    - sockVariantId
+    type: object
+  types.CheckoutOrderRequest:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      contact:
+        $ref: '#/definitions/types.Contact'
+      items:
+        items:
+          $ref: '#/definitions/types.CheckoutItem'
+        type: array
+    required:
+    - contact
+    - items
+    type: object
   types.Contact:
     properties:
       email:
@@ -115,6 +140,23 @@ definitions:
       total:
         type: number
     type: object
+  types.OrderConfirmation:
+    properties:
+      address:
+        $ref: '#/definitions/types.Address'
+      createdAt:
+        type: string
+      invoiceNumber:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/types.OrderItem'
+        type: array
+      status:
+        type: string
+      total:
+        type: number
+    type: object
   types.OrderItem:
     properties:
       name:
@@ -125,6 +167,8 @@ definitions:
         type: integer
       size:
         type: string
+      sockVariantId:
+        type: integer
     type: object
   types.OrderUpdate:
     properties:
@@ -263,6 +307,12 @@ definitions:
       total:
         type: integer
     type: object
+  types.StripeCheckoutResponse:
+    properties:
+      paymentUrl:
+        description: Stripe payment URL gateway
+        type: string
+    type: object
   types.UpdateAddressRequest:
     properties:
       aptUnit:
@@ -375,7 +425,6 @@ definitions:
     - sock
     - variants
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API for the Sockify e-commerce store.
@@ -478,9 +527,53 @@ paths:
       summary: Registers new admin credentials.
       tags:
       - Admins
+  /cart/checkout/stripe-confirmation/{session_id}:
+    get:
+      description: Confirms the Stripe checkout status from the session ID. Retrieves
+        the "orderId" from the session metadata and updates the order status.
+      parameters:
+      - description: Stripe checkout session ID
+        in: path
+        name: session_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.OrderConfirmation'
+      summary: Confirms a Stripe checkout session and retrieves the order
+      tags:
+      - Cart
+  /cart/checkout/stripe-session:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new Stripe checkout session after creating a "pending"
+        order in the database. The "orderId" is attached within the metadata.
+      parameters:
+      - description: Order to checkout
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.CheckoutOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.StripeCheckoutResponse'
+      summary: Creates a Stripe checkout session
+      tags:
+      - Cart
   /orders:
     get:
-      description: Retrieves all orders from the database with optional filters.
+      description: Retrieves all orders from the database with optional filters. Results
+        are returned oldest to newest by created date.
       parameters:
       - default: 50
         description: Limit the number of results

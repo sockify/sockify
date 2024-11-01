@@ -6,8 +6,10 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/sockify/sockify/types"
 )
 
@@ -66,4 +68,32 @@ func GetLimitOffset(r *http.Request, defaultLimit int, defaultOffset int) (int, 
 	}
 
 	return limit, offset
+}
+
+// Normalize trims leading and trailing spaces and converts the string to lowercase.
+func Normalize(str string) string {
+	return strings.TrimSpace(strings.ToLower(str))
+}
+
+// TitleCase trims spaces, converts to lowercase, and then converts the first letter to title case.
+func TitleCase(str string) string {
+	str = strings.TrimSpace(strings.ToLower(str))
+
+	if len(str) == 0 {
+		return str
+	}
+	if len(str) == 1 {
+		return strings.ToUpper(str)
+	}
+
+	return strings.ToUpper(string(str[0])) + str[1:]
+}
+
+// GenerateUUID generates a new UUID.
+func GenerateUUID() (string, error) {
+	u, err := uuid.NewRandom()
+	if err != nil {
+		return "", err
+	}
+	return u.String(), nil
 }

@@ -34,7 +34,7 @@ erDiagram
         SERIAL order_id PK "Primary Key"
         TEXT invoice_number "NOT NULL, Indexed"
         DECIMAL total_price "NOT NULL"
-        ENUM status "received, shipped, delivered, canceled, returned"
+        ENUM status "pending, received, shipped, delivered, canceled, returned"
         VARCHAR firstname "NOT NULL"
         VARCHAR lastname "NOT NULL"
         VARCHAR email "NOT NULL"

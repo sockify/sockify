@@ -7,17 +7,19 @@ import (
 	"log"
 
 	"github.com/sockify/sockify/types"
+	"github.com/sockify/sockify/utils"
 )
 
 type OrderStore struct {
-	db *sql.DB
+	db        *sql.DB
+	sockStore types.SockStore
 }
 
-func NewOrderStore(db *sql.DB) *OrderStore {
-	return &OrderStore{db: db}
+func NewOrderStore(db *sql.DB, ss types.SockStore) types.OrderStore {
+	return &OrderStore{db: db, sockStore: ss}
 }
 
-// GetOrders retrieves orders filtered by status (optional) from the database
+// GetOrders retrieves orders filtered by status (optional) from the database.
 func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Order, error) {
 	var orders []types.Order
 	var query string
@@ -25,14 +27,17 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 	var err error
 
 	if status == "" {
-		query = "SELECT * FROM orders ORDER BY created_at DESC LIMIT $1 OFFSET $2"
+		query = "SELECT * FROM orders ORDER BY created_at ASC LIMIT $1 OFFSET $2"
 		rows, err = s.db.Query(query, limit, offset)
 	} else {
-		query = "SELECT * FROM orders WHERE status = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3"
+		query = "SELECT * FROM orders WHERE status = $1 ORDER BY created_at ASC LIMIT $2 OFFSET $3"
 		rows, err = s.db.Query(query, status, limit, offset)
 	}
 
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return orders, nil
+		}
 		log.Printf("Error fetching orders by status: %v", err)
 		return nil, err
 	}
@@ -89,7 +94,7 @@ func (s *OrderStore) GetOrderById(orderID int) (*types.Order, error) {
 
 func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	rows, err := s.db.Query(`
-		SELECT oi.price, oi.quantity, sv.size, s.name
+		SELECT oi.price, oi.quantity, sv.size, sv.sock_variant_id, s.name
 		FROM order_items oi
 		JOIN sock_variants sv ON sv.sock_variant_id = oi.sock_variant_id
 		JOIN socks s ON s.sock_id = sv.sock_id
@@ -106,7 +111,7 @@ func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	for rows.Next() {
 		var oi types.OrderItem
 
-		if err := rows.Scan(&oi.Price, &oi.Quantity, &oi.Size, &oi.Name); err != nil {
+		if err := rows.Scan(&oi.Price, &oi.Quantity, &oi.Size, &oi.SockVariantID, &oi.Name); err != nil {
 			return nil, err
 		}
 		items = append(items, oi)
@@ -115,8 +120,13 @@ func (s *OrderStore) GetOrderItems(orderID int) ([]types.OrderItem, error) {
 	return items, nil
 }
 
-func (s *OrderStore) CountOrders() (total int, err error) {
-	err = s.db.QueryRow(`SELECT COUNT(*) FROM orders`).Scan(&total)
+func (s *OrderStore) CountOrders(status string) (total int, err error) {
+	if status == "" {
+		err = s.db.QueryRow(`SELECT COUNT(*) FROM orders`).Scan(&total)
+	} else {
+		err = s.db.QueryRow(`SELECT COUNT(*) FROM orders WHERE status = $1`, status).Scan(&total)
+	}
+
 	if err != nil {
 		log.Printf("Error counting orders: %v", err)
 		return 0, err
@@ -209,6 +219,16 @@ func (s *OrderStore) UpdateOrderStatus(orderID int, adminID int, newStatus strin
 		return err
 	}
 
+	return nil
+}
+
+// UpdateOrderStatusNoLogs updates an order status without generating an OrderUpdate log. Use with caution.
+func (s *OrderStore) UpdateOrderStatusNoLogs(orderID int, newStatus string) error {
+	_, err := s.db.Exec("UPDATE orders SET status = $1 WHERE order_id = $2", newStatus, orderID)
+	if err != nil {
+		log.Printf("Error updating order ID '%v' status: %v", orderID, err)
+		return err
+	}
 	return nil
 }
 
@@ -339,4 +359,45 @@ func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, erro
 	order.Items = items
 
 	return &order, nil
+}
+
+func (s *OrderStore) CreateOrder(items []types.CheckoutItem, total float64, addr types.Address, contact types.Contact) (orderID int, err error) {
+	invoiceNumber, err := utils.GenerateUUID()
+	if err != nil {
+		return 0, err
+	}
+
+	err = s.db.QueryRow(`
+    INSERT INTO orders (invoice_number, total_price, firstname, lastname, email, phone, street, apt_unit, state, zipcode)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    RETURNING order_id
+  `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.State, addr.Zipcode,
+	).Scan(&orderID)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return orderID, nil
+}
+
+func (s *OrderStore) CreateOrderItem(orderID int, sockVariantID int, price float64, quantity int) error {
+	res, err := s.db.Exec(`
+    INSERT INTO order_items (order_id, sock_variant_id, price, quantity)
+    VALUES ($1, $2, $3, $4)
+  `, orderID, sockVariantID, price, quantity)
+
+	if err != nil {
+		return err
+	}
+
+	val, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if val == 0 {
+		return fmt.Errorf("no rows were affected")
+	}
+
+	return nil
 }

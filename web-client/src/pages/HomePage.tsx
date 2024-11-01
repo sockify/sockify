@@ -1,3 +1,10 @@
+import UnderConstruction from "@/components/UnderConstruction";
+
 export default function HomePage() {
-  return <>Home page</>;
+  return (
+    <>
+      home
+      <UnderConstruction pageName="Home" />
+    </>
+  );
 }

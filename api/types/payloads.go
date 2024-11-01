@@ -88,3 +88,18 @@ type UpdateContactRequest struct {
 type CreateOrderUpdateRequest struct {
 	Message string `json:"message" validate:"required"`
 }
+
+type CheckoutOrderRequest struct {
+	Items   []CheckoutItem `json:"items" validate:"required"`
+	Address Address        `json:"address" validated:"required"`
+	Contact Contact        `json:"contact" validate:"required"`
+}
+type CheckoutItem struct {
+	SockVariantID int `json:"sockVariantId" validate:"required"`
+	Quantity      int `json:"quantity" validate:"required,gte=1"`
+}
+
+type StripeCheckoutResponse struct {
+	// Stripe payment URL gateway
+	PaymentURL string `json:"paymentUrl"`
+}
