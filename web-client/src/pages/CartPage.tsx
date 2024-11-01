@@ -1,6 +1,7 @@
 import { CartItem as CartItemType } from "@/api/cart/model";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -49,12 +50,11 @@ export default function CartPage() {
             />
           ))}
 
-          <Card className="p-4">
-            <div className="flex justify-between text-xl font-extrabold">
-              <span>Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
-            </div>
-          </Card>
+          <Separator className="mb-4" />
+          <div className="flex justify-between text-xl font-extrabold">
+            <span>Subtotal:</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
 
           <div className="mt-6 flex justify-end">
             <Button onClick={handleCheckout}>Proceed to checkout</Button>
