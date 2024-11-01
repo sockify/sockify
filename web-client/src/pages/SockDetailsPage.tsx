@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
-import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
+import { Heart, Minus, Plus, Share2, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -102,11 +103,14 @@ export default function SockDetailsPage() {
   return (
     <div className="mx-auto px-4 py-10 md:px-8">
       <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
-        <div className="w-full md:w-1/2">
+        <div className="h-[512px] w-full md:w-1/2">
           <img
             src={sock!.previewImageUrl}
             alt={sock!.name}
             className="h-full w-full rounded object-cover"
+            onError={(e) => {
+              e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
+            }}
           />
         </div>
 
@@ -120,8 +124,9 @@ export default function SockDetailsPage() {
             <div className="flex space-x-4">
               {sock!.variants.map((variant) => (
                 <Button
-                  variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
                   key={variant.id!}
+                  variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
+                  size="icon"
                   onClick={() => handleSizeChange(variant)}
                   className="min-w-12"
                 >
@@ -136,26 +141,45 @@ export default function SockDetailsPage() {
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
+                size="icon"
                 onClick={() =>
                   setSelectedQuantity(Math.max(1, selectedQuantity - 1))
                 }
               >
                 <Minus size={16} />
+                <span className="sr-only">Decrease quantity by 1</span>
               </Button>
               <div className="w-12 text-center">{selectedQuantity}</div>
               <Button
                 variant="outline"
+                size="icon"
                 onClick={() => setSelectedQuantity(selectedQuantity + 1)}
               >
                 <Plus size={16} />
+                <span className="sr-only">Increase quantity by 1</span>
               </Button>
             </div>
           </div>
 
-          <div className="pt-8">
+          <div className="flex gap-2 pb-2 pt-4">
             <Button onClick={handleAddToCart} className="w-full">
               <ShoppingCart className="h-8 w-8 pr-3" /> Add to cart
             </Button>
+
+            <Button variant="outline" size="icon" disabled={true}>
+              <span className="sr-only">Add to wishlist</span>
+              <Heart className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" disabled={true}>
+              <Share2 className="h-4 w-4" />
+              <span className="sr-only">Share product</span>
+            </Button>
+          </div>
+
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p>Free shipping on orders over $50</p>
+            <p>30-day easy returns</p>
+            <p>Made in USA</p>
           </div>
         </div>
       </div>
@@ -188,13 +212,13 @@ export default function SockDetailsPage() {
 
 function ItemLoadingSkeleton() {
   return (
-    <div className="mx-auto px-4 py-10 md:px-8">
+    <div className="mx-auto px-4 py-12 md:px-8">
       <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
         <div className="w-full md:w-1/2">
-          <Skeleton className="h-80 w-full rounded" />
+          <Skeleton className="h-[512px] w-full rounded" />
         </div>
 
-        <div className="w-full space-y-4 md:w-1/2">
+        <div className="w-full space-y-6 md:w-1/2">
           <Skeleton className="h-10 w-3/4" />
           <Skeleton className="h-6 w-1/4" />
           <Skeleton className="h-24 w-full" />
