@@ -2,7 +2,7 @@ import { useGetSocks } from "@/api/socks/queries";
 import GenericError from "@/components/GenericError";
 import SockCard from "@/components/SockCard";
 import { Button } from "@/components/ui/button";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Truck } from "lucide-react";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -34,8 +34,7 @@ export default function HomePage() {
         ) : data?.items && data.items.length > 0 ? (
           data.items.map((sock) => <SockCard key={sock.id} sock={sock} />)
         ) : (
-          // TODO: create a nicer no socks found component
-          <p>No socks found.</p>
+          <NoSocks />
         )}
       </div>
 
@@ -57,6 +56,20 @@ export default function HomePage() {
         >
           Next
         </button>
+      </div>
+    </div>
+  );
+}
+
+function NoSocks() {
+  return (
+    <div className="flex w-screen flex-col items-center gap-8 p-4 text-center">
+      <Truck className="h-64 w-64 text-muted" />
+      <div className="space-y-2 text-center">
+        <h3 className="text-2xl font-semibold">No socks found</h3>
+        <p className="text-muted-foreground">
+          Check back later to find the pair you've been looking for
+        </p>
       </div>
     </div>
   );
