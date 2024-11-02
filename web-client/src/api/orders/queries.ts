@@ -1,7 +1,24 @@
-import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
+import { ServerMessage } from "@/shared/types";
+import {
+  UseMutationResult,
+  UseQueryResult,
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
-
-import { Order, OrderStatus, OrdersPaginatedResponse, OrderUpdateResponse } from "./model";
+import {
+  CreateOrderUpdateDTO,
+  Order,
+  OrderStatus,
+  OrderUpdateResponse,
+  OrdersPaginatedResponse,
+  UpdateOrderAddressDTO,
+  UpdateOrderContactDTO,
+  UpdateOrderStatusDTO,
+} from "./model";
 import { HttpOrderService } from "./service";
 
 const orderService = new HttpOrderService();
@@ -61,8 +78,108 @@ export function useGetOrderUpdatesOptions(orderId: number, enabled = true) {
 
 export function useGetOrderUpdates(
   orderId: number,
-  enabled = true
+  enabled = true,
 ): UseQueryResult<OrderUpdateResponse> {
   return useQuery(useGetOrderUpdatesOptions(orderId, enabled));
 }
 
+export function useCreateOrderUpdateMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  CreateOrderUpdateDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, payload }) =>
+      orderService.createOrderUpdate(orderId, payload),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order update created");
+
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to create order update");
+    },
+  });
+}
+
+export function useUpdateOrderAddressMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  UpdateOrderAddressDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, address }) =>
+      orderService.updateOrderAddress(orderId, address),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order address updated");
+
+      queryClient.invalidateQueries({
+        queryKey: ["orders", { orderId }],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to update order address");
+    },
+  });
+}
+
+export function useUpdateOrderContactMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  UpdateOrderContactDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, contact }) =>
+      orderService.updateOrderContact(orderId, contact),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order contact updated");
+
+      queryClient.invalidateQueries({
+        queryKey: ["orders", { orderId }],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to update order contact");
+    },
+  });
+}
+
+export function useUpdateOrderStatusMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  UpdateOrderStatusDTO
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ orderId, payload }) =>
+      orderService.updateOrderStatus(orderId, payload),
+    onSuccess: (_, { orderId }) => {
+      toast.success("Order status updated");
+
+      queryClient.invalidateQueries({
+        queryKey: ["orders", { orderId }],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["order-updates", { orderId }],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to update order status");
+    },
+  });
+}

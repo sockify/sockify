@@ -51,7 +51,7 @@ export default function OrdersTable({ data, isFiltered }: OrdersTableProps) {
                   ? dayjs(order.createdAt).format("MM/DD/YYYY")
                   : "Unknown"}
               </TableCell>
-              <TableCell>${order.total}</TableCell>
+              <TableCell>${order.total.toFixed(2)}</TableCell>
             </TableRow>
           ))
         ) : (

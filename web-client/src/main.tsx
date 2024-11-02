@@ -16,11 +16,14 @@ import "./index.css";
 import AdminLayout from "./layouts/AdminLayout";
 import RootLayout from "./layouts/RootLayout";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import HomePage from "./pages/HomePage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PaymentCanceledPage from "./pages/PaymentCanceledPage";
+import SockDetailsPage from "./pages/SockDetailsPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
 
@@ -39,6 +42,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route index element={<Navigate to="/home" replace />} />
                   <Route path="home" element={<HomePage />} />
                   <Route path="cart" element={<CartPage />} />
+                  <Route path="cart/checkout" element={<CheckoutPage />} />
                   <Route
                     path="cart/checkout/order-confirmation"
                     element={<OrderConfirmationPage />}
@@ -47,6 +51,7 @@ createRoot(document.getElementById("root")!).render(
                     path="cart/checkout/payment-canceled"
                     element={<PaymentCanceledPage />}
                   />
+                  <Route path="socks/:sockId" element={<SockDetailsPage />} />
 
                   {/* -- Post MVP -- */}
                   <Route
@@ -88,6 +93,10 @@ createRoot(document.getElementById("root")!).render(
                     />
                     <Route path="inventory" element={<AdminInventoryPage />} />
                     <Route path="orders" element={<AdminOrdersPage />} />
+                    <Route
+                      path="orders/:orderId"
+                      element={<AdminOrderDetailsPage />}
+                    />
                     <Route path="profile" element={<AdminProfilePage />} />
 
                     <Route path="*" element={<NotFound />} />
