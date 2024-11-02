@@ -28,6 +28,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { US_STATES } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { ChevronLeft, CreditCard, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -121,8 +122,12 @@ export default function CheckoutPage() {
       form.reset();
       empty();
       window.location.replace(result.paymentUrl);
-    } catch {
-      toast.error("Checkout failed. Please try again.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(`Checkout failed: ${error?.response?.data?.message}`);
+      } else {
+        toast.error("Checkout failed. Try again.");
+      }
     }
   };
 
