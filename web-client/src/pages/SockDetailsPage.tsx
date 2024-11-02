@@ -2,6 +2,7 @@ import { CartItem } from "@/api/cart/model";
 import { SockVariant } from "@/api/inventory/model";
 import { useGetSockById } from "@/api/inventory/queries";
 import GenericError from "@/components/GenericError";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -48,6 +49,7 @@ export default function SockDetailsPage() {
     SockVariant | undefined
   >(undefined);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const isOutOfStock = !sock?.variants.some((variant) => variant.quantity > 0);
 
   const handleSizeChange = (variant: SockVariant) => {
     setSelectedVariant(variant || sock!.variants[0]);
@@ -83,8 +85,11 @@ export default function SockDetailsPage() {
   };
 
   useEffect(() => {
-    if (sock?.variants && sock.variants.length > 0) {
-      setSelectedVariant(sock?.variants[0]);
+    const initialVariant = sock?.variants.find(
+      (variant) => variant.quantity > 0,
+    );
+    if (initialVariant) {
+      setSelectedVariant(initialVariant);
     }
   }, [sock]);
 
@@ -126,55 +131,69 @@ export default function SockDetailsPage() {
             </div>
             <span className="text-sm text-muted-foreground">(0 reviews)</span>
           </div>
-          <p className="text-xl text-muted-foreground">
-            ${selectedVariant?.price}
-          </p>
+          {isOutOfStock ? (
+            <Badge variant="destructive">Out of stock</Badge>
+          ) : (
+            <p className="text-xl text-muted-foreground">
+              ${selectedVariant?.price}
+            </p>
+          )}
           <p>{sock!.description}</p>
 
-          <div className="my-4">
-            <label className="mb-1 block font-medium">Size</label>
-            <div className="flex space-x-4">
-              {sock!.variants.map((variant) => (
-                <Button
-                  key={variant.id!}
-                  variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
-                  size="icon"
-                  onClick={() => handleSizeChange(variant)}
-                  className="min-w-12"
-                >
-                  {variant.size}
-                </Button>
-              ))}
+          {!isOutOfStock && (
+            <div className="my-4">
+              <label className="mb-1 block font-medium">Size</label>
+              <div className="flex space-x-4">
+                {sock!.variants
+                  .filter((variant) => variant.quantity > 0)
+                  .map((variant) => (
+                    <Button
+                      key={variant.id!}
+                      variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
+                      size="icon"
+                      onClick={() => handleSizeChange(variant)}
+                      className="min-w-12"
+                    >
+                      {variant.size}
+                    </Button>
+                  ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="my-4">
-            <label className="mb-1 block font-medium">Quantity</label>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() =>
-                  setSelectedQuantity(Math.max(1, selectedQuantity - 1))
-                }
-              >
-                <Minus size={16} />
-                <span className="sr-only">Decrease quantity by 1</span>
-              </Button>
-              <div className="w-12 text-center">{selectedQuantity}</div>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setSelectedQuantity(selectedQuantity + 1)}
-              >
-                <Plus size={16} />
-                <span className="sr-only">Increase quantity by 1</span>
-              </Button>
+          {!isOutOfStock && (
+            <div className="my-4">
+              <label className="mb-1 block font-medium">Quantity</label>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setSelectedQuantity(Math.max(1, selectedQuantity - 1))
+                  }
+                >
+                  <Minus size={16} />
+                  <span className="sr-only">Decrease quantity by 1</span>
+                </Button>
+                <div className="w-12 text-center">{selectedQuantity}</div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setSelectedQuantity(selectedQuantity + 1)}
+                >
+                  <Plus size={16} />
+                  <span className="sr-only">Increase quantity by 1</span>
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="flex gap-2 pb-2 pt-4">
-            <Button onClick={handleAddToCart} className="w-full">
+            <Button
+              onClick={handleAddToCart}
+              className="w-full"
+              disabled={isOutOfStock}
+            >
               <ShoppingCart className="h-8 w-8 pr-3" /> Add to cart
             </Button>
 
