@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "dayjs": "^1.11.13",
-    "react-router-dom": "^6.27.0"
-  }
-}
