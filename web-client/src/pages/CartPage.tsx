@@ -1,6 +1,5 @@
 import { CartItem as CartItemType } from "@/api/cart/model";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";

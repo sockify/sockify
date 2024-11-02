@@ -144,19 +144,18 @@ export default function SockDetailsPage() {
             <div className="my-4">
               <label className="mb-1 block font-medium">Size</label>
               <div className="flex space-x-4">
-                {sock!.variants
-                  .filter((variant) => variant.quantity > 0)
-                  .map((variant) => (
-                    <Button
-                      key={variant.id!}
-                      variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
-                      size="icon"
-                      onClick={() => handleSizeChange(variant)}
-                      className="min-w-12"
-                    >
-                      {variant.size}
-                    </Button>
-                  ))}
+                {sock!.variants.map((variant) => (
+                  <Button
+                    key={variant.id!}
+                    variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
+                    size="icon"
+                    onClick={() => handleSizeChange(variant)}
+                    className="min-w-12"
+                    disabled={variant.quantity < 1}
+                  >
+                    {variant.size}
+                  </Button>
+                ))}
               </div>
             </div>
           )}
@@ -171,6 +170,7 @@ export default function SockDetailsPage() {
                   onClick={() =>
                     setSelectedQuantity(Math.max(1, selectedQuantity - 1))
                   }
+                  disabled={selectedQuantity === 1}
                 >
                   <Minus size={16} />
                   <span className="sr-only">Decrease quantity by 1</span>
