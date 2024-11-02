@@ -1,4 +1,4 @@
-import { Sock } from "@/api/socks/model";
+import { Sock } from "@/api/inventory/model";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
 import { useNavigate } from "react-router-dom";
 

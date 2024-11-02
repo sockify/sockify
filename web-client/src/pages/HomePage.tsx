@@ -1,4 +1,4 @@
-import { useGetSocks } from "@/api/socks/queries";
+import { useGetSocks } from "@/api/inventory/queries";
 import GenericError from "@/components/GenericError";
 import SockCard, { SockCardSkeleton } from "@/components/SockCard";
 import { Button } from "@/components/ui/button";
