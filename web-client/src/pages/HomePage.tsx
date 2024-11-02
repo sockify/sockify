@@ -2,15 +2,40 @@ import { useGetSocks } from "@/api/socks/queries";
 import GenericError from "@/components/GenericError";
 import SockCard, { SockCardSkeleton } from "@/components/SockCard";
 import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { SlidersHorizontal, Truck } from "lucide-react";
-import { ReactElement, useState } from "react";
+import { ReactElement, useMemo, useState } from "react";
+
+const SOCKS_RESULTS_LIMIT = 32; // XL screens: 8 rows of 4 items
 
 export default function HomePage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useGetSocks(9, (page - 1) * 9);
+  const { data, isLoading, isError, error } = useGetSocks(
+    SOCKS_RESULTS_LIMIT,
+    (page - 1) * SOCKS_RESULTS_LIMIT,
+  );
+  const totalPages = Math.ceil((data?.total ?? 0) / SOCKS_RESULTS_LIMIT);
 
-  const handleNextPage = () => setPage((prev) => prev + 1);
-  const handlePrevPage = () => page > 1 && setPage((prev) => prev - 1);
+  const renderPaginationButtons = useMemo(() => {
+    const buttons: JSX.Element[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <PaginationItem key={`socks-page-${i}`}>
+          <PaginationLink isActive={i === page} onClick={() => setPage(i)}>
+            {i}
+          </PaginationLink>
+        </PaginationItem>,
+      );
+    }
+    return buttons;
+  }, [totalPages, page]);
 
   return (
     <div className="mx-auto px-4 py-10 md:px-8">
@@ -22,42 +47,46 @@ export default function HomePage() {
         </Button>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {isLoading ? (
-          <SockGridSkeleton />
-        ) : isError ? (
-          <div className="w-screen">
-            <GenericError
-              message="Unable to load socks"
-              stackTrace={error.stack}
-            />
-          </div>
-        ) : data?.items && data.items.length > 0 ? (
-          data.items.map((sock) => <SockCard key={sock.id} sock={sock} />)
-        ) : (
-          <NoSocks />
+      <section className="flex min-h-[calc(100vh-12rem)] flex-col justify-between">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {isLoading ? (
+            <SockGridSkeleton />
+          ) : isError ? (
+            <div className="w-screen">
+              <GenericError
+                message="Unable to load socks"
+                stackTrace={error.stack}
+              />
+            </div>
+          ) : data?.items && data.items.length > 0 ? (
+            data.items.map((sock) => <SockCard key={sock.id} sock={sock} />)
+          ) : (
+            <NoSocks />
+          )}
+        </div>
+
+        {data?.items && data.items.length > 0 && totalPages >= 1 && (
+          <Pagination className="mt-10">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                />
+              </PaginationItem>
+
+              {renderPaginationButtons}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
-      </div>
-
-      {/* TODO: replace with shadcn pagination */}
-      <div className="mt-8 flex items-center justify-center space-x-4">
-        <button
-          className="rounded bg-gray-200 px-4 py-2 disabled:opacity-50"
-          disabled={page === 1}
-          onClick={handlePrevPage}
-        >
-          Previous
-        </button>
-
-        <span className="font-semibold">{page}</span>
-
-        <button
-          className="rounded bg-gray-200 px-4 py-2"
-          onClick={handleNextPage}
-        >
-          Next
-        </button>
-      </div>
+      </section>
     </div>
   );
 }
