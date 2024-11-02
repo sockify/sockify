@@ -1,9 +1,9 @@
 import { useGetSocks } from "@/api/socks/queries";
 import GenericError from "@/components/GenericError";
-import SockCard from "@/components/SockCard";
+import SockCard, { SockCardSkeleton } from "@/components/SockCard";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal, Truck } from "lucide-react";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 export default function HomePage() {
   const [page, setPage] = useState(1);
@@ -24,13 +24,14 @@ export default function HomePage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading ? (
-          //  TODO: add loading skeleton
-          <p>Loading socks...</p>
+          <SockGridSkeleton />
         ) : isError ? (
-          <GenericError
-            message="Unable to load socks"
-            stackTrace={error.stack}
-          />
+          <div className="w-screen">
+            <GenericError
+              message="Unable to load socks"
+              stackTrace={error.stack}
+            />
+          </div>
         ) : data?.items && data.items.length > 0 ? (
           data.items.map((sock) => <SockCard key={sock.id} sock={sock} />)
         ) : (
@@ -73,4 +74,16 @@ function NoSocks() {
       </div>
     </div>
   );
+}
+
+function SockGridSkeleton() {
+  const renderGrid = () => {
+    const items: ReactElement[] = [];
+    for (let i = 0; i < 8; i++) {
+      items.push(<SockCardSkeleton />);
+    }
+    return items;
+  };
+
+  return renderGrid();
 }

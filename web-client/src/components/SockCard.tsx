@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
+import { Skeleton } from "./ui/skeleton";
 
 interface SockCardProps {
   sock: Sock;
@@ -42,6 +43,19 @@ export default function SockCard({ sock }: SockCardProps) {
             ${showingPrice!.toFixed(2)}
           </p>
         )}
+      </div>
+    </Card>
+  );
+}
+
+export function SockCardSkeleton() {
+  return (
+    <Card>
+      <Skeleton className="h-64 w-full" />
+
+      <div className="space-y-2 p-3">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/4" />
       </div>
     </Card>
   );
