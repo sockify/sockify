@@ -41,3 +41,6 @@ type OrderStore interface {
 	CreateOrder(items []CheckoutItem, total float64, addr Address, contact Contact) (orderID int, err error)
 	CreateOrderItem(orderID int, sockVariantID int, price float64, quantity int) error
 }
+
+type NewsletterStore interface {
+}
