@@ -22,6 +22,7 @@ type SockStore interface {
 	GetSockVariantByID(sockVariantID int) (*SockVariant, error)
 	GetSockVariantsByID(sockVariantIDs []int) ([]SockVariant, error)
 	UpdateSockVariantQuantity(sockVariantID int, newQuantity int) error
+	GetSimilarSocks(sockID int) ([]SimilarSock, error)
 }
 
 type OrderStore interface {
