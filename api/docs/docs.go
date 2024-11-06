@@ -834,6 +834,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/socks/{sock_id}/similar-socks": {
+            "get": {
+                "description": "For now, it will retrieve the top 6 products that are not matching the sock_id passed in.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Retrieves the related products for a particular sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.SimilarSock"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1210,6 +1242,26 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 16,
                     "minLength": 3
+                }
+            }
+        },
+        "types.SimilarSock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "previewImageUrl": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "sockId": {
+                    "type": "integer"
                 }
             }
         },
