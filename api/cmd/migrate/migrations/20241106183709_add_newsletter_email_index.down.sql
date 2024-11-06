@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS newsletter_email_idx;
