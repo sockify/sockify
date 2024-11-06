@@ -83,3 +83,11 @@ type OrderUpdateCreator struct {
 	LastName  string `json:"lastname"`
 	Username  string `json:"username"`
 }
+
+type SimilarSock struct {
+	SockId          int     `json:"sockId"`
+	Name            string  `json:"name"`
+	Price           float64 `json:"price"`
+	PreviewImageURL string  `json:"previewImageUrl"`
+	CreatedAt       string  `json:"createdAt"`
+}

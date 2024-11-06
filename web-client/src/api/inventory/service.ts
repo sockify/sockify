@@ -1,8 +1,10 @@
 import axiosInstance from "@/shared/axios";
 
 import {
+  SimilarSock,
   Sock,
   SocksPaginatedResponse,
+  similarSockListSchema,
   sockSchema,
   socksPaginatedResponseSchema,
 } from "./model";
@@ -10,6 +12,7 @@ import {
 export interface InventoryService {
   getSockById(sockId: number): Promise<Sock>;
   getSocks(limit: number, offset: number): Promise<SocksPaginatedResponse>;
+  getSimilarSocks(sockId: number): Promise<SimilarSock[]>;
 }
 
 export class HttpInventoryService implements InventoryService {
@@ -26,5 +29,12 @@ export class HttpInventoryService implements InventoryService {
       params: { limit, offset },
     });
     return socksPaginatedResponseSchema.parse(data);
+  }
+
+  async getSimilarSocks(sockId: number): Promise<SimilarSock[]> {
+    const { data } = await axiosInstance.get(
+      `/api/v1/socks/${sockId}/similar-socks`,
+    );
+    return similarSockListSchema.parse(data);
   }
 }

@@ -26,7 +26,7 @@ func (h *SockHandler) RegisterRoutes(router *mux.Router, adminStore types.AdminS
 	router.HandleFunc("/socks", h.handleGetAllSocks).Methods(http.MethodGet)
 	router.HandleFunc("/socks/{sock_id}", h.handleGetSockDetails).Methods(http.MethodGet)
 	router.HandleFunc("/socks/{sock_id}", middleware.WithJWTAuth(adminStore, h.handleUpdateSock)).Methods(http.MethodPatch)
-
+	router.HandleFunc("/socks/{sock_id}/similar-socks", h.handleGetSimilarSocks).Methods(http.MethodGet)
 }
 
 // CreateSock handles the HTTP request to create a new sock with its variants
@@ -225,6 +225,42 @@ func (h *SockHandler) handleUpdateSock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJson(w, http.StatusOK, types.Message{Message: "Sock updated successfully"})
+}
+
+// @Summary Retrieves the related products for a particular sock
+// @Description For now, it will retrieve the top 6 products that are not matching the sock_id passed in.
+// @Tags Inventory
+// @Accept json
+// @Param sock_id path int true "Sock ID"
+// @Success 200 {array} types.SimilarSock
+// @Router /socks/{sock_id}/similar-socks [get]
+func (h *SockHandler) handleGetSimilarSocks(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sockIDstr := vars["sock_id"]
+
+	sockID, err := strconv.Atoi(sockIDstr)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, errors.New("invalid sock ID"))
+		return
+	}
+
+	exists, err := h.store.SockExistsByID(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if !exists {
+		utils.WriteError(w, http.StatusNotFound, errors.New("sock not found"))
+		return
+	}
+
+	items, err := h.store.GetSimilarSocks(sockID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, items)
 }
 
 func toSock(dto types.SockDTO) types.Sock {
