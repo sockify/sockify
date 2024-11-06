@@ -1,6 +1,6 @@
 import { CartItem } from "@/api/cart/model";
 import { SockVariant } from "@/api/inventory/model";
-import { useGetSockById } from "@/api/inventory/queries";
+import { useGetSimilarSocks, useGetSockById } from "@/api/inventory/queries";
 import GenericError from "@/components/GenericError";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,31 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/CartContext";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
 import { Heart, Minus, Plus, Share2, ShoppingCart, Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
-// FIXME: remove dummy similar products
-const similarProducts = [
-  {
-    id: 1,
-    name: "Classic Black Socks",
-    price: 9.99,
-    imageUrl: "https://via.placeholder.com/300",
-  },
-  {
-    id: 2,
-    name: "Colorful Polka Dot Socks",
-    price: 11.99,
-    imageUrl: "https://via.placeholder.com/300",
-  },
-  {
-    id: 3,
-    name: "Warm Wool Socks",
-    price: 14.99,
-    imageUrl: "https://via.placeholder.com/300",
-  },
-];
+// Max number of similar socks shown
+const SIMILAR_SOCKS_LIMIT = 3;
 
 export default function SockDetailsPage() {
   const params = useParams();
@@ -43,7 +24,17 @@ export default function SockDetailsPage() {
   const sockIdStr = params["sockId"];
   const sockId = parseInt(sockIdStr!);
 
-  const { data: sock, isLoading, isError, error } = useGetSockById(sockId);
+  const {
+    data: sock,
+    isLoading: isLoadingSock,
+    isError: isErrorSock,
+    error: errorSock,
+  } = useGetSockById(sockId);
+  const {
+    data: similarSocks,
+    isLoading: isLoadingSimilarSocks,
+    isError: isErrorSimilarSocks,
+  } = useGetSimilarSocks(sockId);
 
   const [selectedVariant, setSelectedVariant] = useState<
     SockVariant | undefined
@@ -93,149 +84,154 @@ export default function SockDetailsPage() {
     }
   }, [sock]);
 
-  if (isLoading) {
-    return <ItemLoadingSkeleton />;
-  }
-
-  if (isError) {
-    return (
-      <GenericError
-        message={`Unable to load sock details for ID ${sockIdStr}`}
-        stackTrace={error.stack}
-      />
-    );
-  }
-
   return (
     <div className="mx-auto px-4 py-10 md:px-8">
-      <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
-        <div className="h-[512px] w-full md:w-1/2">
-          <img
-            src={sock!.previewImageUrl}
-            alt={sock!.name}
-            className="h-full w-full rounded object-cover"
-            onError={(e) => {
-              e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
-            }}
-          />
-        </div>
-
-        <div className="w-full space-y-4 md:w-1/2">
-          <h1 className="text-3xl font-bold">{sock!.name}</h1>
-          <div className="flex items-center space-x-2">
-            {/* TODO: work on the review features */}
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} className="h-5 w-5 text-primary" />
-              ))}
-            </div>
-            <span className="text-sm text-muted-foreground">(0 reviews)</span>
+      {isLoadingSock ? (
+        <ItemLoadingSkeleton />
+      ) : isErrorSock ? (
+        <GenericError
+          message={`Unable to load sock details for ID ${sockIdStr}`}
+          stackTrace={errorSock.stack}
+        />
+      ) : (
+        <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
+          <div className="h-[512px] w-full md:w-1/2">
+            <img
+              src={sock!.previewImageUrl}
+              alt={sock!.name}
+              className="h-full w-full rounded object-cover"
+              onError={(e) => {
+                e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
+              }}
+            />
           </div>
-          {isOutOfStock ? (
-            <Badge variant="destructive">Out of stock</Badge>
-          ) : (
-            <p className="text-xl text-muted-foreground">
-              ${selectedVariant?.price}
-            </p>
-          )}
-          <p>{sock!.description}</p>
 
-          {!isOutOfStock && (
-            <div className="my-4">
-              <label className="mb-1 block font-medium">Size</label>
-              <div className="flex space-x-4">
-                {sock!.variants.map((variant) => (
-                  <Button
-                    key={variant.id!}
-                    variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
-                    size="icon"
-                    onClick={() => handleSizeChange(variant)}
-                    className="min-w-12"
-                    disabled={variant.quantity < 1}
-                  >
-                    {variant.size}
-                  </Button>
+          <div className="w-full space-y-4 md:w-1/2">
+            <h1 className="text-3xl font-bold">{sock!.name}</h1>
+            <div className="flex items-center space-x-2">
+              {/* TODO: work on the review features */}
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className="h-5 w-5 text-primary" />
                 ))}
               </div>
+              <span className="text-sm text-muted-foreground">(0 reviews)</span>
             </div>
-          )}
+            {isOutOfStock ? (
+              <Badge variant="destructive">Out of stock</Badge>
+            ) : (
+              <p className="text-xl text-muted-foreground">
+                ${selectedVariant?.price}
+              </p>
+            )}
+            <p>{sock!.description}</p>
 
-          {!isOutOfStock && (
-            <div className="my-4">
-              <label className="mb-1 block font-medium">Quantity</label>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() =>
-                    setSelectedQuantity(Math.max(1, selectedQuantity - 1))
-                  }
-                  disabled={selectedQuantity === 1}
-                >
-                  <Minus size={16} />
-                  <span className="sr-only">Decrease quantity by 1</span>
-                </Button>
-                <div className="w-12 text-center">{selectedQuantity}</div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setSelectedQuantity(selectedQuantity + 1)}
-                >
-                  <Plus size={16} />
-                  <span className="sr-only">Increase quantity by 1</span>
-                </Button>
+            {!isOutOfStock && (
+              <div className="my-4">
+                <label className="mb-1 block font-medium">Size</label>
+                <div className="flex space-x-4">
+                  {sock!.variants.map((variant) => (
+                    <Button
+                      key={variant.id!}
+                      variant={`${selectedVariant?.size === variant.size ? "default" : "outline"}`}
+                      size="icon"
+                      onClick={() => handleSizeChange(variant)}
+                      className="min-w-12"
+                      disabled={variant.quantity < 1}
+                    >
+                      {variant.size}
+                    </Button>
+                  ))}
+                </div>
               </div>
+            )}
+
+            {!isOutOfStock && (
+              <div className="my-4">
+                <label className="mb-1 block font-medium">Quantity</label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() =>
+                      setSelectedQuantity(Math.max(1, selectedQuantity - 1))
+                    }
+                    disabled={selectedQuantity === 1}
+                  >
+                    <Minus size={16} />
+                    <span className="sr-only">Decrease quantity by 1</span>
+                  </Button>
+                  <div className="w-12 text-center">{selectedQuantity}</div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setSelectedQuantity(selectedQuantity + 1)}
+                  >
+                    <Plus size={16} />
+                    <span className="sr-only">Increase quantity by 1</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-2 pb-2 pt-4">
+              <Button
+                onClick={handleAddToCart}
+                className="w-full"
+                disabled={isOutOfStock}
+              >
+                <ShoppingCart className="h-8 w-8 pr-3" /> Add to cart
+              </Button>
+
+              {/* TODO: add the share and add to wishlist functionalities */}
+              <Button variant="outline" size="icon" disabled={true}>
+                <span className="sr-only">Add to wishlist</span>
+                <Heart className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon" disabled={true}>
+                <Share2 className="h-4 w-4" />
+                <span className="sr-only">Share product</span>
+              </Button>
             </div>
-          )}
 
-          <div className="flex gap-2 pb-2 pt-4">
-            <Button
-              onClick={handleAddToCart}
-              className="w-full"
-              disabled={isOutOfStock}
-            >
-              <ShoppingCart className="h-8 w-8 pr-3" /> Add to cart
-            </Button>
-
-            {/* TODO: add the share and add to wishlist functionalities */}
-            <Button variant="outline" size="icon" disabled={true}>
-              <span className="sr-only">Add to wishlist</span>
-              <Heart className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" disabled={true}>
-              <Share2 className="h-4 w-4" />
-              <span className="sr-only">Share product</span>
-            </Button>
-          </div>
-
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>Free shipping on orders over $50</p>
-            <p>30-day easy returns</p>
-            <p>Made in USA</p>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>Free shipping on orders over $50</p>
+              <p>30-day easy returns</p>
+              <p>Made in USA</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-12">
-        <h2 className="mb-4 text-2xl font-bold">Similar products</h2>
+        <h2 className="mb-4 text-2xl font-bold">Similar socks</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {similarProducts.map((product) => (
-            <Card key={product.id} className="p-4">
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="h-48 w-full rounded object-cover"
-              />
-              <h3 className="mt-4 text-lg font-semibold">{product.name}</h3>
-              <p className="text-gray-600">${product.price}</p>
-              <Button
-                className="mt-4 w-full"
-                onClick={() => handleViewProduct(product.id)}
-              >
-                View product
-              </Button>
-            </Card>
-          ))}
+          {isLoadingSimilarSocks ? (
+            <SimilarSocksSkeleton />
+          ) : isErrorSimilarSocks ? (
+            <GenericError message="Unable to load similar socks" />
+          ) : (
+            similarSocks!.slice(0, SIMILAR_SOCKS_LIMIT).map((sock) => (
+              <Card key={sock.sockId} className="p-4">
+                <img
+                  src={sock.previewImageUrl}
+                  alt={sock.name}
+                  className="h-48 w-full rounded object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
+                  }}
+                />
+                <h3 className="mt-4 text-lg font-semibold">{sock.name}</h3>
+                <p className="text-gray-600">${sock.price}</p>
+                <Button
+                  className="mt-4 w-full"
+                  onClick={() => handleViewProduct(sock.sockId)}
+                >
+                  View sock
+                </Button>
+              </Card>
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -244,27 +240,45 @@ export default function SockDetailsPage() {
 
 function ItemLoadingSkeleton() {
   return (
-    <div className="mx-auto px-4 py-12 md:px-8">
-      <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
-        <div className="w-full md:w-1/2">
-          <Skeleton className="h-[512px] w-full rounded" />
-        </div>
+    <div className="flex flex-col space-y-8 md:flex-row md:space-x-8 md:space-y-0">
+      <div className="w-full md:w-1/2">
+        <Skeleton className="h-[512px] w-full rounded" />
+      </div>
 
-        <div className="w-full space-y-6 md:w-1/2">
-          <Skeleton className="h-10 w-3/4" />
-          <Skeleton className="h-6 w-1/4" />
-          <Skeleton className="h-24 w-full" />
+      <div className="w-full space-y-6 md:w-1/2">
+        <Skeleton className="h-10 w-3/4" />
+        <Skeleton className="h-6 w-1/4" />
+        <Skeleton className="h-24 w-full" />
 
-          <div className="my-4">
-            <Skeleton className="mb-3 h-5 w-20" />
-            <div className="flex space-x-4">
-              <Skeleton className="h-10 w-12" />
-              <Skeleton className="h-10 w-12" />
-              <Skeleton className="h-10 w-12" />
-            </div>
+        <div className="my-4">
+          <Skeleton className="mb-3 h-5 w-20" />
+          <div className="flex space-x-4">
+            <Skeleton className="h-10 w-12" />
+            <Skeleton className="h-10 w-12" />
+            <Skeleton className="h-10 w-12" />
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function SimilarSocksSkeleton() {
+  const renderItems = () => {
+    const items: ReactElement[] = [];
+    for (let i = 0; i < 3; i++) {
+      items.push(
+        <Card className="p-4">
+          <Skeleton className="h-48 w-full rounded" />
+          <div className="mt-4">
+            <Skeleton className="mb-2 h-6 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </Card>,
+      );
+    }
+    return items;
+  };
+
+  return renderItems();
 }
