@@ -1,11 +1,13 @@
 package newsletter
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/sockify/sockify/middleware"
 	"github.com/sockify/sockify/types"
+	"github.com/sockify/sockify/utils"
 )
 
 type Handler struct {
@@ -31,7 +33,31 @@ func (h *Handler) RegisterRoutes(router *mux.Router, adminStore types.AdminStore
 // @Success 200 {object} types.Message
 // @Router /newsletter/subscribe [post]
 func (h *Handler) handleSubscribe(w http.ResponseWriter, r *http.Request) {
-	// TODO: implement this
+	var req types.NewsletterSubscribeRequest
+
+	if err := utils.ParseJson(r, &req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// TODO: add email validation.
+
+	exists, err := h.store.EmailExists(req.Email)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if exists {
+		utils.WriteError(w, http.StatusConflict, fmt.Errorf("email '%v' is already subscribed", req.Email))
+		return
+	}
+
+	err = h.store.Subscribe(req.Email)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+
+	utils.WriteJson(w, http.StatusCreated, types.Message{Message: "Successfully subscribed to the newsletter"})
 }
 
 // @Summary Unsubscribes an email from the newsletter
@@ -43,7 +69,29 @@ func (h *Handler) handleSubscribe(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} types.Message
 // @Router /newsletter/unsubscribe [post]
 func (h *Handler) handleUnsubscribe(w http.ResponseWriter, r *http.Request) {
-	// TODO: implement this
+	var req types.NewsletterSubscribeRequest
+
+	if err := utils.ParseJson(r, &req); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	exists, err := h.store.EmailExists(req.Email)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	if !exists {
+		utils.WriteError(w, http.StatusConflict, fmt.Errorf("email '%v' is not currently subscribed", req.Email))
+		return
+	}
+
+	err = h.store.Unsubscribe(req.Email)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+	}
+
+	utils.WriteJson(w, http.StatusCreated, types.Message{Message: "Successfully unsubscribed from the newsletter"})
 }
 
 // @Summary Get all newsletter entries
@@ -54,5 +102,11 @@ func (h *Handler) handleUnsubscribe(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} types.NewsletterEntry
 // @Router /newsletter/emails [get]
 func (h *Handler) handleGetEmails(w http.ResponseWriter, r *http.Request) {
-	// TODO: implement this
+	entries, err := h.store.GetEmails()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, entries)
 }
