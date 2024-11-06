@@ -1,6 +1,6 @@
 import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
 
-import { Sock, SocksPaginatedResponse } from "./model";
+import { SimilarSock, Sock, SocksPaginatedResponse } from "./model";
 import { HttpInventoryService } from "./service";
 
 const sockService = new HttpInventoryService();
@@ -33,4 +33,16 @@ export function useGetSocks(
   enabled = true,
 ): UseQueryResult<SocksPaginatedResponse> {
   return useQuery(useGetSocksOptions(limit, offset, enabled));
+}
+
+export function useGetSimilarSocksOptions(sockId: number) {
+  return queryOptions({
+    queryKey: ["similar-socks", { sockId }],
+    queryFn: () => sockService.getSimilarSocks(sockId),
+  });
+}
+export function useGetSimilarSocks(
+  sockId: number,
+): UseQueryResult<SimilarSock[]> {
+  return useQuery(useGetSimilarSocksOptions(sockId));
 }

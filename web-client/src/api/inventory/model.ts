@@ -38,3 +38,13 @@ export const socksPaginatedResponseSchema = z.object({
 export type SocksPaginatedResponse = z.infer<
   typeof socksPaginatedResponseSchema
 >;
+
+export const similarSockSchema = z.object({
+  sockId: z.number(),
+  name: z.string(),
+  price: z.number(),
+  previewImageUrl: z.string(),
+  createdAt: z.string(),
+});
+export type SimilarSock = z.infer<typeof similarSockSchema>;
+export const similarSockListSchema = z.array(similarSockSchema);
