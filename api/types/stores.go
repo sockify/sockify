@@ -43,4 +43,8 @@ type OrderStore interface {
 }
 
 type NewsletterStore interface {
+	Subscribe(email string) error
+	Unsubscribe(email string) error
+	EmailExists(email string) (bool, error)
+	GetEmails() ([]NewsletterEntry, error)
 }

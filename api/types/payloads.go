@@ -103,3 +103,10 @@ type StripeCheckoutResponse struct {
 	// Stripe payment URL gateway
 	PaymentURL string `json:"paymentUrl"`
 }
+
+type NewsletterSubscribeRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}
+type NewsletterUnsubscribeRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}

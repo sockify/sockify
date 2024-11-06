@@ -119,6 +119,25 @@ definitions:
       message:
         type: string
     type: object
+  types.NewsletterEntry:
+    properties:
+      email:
+        type: string
+    type: object
+  types.NewsletterSubscribeRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  types.NewsletterUnsubscribeRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   types.Order:
     properties:
       address:
@@ -570,6 +589,67 @@ paths:
       summary: Creates a Stripe checkout session
       tags:
       - Cart
+  /newsletter/emails:
+    get:
+      description: Retrieves a list of all newsletter participants.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/types.NewsletterEntry'
+            type: array
+      security:
+      - Bearer: []
+      summary: Get all newsletter entries
+      tags:
+      - Newsletter
+  /newsletter/subscribe:
+    post:
+      consumes:
+      - application/json
+      description: Adds (opts-in) a new email entry to the newsletter.
+      parameters:
+      - description: entry
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.NewsletterSubscribeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      summary: Subscribes an email to the newsletter
+      tags:
+      - Newsletter
+  /newsletter/unsubscribe:
+    post:
+      consumes:
+      - application/json
+      description: Removes (opts-out) a new email entry from the newsletter.
+      parameters:
+      - description: entry
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.NewsletterUnsubscribeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Message'
+      summary: Unsubscribes an email from the newsletter
+      tags:
+      - Newsletter
   /orders:
     get:
       description: Retrieves all orders from the database with optional filters. Results

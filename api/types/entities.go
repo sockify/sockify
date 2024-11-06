@@ -83,3 +83,7 @@ type OrderUpdateCreator struct {
 	LastName  string `json:"lastname"`
 	Username  string `json:"username"`
 }
+
+type NewsletterEntry struct {
+	Email string `json:"email"`
+}

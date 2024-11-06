@@ -32,7 +32,7 @@ func Router(db *sql.DB) *mux.Router {
 
 	newsletterStore := newsletter.NewStore(db)
 	newsletterHandler := newsletter.NewHandler(newsletterStore)
-	newsletterHandler.RegisterRoutes(subrouter)
+	newsletterHandler.RegisterRoutes(subrouter, adminStore)
 
 	return router
 }
