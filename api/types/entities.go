@@ -91,3 +91,7 @@ type SimilarSock struct {
 	PreviewImageURL string  `json:"previewImageUrl"`
 	CreatedAt       string  `json:"createdAt"`
 }
+
+type NewsletterEntry struct {
+	Email string `json:"email"`
+}

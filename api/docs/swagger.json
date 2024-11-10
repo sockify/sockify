@@ -223,6 +223,102 @@
                 }
             }
         },
+        "/newsletter/emails": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves a list of all newsletter participants.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Newsletter"
+                ],
+                "summary": "Get all newsletter entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.NewsletterEntry"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/newsletter/subscribe": {
+            "post": {
+                "description": "Adds (opts-in) a new email entry to the newsletter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Newsletter"
+                ],
+                "summary": "Subscribes an email to the newsletter",
+                "parameters": [
+                    {
+                        "description": "entry",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.NewsletterSubscribeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/newsletter/unsubscribe": {
+            "post": {
+                "description": "Removes (opts-out) a new email entry from the newsletter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Newsletter"
+                ],
+                "summary": "Unsubscribes an email from the newsletter",
+                "parameters": [
+                    {
+                        "description": "entry",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.NewsletterUnsubscribeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "security": [
@@ -944,6 +1040,36 @@
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.NewsletterEntry": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.NewsletterSubscribeRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.NewsletterUnsubscribeRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
                     "type": "string"
                 }
             }

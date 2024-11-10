@@ -7,6 +7,7 @@ import (
 	"github.com/sockify/sockify/services/admin"
 	"github.com/sockify/sockify/services/cart"
 	"github.com/sockify/sockify/services/inventory"
+	"github.com/sockify/sockify/services/newsletter"
 	"github.com/sockify/sockify/services/orders"
 )
 
@@ -28,6 +29,10 @@ func Router(db *sql.DB) *mux.Router {
 
 	cartHandler := cart.NewCartHandler(sockStore, orderStore)
 	cartHandler.RegisterRoutes(subrouter)
+
+	newsletterStore := newsletter.NewStore(db)
+	newsletterHandler := newsletter.NewHandler(newsletterStore)
+	newsletterHandler.RegisterRoutes(subrouter, adminStore)
 
 	return router
 }

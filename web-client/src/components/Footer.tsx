@@ -1,3 +1,5 @@
+import { NewsletterSubscribeRequest } from "@/api/newsletter/model";
+import { useNewsletterSubscribeMutation } from "@/api/newsletter/queries";
 import {
   Form,
   FormControl,
@@ -9,7 +11,6 @@ import { PROJECT_GITHUB_URL } from "@/shared/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Github } from "lucide-react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 
@@ -27,6 +28,8 @@ type NewsletterSubscriptionForm = z.infer<
 >;
 
 export default function Footer() {
+  const subscribeMutation = useNewsletterSubscribeMutation();
+
   const form = useForm<NewsletterSubscriptionForm>({
     resolver: zodResolver(newsletterSubscriptionFormSchema),
     defaultValues: {
@@ -34,10 +37,13 @@ export default function Footer() {
     },
   });
 
-  const handleSubscribe = (data: NewsletterSubscriptionForm) => {
+  const handleSubscribe = async (data: NewsletterSubscriptionForm) => {
     const { email } = data;
-    // TODO: implement subscription mechanism
-    toast.success(`Subscribed "${email}" to our newsletter!`);
+    const payload: NewsletterSubscribeRequest = {
+      email,
+    };
+
+    await subscribeMutation.mutateAsync(payload);
     form.reset();
   };
 
@@ -125,8 +131,13 @@ export default function Footer() {
                   )}
                 />
 
-                <Button type="submit" variant="secondary" className="w-full">
-                  Subscribe
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="w-full"
+                  disabled={subscribeMutation.isPending}
+                >
+                  {subscribeMutation.isPending ? "Subscribing..." : "Subscribe"}
                 </Button>
               </form>
             </Form>
