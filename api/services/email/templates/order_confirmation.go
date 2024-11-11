@@ -10,7 +10,7 @@ import (
 func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText string, htmlContent string) {
 	// TODO: need to add "city" to address
 	aptUnit := ""
-	if order.Address.AptUnit != nil {
+	if order.Address.AptUnit != nil && len(*order.Address.AptUnit) > 0 {
 		aptUnit = ", " + *order.Address.AptUnit
 	}
 
@@ -53,13 +53,13 @@ func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText s
 	htmlContent = fmt.Sprintf(`<html>
   <body>
     <h2>Thank you for your order!</h2>
-    <h4>DISCLAIMER: this is a test confirmation, the order won't be fulfilled!</h4>
+    <em>DISCLAIMER: this is a test confirmation, the order won't be fulfilled!</em>
     <p><strong>Invoice #:</strong> %s</p>
     <p><strong>Status:</strong> %s</p>
     <p><strong>Date:</strong> %s</p>
 
     <h3>Shipping address:</h3>
-    <p>%s, %s<br>%s, %s</p>
+    <p>%s%s<br>%s, %s</p>
 
     <h3>Items:</h3>
     <table style="width:100%%; border-collapse: collapse;">
