@@ -10,6 +10,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/sockify/sockify/config"
+	"github.com/sockify/sockify/services/email"
 	"github.com/sockify/sockify/types"
 	"github.com/sockify/sockify/utils"
 	"github.com/stripe/stripe-go/v80"
@@ -17,12 +18,13 @@ import (
 )
 
 type CartHandler struct {
-	sockStore  types.SockStore
-	orderStore types.OrderStore
+	sockStore    types.SockStore
+	orderStore   types.OrderStore
+	emailService email.Service
 }
 
-func NewCartHandler(ss types.SockStore, os types.OrderStore) *CartHandler {
-	return &CartHandler{sockStore: ss, orderStore: os}
+func NewCartHandler(ss types.SockStore, os types.OrderStore, es email.Service) *CartHandler {
+	return &CartHandler{sockStore: ss, orderStore: os, emailService: es}
 }
 
 func (h *CartHandler) RegisterRoutes(router *mux.Router) {
@@ -183,7 +185,14 @@ func (h *CartHandler) handleStripeConfirmation(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	utils.WriteJson(w, http.StatusOK, toOrderConfirmation(*order))
+	oc := toOrderConfirmation(*order)
+	err = h.emailService.SendOrderConfirmationEmail(order.Contact.FirstName+" "+order.Contact.LastName, order.Contact.Email, oc)
+	if err != nil {
+		log.Printf("unable to send order confirmation email for invoice number %v and email %v", order.InvoiceNumber, order.Contact.Email)
+		// TODO: would probably be a good idea to add a "System" log for the order saying this
+	}
+
+	utils.WriteJson(w, http.StatusOK, oc)
 }
 
 func toOrderConfirmation(o types.Order) types.OrderConfirmation {
