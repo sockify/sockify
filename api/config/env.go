@@ -20,6 +20,7 @@ type Config struct {
 	JWTExpirationInSeconds int64
 	DisableAuth            bool
 	StripeAPIKey           string
+	SendGridAPIKey         string
 }
 
 // Envs is the global configuration for the application.
@@ -39,6 +40,7 @@ func initConfig() Config {
 		JWTExpirationInSeconds: getEnvInt("JWT_EXPIRATION_IN_SECONDS", FOUR_HOURS_IN_SECONDS),
 		DisableAuth:            getEnvBool("DISABLE_AUTH", false),
 		StripeAPIKey:           getEnv("STRIPE_API_KEY", "FIXME"),
+		SendGridAPIKey:         getEnv("SENDGRID_API_KEY", "FIXME"),
 	}
 }
 
