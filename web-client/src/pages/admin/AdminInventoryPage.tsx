@@ -24,7 +24,7 @@ export default function AdminInventoryPage() {
         <Button disabled className="category-filter">Filter by category</Button>
       </div>
 
-      <InventoryTable socks={socksData} />
+      <InventoryTable socks={socksData} setSocksData={setSocksData} />
     </div>
   );
 }
