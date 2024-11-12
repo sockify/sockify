@@ -3,18 +3,42 @@ import { Search } from "lucide-react"; // Import the Search icon
 import { ChevronDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu"; // Import ShadCN UI dropdown components
 import InventoryTable from '@/components/InventoryTable';
-import React, { useState } from 'react';
+//import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGetSocks } from '@/api/inventory/queries'; // Importing the useQuery hooks for fetching socks
 
 export default function AdminInventoryPage() {
   const navigate = useNavigate(); // This is the correct way to use navigate in react-router-dom
 
+  // Pagination settings (you can dynamically update these)
+  const limit = 10;
+  const offset = 0;
+
+  // Fetching socks using the `useGetSocks` hook with pagination
+  const { data, error, isLoading } = useGetSocks(limit, offset);
+  console.log(data);
+
+  // If the data is loading, show a loading indicator
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // If there's an error fetching data, show an error message
+  if (error) {
+    return <div>Error fetching socks: {error instanceof Error ? error.message : 'Unknown error'}</div>;
+  }
+
+  // Handle the case where no socks are available
+  if (!data || !data.items || data.items.length === 0) {
+    return <div>No socks available in the inventory.</div>;
+  }
+
   // Define some mock data for the inventory items using useState
-  const [socksData, setSocksData] = useState([
-    { id: '1', name: 'Sporty Sock', category: 'Sports', price: 12.99, quantity: 100 },
-    { id: '2', name: 'Casual Sock', category: 'Casual', price: 9.99, quantity: 50 },
-    { id: '3', name: 'Fancy Sock', category: 'Formal', price: 15.49, quantity: 25 },
-  ]);
+  //const [socksData, setSocksData] = useState([
+  // { id: '1', name: 'Sporty Sock', category: 'Sports', price: 12.99, quantity: 100 },
+  //{ id: '2', name: 'Casual Sock', category: 'Casual', price: 9.99, quantity: 50 },
+  //{ id: '3', name: 'Fancy Sock', category: 'Formal', price: 15.49, quantity: 25 },
+  //]);
 
   // Function to handle row click and navigate to sock details page
   const handleRowClick = (sockId: string) => {
@@ -75,7 +99,7 @@ export default function AdminInventoryPage() {
       </div>
 
       {/* Pass the handleRowClick function as a prop to InventoryTable */}
-      <InventoryTable socks={socksData} setSocksData={setSocksData} onRowClick={handleRowClick} />
+      <InventoryTable socks={data.items} onRowClick={handleRowClick} />
     </div>
   );
 }

@@ -79,7 +79,12 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
                             <td className="p-3 border-b">{sock.id}</td>
                             <td className="p-3 border-b">{sock.name}</td>
                             <td className="p-3 border-b">{sock.category}</td>
-                            <td className="p-3 border-b">${sock.price.toFixed(2)}</td>
+                            <td className="p-3 border-b">
+                                {/* Ensure price is valid before using .toFixed() */}
+                                {sock.price !== undefined && sock.price !== null
+                                    ? sock.price.toFixed(2)
+                                    : 'N/A'}
+                            </td>
                             <td className="p-3 border-b">{sock.quantity}</td>
 
                             {/* Actions cell with a delete button */}
