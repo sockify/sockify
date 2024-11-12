@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react"; // Import the Search icon
 import InventoryTable from '@/components/InventoryTable';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,14 +23,24 @@ export default function AdminInventoryPage() {
     <div className="admin-inventory-page">
       <h1 className="text-3xl font-extrabold">Inventory Management</h1>
 
-      <div className="search-filter">
-        <input
-          type="text"
-          placeholder="Search by product name or ID"
-          className="search-bar"
-        />
+      {/* Search and Filter Section */}
+      <div className="search-filter flex items-center mt-4">
+        {/* Search Bar */}
+        <div className="relative w-full max-w-3xl">
+          {/* Search Icon */}
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+            <Search className="text-gray-500" size={20} />
+          </div>
+          {/* Input Field */}
+          <input
+            type="text"
+            placeholder="Search by product name or ID"
+            className="search-bar pl-10 w-full py-2 px-4 border border-gray-300 rounded-md"
+          />
+        </div>
 
-        <Button disabled className="category-filter">Filter by category</Button>
+        {/* Filter Button */}
+        <Button disabled className="category-filter ml-4">Filter by category</Button>
       </div>
 
       {/* Pass the handleRowClick function as a prop to InventoryTable */}
