@@ -23,7 +23,18 @@ export default function AdminInventoryPage() {
 
   return (
     <div className="admin-inventory-page">
-      <h1 className="text-3xl font-extrabold">Inventory Management</h1>
+      <div className="flex justify-between items-center">
+        {/* Inventory Management Title */}
+        <h1 className="text-3xl font-extrabold">Inventory Management</h1>
+
+        {/* Add New Product Button */}
+        <Button
+          className="ml-auto" // This will push the button to the right side
+          onClick={() => console.log('Navigate to Add New Product page')} // Add action for adding a new product
+        >
+          Add New Product
+        </Button>
+      </div>
 
       {/* Search and Filter Section */}
       <div className="search-filter flex items-center mt-4">
