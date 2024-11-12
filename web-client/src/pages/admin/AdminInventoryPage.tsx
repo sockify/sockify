@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react"; // Import the Search icon
+import { ChevronDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu"; // Import ShadCN UI dropdown components
 import InventoryTable from '@/components/InventoryTable';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,8 +27,9 @@ export default function AdminInventoryPage() {
 
       {/* Search and Filter Section */}
       <div className="search-filter flex items-center mt-4">
+
         {/* Search Bar */}
-        <div className="relative w-full max-w-3xl">
+        <div className="relative w-full">
           {/* Search Icon */}
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
             <Search className="text-gray-500" size={20} />
@@ -39,8 +42,25 @@ export default function AdminInventoryPage() {
           />
         </div>
 
-        {/* Filter Button */}
-        <Button disabled className="category-filter ml-4">Filter by category</Button>
+        {/* Disabled Filter Dropdown Menu */}
+        <div className="ml-4">
+          <DropdownMenu>
+            {/* The Trigger button is disabled */}
+            <DropdownMenuTrigger asChild>
+              <Button disabled className="category-filter">
+                Filter by category
+                <ChevronDown className="ml-2" /> {/* Icon with margin to the left */}
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => console.log('Filter by Sports')}>Sports</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => console.log('Filter by Casual')}>Casual</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => console.log('Filter by Winter')}>Formal</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
       </div>
 
       {/* Pass the handleRowClick function as a prop to InventoryTable */}
