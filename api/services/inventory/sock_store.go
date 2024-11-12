@@ -335,3 +335,34 @@ func (s *SockStore) UpdateSockVariantQuantity(sockVariantID int, newQuantity int
 
 	return nil
 }
+
+func (s *SockStore) GetSimilarSocks(sockID int) ([]types.SimilarSock, error) {
+	query := `
+    SELECT s.sock_id, s.name, s.preview_image_url, MIN(sv.price) AS price, s.created_at
+    FROM socks s
+    JOIN sock_variants sv ON sv.sock_id = s.sock_id
+    WHERE s.sock_id != $1 AND s.is_deleted = false AND sv.quantity > 0
+    GROUP BY s.sock_id
+    HAVING COUNT(sv.quantity) > 0
+    LIMIT 6
+  `
+	rows, err := s.db.Query(query, sockID)
+	if err != nil {
+		log.Printf("Error fetching similar socks for sockID %d: %v", sockID, err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	items := make([]types.SimilarSock, 0)
+	for rows.Next() {
+		var ss types.SimilarSock
+		if err := rows.Scan(&ss.SockId, &ss.Name, &ss.PreviewImageURL, &ss.Price, &ss.CreatedAt); err != nil {
+			log.Printf("Error scanning similar sock: %v", err)
+			return nil, err
+		}
+
+		items = append(items, ss)
+	}
+
+	return items, nil
+}
