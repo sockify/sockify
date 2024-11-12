@@ -17,17 +17,12 @@ interface Sock {
 interface InventoryTableProps {
     socks: Sock[]; // List of socks to display in the table
     setSocksData: (newData: Sock[]) => void; // Function to update the socks data
+    onRowClick: (sockId: string) => void; // Function to handle row clicks
 }
 
-export default function InventoryTable({ socks, setSocksData }: InventoryTableProps) {
+export default function InventoryTable({ socks, setSocksData, onRowClick }: InventoryTableProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedSockId, setSelectedSockId] = useState<string | null>(null);
-
-    // Handle row click, e.g., navigate to sock details or open a modal
-    const handleRowClick = (sockId: string) => {
-        console.log(`Row clicked for sock with ID: ${sockId}`);
-        // You can add additional logic here, such as navigating to a detail page
-    };
 
     // Handle delete action by updating the socksData state to remove the sock with the given ID
     const handleDeleteClick = (sockId: string) => {
@@ -77,14 +72,15 @@ export default function InventoryTable({ socks, setSocksData }: InventoryTablePr
                         <tr
                             key={sock.id}                      // Unique key for each row
                             className="hover:bg-gray-100 cursor-pointer" // Highlight row on hover
+                            onClick={() => onRowClick(sock.id)} // Use the prop `onRowClick`
                         >
                             {/* Display each property of the sock in separate cells */}
                             {/* Each cell calls `handleRowClick` when clicked, passing the `sock.id` */}
-                            <td className="p-3 border-b" onClick={() => handleRowClick(sock.id)}>{sock.id}</td>
-                            <td className="p-3 border-b" onClick={() => handleRowClick(sock.id)}>{sock.name}</td>
-                            <td className="p-3 border-b" onClick={() => handleRowClick(sock.id)}>{sock.category}</td>
-                            <td className="p-3 border-b" onClick={() => handleRowClick(sock.id)}>${sock.price.toFixed(2)}</td>
-                            <td className="p-3 border-b" onClick={() => handleRowClick(sock.id)}>{sock.quantity}</td>
+                            <td className="p-3 border-b">{sock.id}</td>
+                            <td className="p-3 border-b">{sock.name}</td>
+                            <td className="p-3 border-b">{sock.category}</td>
+                            <td className="p-3 border-b">${sock.price.toFixed(2)}</td>
+                            <td className="p-3 border-b">{sock.quantity}</td>
 
                             {/* Actions cell with a delete button */}
                             <td className="p-3 border-b">
