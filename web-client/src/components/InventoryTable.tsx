@@ -14,7 +14,6 @@ interface Variant {
 interface Sock {
     id: string;         // Unique identifier for each sock item
     name: string;       // Name of the sock item
-    quantity: number;   // Quantity available in stock
     variants: Variant[]; // Array of variants
 }
 
@@ -63,6 +62,11 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
         return `$${(total / variants.length).toFixed(2)}`;
     };
 
+    // Helper function to calculate the total quantity of all variants
+    const calculateTotalQuantity = (variants: Variant[]) => {
+        return variants.reduce((total, variant) => total + variant.quantity, 0);
+    };
+
     return (
         <>
             <table className="w-full text-left border border-gray-200">
@@ -87,7 +91,7 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
                             <td className="p-3 border-b">
                                 {calculateAveragePrice(sock.variants)}
                             </td>
-                            <td className="p-3 border-b">{sock.quantity}</td>
+                            <td className="p-3 border-b">{calculateTotalQuantity(sock.variants)}</td>
                             <td className="p-3 border-b">
                                 <Button
                                     onClick={(e) => {
