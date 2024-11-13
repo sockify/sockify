@@ -15,6 +15,7 @@ interface Sock {
     id: string;         // Unique identifier for each sock item
     name: string;       // Name of the sock item
     variants: Variant[]; // Array of variants
+    imageUrl: string;    // URL for the sock's image
 }
 
 // Define the properties (props) that the InventoryTable component expects.
@@ -72,10 +73,11 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
             <table className="w-full text-left border border-gray-200">
                 <thead>
                     <tr>
-                        <th className="p-3 border-b">ID</th>
+                        <th className="p-3 border-b text-center">Image</th>
+                        <th className="p-3 border-b text-center">Product ID</th>
                         <th className="p-3 border-b">Name</th>
                         <th className="p-3 border-b">Price</th>
-                        <th className="p-3 border-b">Quantity</th>
+                        <th className="p-3 border-b">Stock</th>
                         <th className="p-3 border-b">Actions</th>
                     </tr>
                 </thead>
@@ -86,7 +88,10 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
                             className="hover:bg-gray-100 cursor-pointer"
                             onClick={() => onRowClick(sock.id)}
                         >
-                            <td className="p-3 border-b">{sock.id}</td>
+                            <td className="p-3 border-b text-center">
+                                <img src={sock.imageUrl} className="w-16 h-16 object-cover mx-auto" />
+                            </td>
+                            <td className="p-3 border-b text-center">{sock.id}</td>
                             <td className="p-3 border-b">{sock.name}</td>
                             <td className="p-3 border-b">
                                 {calculateAveragePrice(sock.variants)}
