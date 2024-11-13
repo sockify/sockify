@@ -14,7 +14,6 @@ interface Variant {
 interface Sock {
     id: string;         // Unique identifier for each sock item
     name: string;       // Name of the sock item
-    category: string;   // Category of the sock item, e.g., "Sports", "Casual"
     quantity: number;   // Quantity available in stock
     variants: Variant[]; // Array of variants
 }
@@ -71,7 +70,6 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
                     <tr>
                         <th className="p-3 border-b">ID</th>
                         <th className="p-3 border-b">Name</th>
-                        <th className="p-3 border-b">Category</th>
                         <th className="p-3 border-b">Price</th>
                         <th className="p-3 border-b">Quantity</th>
                         <th className="p-3 border-b">Actions</th>
@@ -86,7 +84,6 @@ export default function InventoryTable({ socks, setSocksData, onRowClick }: Inve
                         >
                             <td className="p-3 border-b">{sock.id}</td>
                             <td className="p-3 border-b">{sock.name}</td>
-                            <td className="p-3 border-b">{sock.category}</td>
                             <td className="p-3 border-b">
                                 {calculateAveragePrice(sock.variants)}
                             </td>
