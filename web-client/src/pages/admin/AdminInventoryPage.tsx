@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import InventoryTable from '@/components/InventoryTable';
 import { useNavigate } from 'react-router-dom';
@@ -61,6 +62,7 @@ export default function AdminInventoryPage() {
           className="ml-auto"
           onClick={() => console.log('Navigate to Add New Product page')}
         >
+          <Plus className="mr-2" />
           Add New Product
         </Button>
       </div>
