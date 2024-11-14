@@ -54,10 +54,10 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
             <table className="w-full text-left border border-gray-200">
                 <thead>
                     <tr>
-                        <th className="p-3 border-b text-center">Image</th>
+                        <th className="p-3 border-b text-center"></th>
                         <th className="p-3 border-b text-center">Product ID</th>
                         <th className="p-3 border-b">Name</th>
-                        <th className="p-3 border-b">Price</th>
+                        <th className="p-3 border-b">Avg. Price</th>
                         <th className="p-3 border-b">Stock</th>
                         <th className="p-3 border-b">Actions</th>
                     </tr>
