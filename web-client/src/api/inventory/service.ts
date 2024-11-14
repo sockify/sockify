@@ -13,6 +13,7 @@ export interface InventoryService {
   getSockById(sockId: number): Promise<Sock>;
   getSocks(limit: number, offset: number): Promise<SocksPaginatedResponse>;
   getSimilarSocks(sockId: number): Promise<SimilarSock[]>;
+  deleteSock(sockId: number): Promise<ServerMessage>; // Added deleteSock method here
 }
 
 export class HttpInventoryService implements InventoryService {
