@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
 import { useDeleteSockMutation } from "@/api/inventory/queries";
 import { Sock } from "@/api/inventory/model";
-
-const NO_IMAGE_PLACEHOLDER = "https://via.placeholder.com/150";
+import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
 
 interface InventoryTableProps {
     socks: Sock[];
