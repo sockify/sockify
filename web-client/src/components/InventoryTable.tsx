@@ -5,6 +5,8 @@ import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
 import { useDeleteSockMutation } from "@/api/inventory/queries";
 import { Sock } from "@/api/inventory/model";
 
+const NO_IMAGE_PLACEHOLDER = "https://via.placeholder.com/150";
+
 interface InventoryTableProps {
     socks: Sock[];
     onRowClick: (sockId: number) => void;
@@ -70,7 +72,13 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                             onClick={() => onRowClick(sock.id)}
                         >
                             <td className="p-3 border-b text-center">
-                                <img src={sock.previewImageUrl} className="w-12 h-12 rounded-md object-cover mx-auto" />
+                                <img
+                                    src={sock.previewImageUrl}
+                                    className="w-12 h-12 rounded-md object-cover mx-auto"
+                                    onError={(e) => {
+                                        e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
+                                    }}
+                                />
                             </td>
                             <td className="p-3 border-b text-center">{sock.id}</td>
                             <td className="p-3 border-b">{sock.name}</td>
