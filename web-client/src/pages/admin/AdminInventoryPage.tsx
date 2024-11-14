@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Search, ChevronDown, Plus } from "lucide-react";
-import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { Search, Plus } from "lucide-react";
 import InventoryTable from '@/components/InventoryTable';
 import { useNavigate } from 'react-router-dom';
 import { useGetSocks } from '@/api/inventory/queries';
 import { useState } from 'react';
 import GenericError from "@/components/GenericError";
 import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
 const SOCKS_RESULTS_LIMIT = 8;
 
@@ -77,20 +77,16 @@ export default function AdminInventoryPage() {
         </div>
 
         <div className="ml-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button disabled className="category-filter">
-                Filter by category
-                <ChevronDown className="ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => console.log('Filter by Sports')}>Sports</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log('Filter by Casual')}>Casual</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log('Filter by Winter')}>Formal</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Select onValueChange={(value) => console.log(`Filter by ${value}`)}>
+            <SelectTrigger disabled className="category-filter">
+              Filter by category
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Sports">Sports</SelectItem>
+              <SelectItem value="Casual">Casual</SelectItem>
+              <SelectItem value="Formal">Formal</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
