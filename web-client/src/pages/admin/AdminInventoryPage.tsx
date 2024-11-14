@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetSocks } from '@/api/inventory/queries';
 import { useState } from 'react';
 import GenericError from "@/components/GenericError";
+import { Input } from "@/components/ui/input";
 
 const SOCKS_RESULTS_LIMIT = 8;
 
@@ -66,16 +67,17 @@ export default function AdminInventoryPage() {
 
       <div className="search-filter flex items-center mt-4">
         <div className="relative w-full">
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-            <Search className="text-gray-500" size={20} />
+          <div className="relative">
+            <Input
+              disabled
+              type="text"
+              placeholder="Search by product name or ID"
+              className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-md"
+            />
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <Search className="text-gray-500" size={20} />
+            </div>
           </div>
-
-          <input
-            disabled
-            type="text"
-            placeholder="Search by product name or ID"
-            className="search-bar pl-10 w-full py-2 px-4 border border-gray-300 rounded-md"
-          />
         </div>
 
         <div className="ml-4">
