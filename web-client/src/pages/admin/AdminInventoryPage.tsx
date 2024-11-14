@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
-import { ChevronDown } from "lucide-react";
-import { Plus } from "lucide-react";
+import { Search, ChevronDown, Plus } from "lucide-react";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import InventoryTable from '@/components/InventoryTable';
 import { useNavigate } from 'react-router-dom';
@@ -14,10 +12,8 @@ const SOCKS_RESULTS_LIMIT = 8;
 
 export default function AdminInventoryPage() {
   const navigate = useNavigate();
-
   const [page, setPage] = useState(1);
   const offset = (page - 1) * SOCKS_RESULTS_LIMIT;
-
   const { data, error, isLoading } = useGetSocks(SOCKS_RESULTS_LIMIT, offset);
 
   if (isLoading) {
@@ -50,8 +46,6 @@ export default function AdminInventoryPage() {
   const handlePreviousPage = () => {
     if (page > 1) setPage((prev) => prev - 1);
   };
-
-  const sortedSocks = data.items.sort((a, b) => a.id - b.id);
 
   return (
     <div className="admin-inventory-page">
@@ -100,7 +94,7 @@ export default function AdminInventoryPage() {
         </div>
       </div>
 
-      <InventoryTable socks={sortedSocks} onRowClick={handleRowClick} />
+      <InventoryTable socks={data.items} onRowClick={handleRowClick} />
 
       <div className="flex justify-center mt-4 pb-8">
         <Button onClick={handlePreviousPage} disabled={page === 1}>Previous</Button>
