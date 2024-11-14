@@ -15,7 +15,6 @@ export default function AdminInventoryPage() {
   const offset = (page - 1) * limit;
 
   const { data, error, isLoading } = useGetSocks(limit, offset);
-  //console.log(data);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -43,10 +42,11 @@ export default function AdminInventoryPage() {
     if (page > 1) setPage((prev) => prev - 1);
   };
 
+  const sortedSocks = data.items.sort((a, b) => a.id - b.id);
+
   return (
     <div className="admin-inventory-page">
       <div className="flex justify-between items-center">
-
         <h1 className="text-3xl font-extrabold">Inventory Management</h1>
 
         <Button
@@ -58,7 +58,6 @@ export default function AdminInventoryPage() {
       </div>
 
       <div className="search-filter flex items-center mt-4">
-
         <div className="relative w-full">
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
             <Search className="text-gray-500" size={20} />
@@ -87,10 +86,9 @@ export default function AdminInventoryPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
       </div>
 
-      <InventoryTable socks={data.items} onRowClick={handleRowClick} />
+      <InventoryTable socks={sortedSocks} onRowClick={handleRowClick} />
 
       <div className="flex justify-center mt-4 pb-8">
         <Button onClick={handlePreviousPage} disabled={page === 1}>Previous</Button>
