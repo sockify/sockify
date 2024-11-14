@@ -7,6 +7,7 @@ import {
   similarSockListSchema,
   sockSchema,
   socksPaginatedResponseSchema,
+  serverMessageSchema,
 } from "./model";
 
 export interface InventoryService {
@@ -41,6 +42,6 @@ export class HttpInventoryService implements InventoryService {
 
   async deleteSock(sockId: number): Promise<ServerMessage> {
     const { data } = await axiosInstance.delete(`/api/v1/socks/${sockId}`);
-    return data;
+    return serverMessageSchema.parse(data);
   }
 }
