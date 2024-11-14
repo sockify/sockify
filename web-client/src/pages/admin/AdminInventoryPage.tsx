@@ -8,14 +8,15 @@ import { useGetSocks } from '@/api/inventory/queries';
 import { useState } from 'react';
 import GenericError from "@/components/GenericError";
 
+const SOCKS_RESULTS_LIMIT = 8;
+
 export default function AdminInventoryPage() {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(1);
-  const limit = 8;
-  const offset = (page - 1) * limit;
+  const offset = (page - 1) * SOCKS_RESULTS_LIMIT;
 
-  const { data, error, isLoading } = useGetSocks(limit, offset);
+  const { data, error, isLoading } = useGetSocks(SOCKS_RESULTS_LIMIT, offset);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -39,7 +40,7 @@ export default function AdminInventoryPage() {
   };
 
   const totalSocks = data.total;
-  const totalPages = Math.ceil(totalSocks / limit);
+  const totalPages = Math.ceil(totalSocks / SOCKS_RESULTS_LIMIT);
 
   const handleNextPage = () => {
     if (page < totalPages) setPage((prev) => prev + 1);
