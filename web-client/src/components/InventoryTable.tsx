@@ -70,8 +70,6 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
         return variants.reduce((total, variant) => total + variant.quantity, 0);
     };
 
-    console.log(socks);
-
     return (
         <>
             <table className="w-full text-left border border-gray-200">

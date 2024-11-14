@@ -55,7 +55,6 @@ export function useDeleteSockMutation(): UseMutationResult<
   number
 > {
   const queryClient = useQueryClient();
-  //console.log("useDeleteSockMutation loaded:", useDeleteSockMutation);
 
   return useMutation({
     mutationFn: (sockId: number) => sockService.deleteSock(sockId),
