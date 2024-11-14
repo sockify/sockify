@@ -3,33 +3,20 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
 import { useDeleteSockMutation } from "@/api/inventory/queries";
-
-interface Variant {
-    id: number;
-    size: string;
-    price: number;
-    quantity: number;
-}
-
-interface Sock {
-    id: number;
-    name: string;
-    variants: Variant[];
-    imageUrl: string;
-}
+import { Sock } from "@/api/inventory/model";
 
 interface InventoryTableProps {
     socks: Sock[];
-    onRowClick: (sockId: string) => void;
+    onRowClick: (sockId: number) => void;
 }
 
 export default function InventoryTable({ socks, onRowClick }: InventoryTableProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedSockId, setSelectedSockId] = useState<string | null>(null);
+    const [selectedSockId, setSelectedSockId] = useState<number | null>(null);
 
     const deleteSockMutation = useDeleteSockMutation();
 
-    const handleDeleteClick = (sockId: string) => {
+    const handleDeleteClick = (sockId: number) => {
         deleteSockMutation.mutate(sockId, {
             onSuccess: () => {
                 console.log("Sock deleted successfully");
@@ -41,13 +28,13 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
         });
     };
 
-    const openDeleteDialog = (sockId: string) => {
+    const openDeleteDialog = (sockId: number) => {
         setSelectedSockId(sockId);
         setIsDialogOpen(true);
     };
 
     const handleDeleteConfirm = () => {
-        if (selectedSockId) {
+        if (selectedSockId !== null) {
             handleDeleteClick(selectedSockId);
         }
         setIsDialogOpen(false);
@@ -59,13 +46,13 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
         setSelectedSockId(null);
     };
 
-    const calculateAveragePrice = (variants?: Variant[]) => {
+    const calculateAveragePrice = (variants?: Sock["variants"]) => {
         if (!variants || variants.length === 0) return 'N/A';
         const total = variants.reduce((acc, variant) => acc + variant.price, 0);
         return `$${(total / variants.length).toFixed(2)}`;
     };
 
-    const calculateTotalQuantity = (variants?: Variant[]) => {
+    const calculateTotalQuantity = (variants?: Sock["variants"]) => {
         if (!variants || variants.length === 0) return 0;
         return variants.reduce((total, variant) => total + variant.quantity, 0);
     };
@@ -91,7 +78,7 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                             onClick={() => onRowClick(sock.id)}
                         >
                             <td className="p-3 border-b text-center">
-                                <img src={sock.imageUrl} className="w-16 h-16 object-cover mx-auto" />
+                                <img src={sock.previewImageUrl} className="w-16 h-16 object-cover mx-auto" />
                             </td>
                             <td className="p-3 border-b text-center">{sock.id}</td>
                             <td className="p-3 border-b">{sock.name}</td>
