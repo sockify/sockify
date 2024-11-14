@@ -28,6 +28,7 @@ An e-commerce web app to sell custom socks.
 - **Admin dashboard:** <https://sockify-dev.up.railway.app/admin>
   - **Username:** `jdoe`
   - **Password:** `password`
+  - **Credit card:** `4242 4242 4242 4242`
 - **API docs:** <https://sockify-api-dev.up.railway.app/swagger/index.html>
 
 **Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
@@ -59,7 +60,7 @@ An e-commerce web app to sell custom socks.
   - **Payment processing:** [Stripe](https://stripe.com/)
   - **Blob storage:** [Firebase](https://firebase.google.com/)
   - **API Specification (UI):** [OpenAPI (Swagger)](https://github.com/swaggo/swag?tab=readme-ov-file)
-  - **Email client:** TBD
+  - **Email client:** [SendGrid](https://sendgrid.com/)
 - **Database:** [PostgreSQL](https://www.postgresql.org/)
 - **Hosting:** [Railway](https://railway.app/), [Docker Compose](https://docs.docker.com/compose/)
 - **Design:** [Figma](https://figma.com/)
