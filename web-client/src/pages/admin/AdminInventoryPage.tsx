@@ -34,7 +34,7 @@ export default function AdminInventoryPage() {
   }
 
   const handleRowClick = (sockId: string) => {
-    navigate(`/socks/${sockId}`);
+    navigate(`/admin/socks/${sockId}`);
   };
 
   const totalSocks = data.total;
