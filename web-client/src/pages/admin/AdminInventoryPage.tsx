@@ -71,6 +71,7 @@ export default function AdminInventoryPage() {
           </div>
 
           <input
+            disabled
             type="text"
             placeholder="Search by product name or ID"
             className="search-bar pl-10 w-full py-2 px-4 border border-gray-300 rounded-md"
