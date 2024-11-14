@@ -3,16 +3,17 @@ import { Search } from "lucide-react"; // Import the Search icon
 import { ChevronDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu"; // Import ShadCN UI dropdown components
 import InventoryTable from '@/components/InventoryTable';
-//import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetSocks } from '@/api/inventory/queries'; // Importing the useQuery hooks for fetching socks
+import { useState } from 'react';
 
 export default function AdminInventoryPage() {
   const navigate = useNavigate(); // This is the correct way to use navigate in react-router-dom
 
   // Pagination settings (you can dynamically update these)
-  const limit = 10;
-  const offset = 0;
+  const [page, setPage] = useState(1);
+  const limit = 8;
+  const offset = (page - 1) * limit;
 
   // Fetching socks using the `useGetSocks` hook with pagination
   const { data, error, isLoading } = useGetSocks(limit, offset);
@@ -33,16 +34,22 @@ export default function AdminInventoryPage() {
     return <div>No socks available in the inventory.</div>;
   }
 
-  // Define some mock data for the inventory items using useState
-  //const [socksData, setSocksData] = useState([
-  // { id: '1', name: 'Sporty Sock', category: 'Sports', price: 12.99, quantity: 100 },
-  //{ id: '2', name: 'Casual Sock', category: 'Casual', price: 9.99, quantity: 50 },
-  //{ id: '3', name: 'Fancy Sock', category: 'Formal', price: 15.49, quantity: 25 },
-  //]);
-
   // Function to handle row click and navigate to sock details page
   const handleRowClick = (sockId: string) => {
     navigate(`/socks/${sockId}`); // Use navigate to go to the sock details page
+  };
+
+  // Calculate the total pages based on the total number of socks and the limit (10 per page)
+  const totalSocks = data.total; // The total number of socks available
+  const totalPages = Math.ceil(totalSocks / limit); // Calculate the total number of pages
+
+
+  // Page navigation handlers
+  const handleNextPage = () => {
+    if (page < totalPages) setPage((prev) => prev + 1);
+  };
+  const handlePreviousPage = () => {
+    if (page > 1) setPage((prev) => prev - 1);
   };
 
   return (
@@ -100,6 +107,13 @@ export default function AdminInventoryPage() {
 
       {/* Pass the handleRowClick function as a prop to InventoryTable */}
       <InventoryTable socks={data.items} onRowClick={handleRowClick} />
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4 pb-8">
+        <Button onClick={handlePreviousPage} disabled={page === 1}>Previous</Button>
+        <span className="mx-4">Page {page} of {totalPages}</span>
+        <Button onClick={handleNextPage} disabled={page === totalPages}>Next</Button>
+      </div>
     </div>
   );
 }
