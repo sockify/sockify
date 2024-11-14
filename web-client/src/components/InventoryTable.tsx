@@ -17,15 +17,7 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
     const deleteSockMutation = useDeleteSockMutation();
 
     const handleDeleteClick = (sockId: number) => {
-        deleteSockMutation.mutate(sockId, {
-            onSuccess: () => {
-                console.log("Sock deleted successfully");
-            },
-            onError: (error: any) => {
-                console.error("Error deleting sock:", error.message);
-                alert(`Error deleting sock: ${error.message}`);
-            },
-        });
+        deleteSockMutation.mutate(sockId);
     };
 
     const openDeleteDialog = (sockId: number) => {
