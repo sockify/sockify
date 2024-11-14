@@ -6,6 +6,7 @@ import InventoryTable from '@/components/InventoryTable';
 import { useNavigate } from 'react-router-dom';
 import { useGetSocks } from '@/api/inventory/queries';
 import { useState } from 'react';
+import GenericError from "@/components/GenericError";
 
 export default function AdminInventoryPage() {
   const navigate = useNavigate();
@@ -21,7 +22,12 @@ export default function AdminInventoryPage() {
   }
 
   if (error) {
-    return <div>Error fetching socks: {error instanceof Error ? error.message : 'Unknown error'}</div>;
+    return (
+      <GenericError
+        title="Error fetching socks"
+        message={error instanceof Error ? error.message : 'Unknown error'}
+      />
+    );
   }
 
   if (!data || !data.items || data.items.length === 0) {
