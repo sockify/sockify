@@ -87,6 +87,7 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                             <td className="p-3 border-b">{calculateTotalQuantity(sock.variants)}</td>
                             <td className="p-3 border-b">
                                 <Button
+                                    size="icon"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         openDeleteDialog(sock.id);
