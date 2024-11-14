@@ -1,5 +1,5 @@
 import axiosInstance from "@/shared/axios";
-
+import { ServerMessage, serverMessageSchema } from "@/shared/types";
 import {
   SimilarSock,
   Sock,
@@ -7,7 +7,6 @@ import {
   similarSockListSchema,
   sockSchema,
   socksPaginatedResponseSchema,
-  serverMessageSchema,
 } from "./model";
 
 export interface InventoryService {
