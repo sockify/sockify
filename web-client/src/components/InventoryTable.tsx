@@ -70,7 +70,7 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                             onClick={() => onRowClick(sock.id)}
                         >
                             <td className="p-3 border-b text-center">
-                                <img src={sock.previewImageUrl} className="w-16 h-16 object-cover mx-auto" />
+                                <img src={sock.previewImageUrl} className="w-12 h-12 rounded-md object-cover mx-auto" />
                             </td>
                             <td className="p-3 border-b text-center">{sock.id}</td>
                             <td className="p-3 border-b">{sock.name}</td>
