@@ -48,9 +48,9 @@ export default function AdminInventoryPage() {
   };
 
   return (
-    <div className="admin-inventory-page">
+    <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-extrabold">Inventory Management</h1>
+        <h1 className="text-3xl font-bold">Inventory Management</h1>
 
         <Button
           className="ml-auto"
