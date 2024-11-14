@@ -38,13 +38,11 @@ export class HttpInventoryService implements InventoryService {
     return similarSockListSchema.parse(data);
   }
 
-  // Refactored deleteSock method using axios
   async deleteSock(sockId: number): Promise<ServerMessage> {
     try {
       const { data } = await axiosInstance.delete(`/api/v1/socks/${sockId}`);
-      return data; // Assuming ServerMessage is the response data structure
+      return data;
     } catch (error: any) {
-      // Handle error, you can also inspect the error response here
       console.error("Failed to delete sock:", error.response || error);
       throw new Error("Failed to delete sock");
     }

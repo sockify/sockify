@@ -1,7 +1,7 @@
 import { UseQueryResult, queryOptions, useQuery, UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { ServerMessage } from "@/shared/types";
-import { HttpInventoryService } from "./service"; // Assuming the delete functionality will go in this service
+import { HttpInventoryService } from "./service";
 
 import { SimilarSock, Sock, SocksPaginatedResponse } from "./model";
 
@@ -55,16 +55,15 @@ export function useDeleteSockMutation(): UseMutationResult<
   number
 > {
   const queryClient = useQueryClient();
-  console.log("useDeleteSockMutation loaded:", useDeleteSockMutation);
+  //console.log("useDeleteSockMutation loaded:", useDeleteSockMutation);
 
   return useMutation({
-    mutationFn: (sockId: number) => sockService.deleteSock(sockId), // Calls the backend delete function
+    mutationFn: (sockId: number) => sockService.deleteSock(sockId),
     onSuccess: (_, sockId) => {
       toast.success("Sock successfully deleted");
 
-      // Invalidate relevant queries to update the UI (removes the deleted sock from the UI)
       queryClient.invalidateQueries({
-        queryKey: ["socks"], // This key should match the query you use to list socks
+        queryKey: ["socks"],
       });
     },
     onError: () => {
