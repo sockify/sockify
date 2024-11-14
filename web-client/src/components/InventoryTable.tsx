@@ -88,6 +88,7 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                             <td className="p-3 border-b">
                                 <Button
                                     size="icon"
+                                    variant="destructive"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         openDeleteDialog(sock.id);
