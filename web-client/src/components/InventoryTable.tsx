@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
 import { useDeleteSockMutation } from "@/api/inventory/queries";
 import { Sock } from "@/api/inventory/model";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
+
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
 interface InventoryTableProps {
     socks: Sock[];
@@ -14,7 +16,6 @@ interface InventoryTableProps {
 export default function InventoryTable({ socks, onRowClick }: InventoryTableProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedSockId, setSelectedSockId] = useState<number | null>(null);
-
     const deleteSockMutation = useDeleteSockMutation();
 
     const handleDeleteClick = (sockId: number) => {
@@ -40,7 +41,7 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
     };
 
     const calculateAveragePrice = (variants?: Sock["variants"]) => {
-        if (!variants || variants.length === 0) return 'N/A';
+        if (!variants || variants.length === 0) return "N/A";
         const total = variants.reduce((acc, variant) => acc + variant.price, 0);
         return `$${(total / variants.length).toFixed(2)}`;
     };
@@ -52,25 +53,21 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
 
     return (
         <>
-            <table className="w-full text-left border border-gray-200">
-                <thead>
-                    <tr>
-                        <th className="p-3 border-b text-center"></th>
-                        <th className="p-3 border-b text-center">Product ID</th>
-                        <th className="p-3 border-b">Name</th>
-                        <th className="p-3 border-b">Avg. Price</th>
-                        <th className="p-3 border-b">Stock</th>
-                        <th className="p-3 border-b">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="text-center">Image</TableHead>
+                        <TableHead className="text-center">Product ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Avg. Price</TableHead>
+                        <TableHead>Stock</TableHead>
+                        <TableHead>Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
                     {socks.map((sock) => (
-                        <tr
-                            key={sock.id}
-                            className="hover:bg-gray-100 cursor-pointer"
-                            onClick={() => onRowClick(sock.id)}
-                        >
-                            <td className="p-3 border-b text-center">
+                        <TableRow key={sock.id} onClick={() => onRowClick(sock.id)} className="cursor-pointer hover:bg-gray-100">
+                            <TableCell className="text-center">
                                 <img
                                     src={sock.previewImageUrl}
                                     className="w-12 h-12 rounded-md object-cover mx-auto"
@@ -78,14 +75,12 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                                         e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
                                     }}
                                 />
-                            </td>
-                            <td className="p-3 border-b text-center">{sock.id}</td>
-                            <td className="p-3 border-b">{sock.name}</td>
-                            <td className="p-3 border-b">
-                                {calculateAveragePrice(sock.variants)}
-                            </td>
-                            <td className="p-3 border-b">{calculateTotalQuantity(sock.variants)}</td>
-                            <td className="p-3 border-b">
+                            </TableCell>
+                            <TableCell className="text-center">{sock.id}</TableCell>
+                            <TableCell>{sock.name}</TableCell>
+                            <TableCell>{calculateAveragePrice(sock.variants)}</TableCell>
+                            <TableCell>{calculateTotalQuantity(sock.variants)}</TableCell>
+                            <TableCell>
                                 <Button
                                     size="icon"
                                     variant="destructive"
@@ -96,11 +91,11 @@ export default function InventoryTable({ socks, onRowClick }: InventoryTableProp
                                 >
                                     <Trash2 />
                                 </Button>
-                            </td>
-                        </tr>
+                            </TableCell>
+                        </TableRow>
                     ))}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
 
             <DeleteConfirmationDialog
                 isOpen={isDialogOpen}
