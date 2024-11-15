@@ -159,7 +159,7 @@ export default function CheckoutPage() {
               <h1 className="self-start text-3xl font-extrabold">Checkout</h1>
             </div>
 
-            <div className="flex space-x-4 font-semibold">
+            <div className="flex space-x-4">
               <FormField
                 control={form.control}
                 name="firstname"
@@ -236,9 +236,7 @@ export default function CheckoutPage() {
               name="aptUnit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold">
-                    Apartment/unit (optional)
-                  </FormLabel>
+                  <FormLabel>Apartment/unit (optional)</FormLabel>
                   <FormControl>
                     <Input {...field} className="w-full" />
                   </FormControl>
