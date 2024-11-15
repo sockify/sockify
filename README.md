@@ -2,6 +2,12 @@
 
 An e-commerce web app to sell custom socks.
 
+> **Product owner & tech lead:** [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
+>
+> **Developers:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/)
+
+### Deployments <!-- omit in toc -->
+
 **Production**
 
 - **Store:** <https://sockify.up.railway.app>
@@ -16,8 +22,6 @@ An e-commerce web app to sell custom socks.
   - **Password:** `password`
   - **Credit card (fake):** `4242 4242 4242 4242`
 - **API docs:** <https://sockify-api-dev.up.railway.app/swagger/index.html>
-
-**Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
 
 ## Table of contents <!-- omit in toc -->
 
