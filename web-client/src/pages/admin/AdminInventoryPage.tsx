@@ -54,7 +54,7 @@ export default function AdminInventoryPage() {
 
   return (
     <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
-      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+      <section className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <h1 className="text-3xl font-bold">Inventory Management</h1>
 
         <Button
@@ -64,9 +64,9 @@ export default function AdminInventoryPage() {
           <Plus className="mr-2" />
           Add New Product
         </Button>
-      </div>
+      </section>
 
-      <div className="relative flex w-full flex-col justify-between gap-4 md:flex-row">
+      <section className="relative flex w-full flex-col justify-between gap-4 md:flex-row">
         <div className="relative md:w-1/2">
           <Input
             disabled
@@ -89,13 +89,13 @@ export default function AdminInventoryPage() {
             <SelectItem value="Formal">Formal</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </section>
 
       <section className="w-full">
         <InventoryTable socks={data.items} onRowClick={handleRowClick} />
       </section>
 
-      <div className="mt-4 flex justify-center pb-8">
+      <section className="mt-4 flex justify-center pb-8">
         <Button onClick={handlePreviousPage} disabled={page === 1}>
           Previous
         </Button>
@@ -105,7 +105,7 @@ export default function AdminInventoryPage() {
         <Button onClick={handleNextPage} disabled={page === totalPages}>
           Next
         </Button>
-      </div>
+      </section>
     </div>
   );
 }
