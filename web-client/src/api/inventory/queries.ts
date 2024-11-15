@@ -1,7 +1,9 @@
-import { UseQueryResult, queryOptions, useQuery } from "@tanstack/react-query";
+import { UseQueryResult, queryOptions, useQuery, UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { ServerMessage } from "@/shared/types";
+import { HttpInventoryService } from "./service";
 
 import { SimilarSock, Sock, SocksPaginatedResponse } from "./model";
-import { HttpInventoryService } from "./service";
 
 const sockService = new HttpInventoryService();
 
@@ -45,4 +47,26 @@ export function useGetSimilarSocks(
   sockId: number,
 ): UseQueryResult<SimilarSock[]> {
   return useQuery(useGetSimilarSocksOptions(sockId));
+}
+
+export function useDeleteSockMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  number
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (sockId: number) => sockService.deleteSock(sockId),
+    onSuccess: (_, sockId) => {
+      toast.success("Sock successfully deleted");
+
+      queryClient.invalidateQueries({
+        queryKey: ["socks"],
+      });
+    },
+    onError: () => {
+      toast.error("Unable to delete sock");
+    },
+  });
 }

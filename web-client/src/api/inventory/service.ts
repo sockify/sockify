@@ -1,5 +1,5 @@
 import axiosInstance from "@/shared/axios";
-
+import { ServerMessage, serverMessageSchema } from "@/shared/types";
 import {
   SimilarSock,
   Sock,
@@ -13,6 +13,7 @@ export interface InventoryService {
   getSockById(sockId: number): Promise<Sock>;
   getSocks(limit: number, offset: number): Promise<SocksPaginatedResponse>;
   getSimilarSocks(sockId: number): Promise<SimilarSock[]>;
+  deleteSock(sockId: number): Promise<ServerMessage>;
 }
 
 export class HttpInventoryService implements InventoryService {
@@ -36,5 +37,10 @@ export class HttpInventoryService implements InventoryService {
       `/api/v1/socks/${sockId}/similar-socks`,
     );
     return similarSockListSchema.parse(data);
+  }
+
+  async deleteSock(sockId: number): Promise<ServerMessage> {
+    const { data } = await axiosInstance.delete(`/api/v1/socks/${sockId}`);
+    return serverMessageSchema.parse(data);
   }
 }
