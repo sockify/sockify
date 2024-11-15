@@ -7,6 +7,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import AuthProtectedRoutes from "./components/AuthProtectedRoutes";
 import NotFound from "./components/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 import UnderConstruction from "./components/UnderConstruction";
 import CartDemo from "./components/dev/CartDemo";
 import { TooltipProvider } from "./components/ui/tooltip";
@@ -34,6 +35,9 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <BrowserRouter>
+          {/* Scroll to the top of the page with navigation route changes. */}
+          <ScrollToTop />
+
           <AuthProvider>
             <TooltipProvider>
               <Routes>
