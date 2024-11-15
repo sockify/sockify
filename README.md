@@ -14,7 +14,7 @@ An e-commerce web app to sell custom socks.
 - **Admin dashboard:** <https://sockify-dev.up.railway.app/admin>
   - **Username:** `jdoe`
   - **Password:** `password`
-  - **Credit card:** `4242 4242 4242 4242`
+  - **Credit card (fake):** `4242 4242 4242 4242`
 - **API docs:** <https://sockify-api-dev.up.railway.app/swagger/index.html>
 
 **Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
@@ -28,7 +28,6 @@ An e-commerce web app to sell custom socks.
   - [Database migrations](#database-migrations)
   - [Swagger UI](#swagger-ui)
   - [Deployment (Railway)](#deployment-railway)
-  - [Deployment (Railway)](#deployment-railway-1)
 
 ## Tech stack
 
@@ -56,8 +55,6 @@ An e-commerce web app to sell custom socks.
 We are tracking our progress, working items, and milestones through the [Sockify MVP](https://github.com/orgs/sockify/projects/1/views/1) GitHub project board.
 
 ![project board](./docs/assets/github_project_board.png)
-
-![project board capacity](./docs/assets/github_project_board_capacity.png)
 
 ## Getting started
 
@@ -153,6 +150,8 @@ Both of these environments have their own `web-client`, `api`, and `database` in
 
 We have configured [GitHub autodeploys](https://docs.railway.app/guides/github-autodeploys) within Railway. So, we do not need to worry about manually redeploying changes.
 
+**Note:** changes involving database schema changes/migrations, will need to be _manually_ applied to all relevant Railway databases. (see the `Running database migrations` section)
+
 _For the most part, redeployments should only take a few minutes._
 
 ##### Deploy branch structure <!-- omit in toc -->
@@ -187,54 +186,3 @@ Run all migrations:
 `migrate -path ./api/cmd/migrate/migrations -database <Railway database URL> up`
 
 _You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_
-
-### Deployment (Railway)
-
-We are using [Railway](https://railway.app/) to deploy our application.
-
-![railway deploy](./docs/assets/railway_deploy.png)
-
-#### Architecture <!-- omit in toc -->
-
-Within our [Railway project](https://railway.app/project/de4acaa6-0fa7-45f2-a7d2-938b9a5b9151), we have configured two _independent_ deployment environments: [`dev`](https://sockify-dev.up.railway.app) and [`production`](https://sockify.up.railway.app).
-
-Both of these environments have their own `web-client`, `api`, and `database` instances.
-
-#### Autodeploys through GitHub <!-- omit in toc -->
-
-We have configured [GitHub autodeploys](https://docs.railway.app/guides/github-autodeploys) within Railway. So, we do not need to worry about manually redeploying changes.
-
-_For the most part, redeployments should only take a few minutes._
-
-##### Deploy branch structure <!-- omit in toc -->
-
-- Commits pushed to `main` will be autodeployed to `production`
-- Commits pushed to `develop` will be autodeployed to `dev`
-
-##### Manual deployments through the CLI <!-- omit in toc -->
-
-We can manually deploy using the Railway CLI. This is not needed but in case of an emergency, here are the steps:
-
-1. Download and install the CLI: `npm i -g @railway/cli`
-2. Login through the CLI: `railway login`
-3. Connect to our project: `railway link -p de4acaa6-0fa7-45f2-a7d2-938b9a5b9151`
-4. Deploy the branch: `railway up`
-   1. Make sure to associate the deployment with the correct environment (e.g. `production`, `dev`) and the correct service (e.g. `web-client`, `api`)
-
-#### Docker-compose caveat <!-- omit in toc -->
-
-Turns out [Railway does NOT support `docker-compose`](https://docs.railway.app/guides/dockerfiles#docker-compose). As a result, we are unable to simply use our local development workflow.
-
-Instead, Railway will use our `Dockerfiles` to independently build the `web-client` and `api`.
-
-Also, we have to host our own `PosgreSQL` database within Railway and link it to our `api` server via [shared reference environment variables](https://docs.railway.app/guides/variables#reference-variables).
-
-##### Running database migrations <!-- omit in toc -->
-
-To run the migrations to a particular database, run the following command using the correct database connection URL from Railway:
-
-Run all migrations:
-
-`migrate -path ./api/cmd/migrate/migrations -database <Railway database URL> up`
-
-_You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_.
