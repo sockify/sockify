@@ -22,46 +22,50 @@ interface OrdersTableProps {
 export default function OrdersTable({ data, isFiltered }: OrdersTableProps) {
   const navigate = useNavigate();
   return (
-    <Table className="h-fit w-full">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">ID</TableHead>
-          <TableHead>Invoice #</TableHead>
-          <TableHead>Customer</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead>Total</TableHead>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {data.length > 0 ? (
-          data.map((order) => (
-            <TableRow
-              key={order.orderId}
-              onClick={() => navigate(`/admin/orders/${order.orderId}`)}
-              className="hover:cursor-pointer"
-            >
-              <TableCell className="font-medium">{order.orderId}</TableCell>
-              <TableCell>{order.invoiceNumber}</TableCell>
-              <TableCell>{`${order.contact.firstname} ${order.contact.lastname}`}</TableCell>
-              <TableCell>{order.status}</TableCell>
-              <TableCell>
-                {order.createdAt
-                  ? dayjs(order.createdAt).format("MM/DD/YYYY")
-                  : "Unknown"}
-              </TableCell>
-              <TableCell>${order.total.toFixed(2)}</TableCell>
-            </TableRow>
-          ))
-        ) : (
+    <div className="rounded-md border">
+      <Table className="h-fit w-full">
+        <TableHeader>
           <TableRow>
-            <TableCell colSpan={6}>
-              {isFiltered ? <TableNoResults /> : <TableEmpty />}
-            </TableCell>
+            <TableHead className="w-[100px] text-center">ID</TableHead>
+            <TableHead>Invoice #</TableHead>
+            <TableHead>Customer</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Total</TableHead>
           </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        </TableHeader>
+
+        <TableBody>
+          {data.length > 0 ? (
+            data.map((order) => (
+              <TableRow
+                key={order.orderId}
+                onClick={() => navigate(`/admin/orders/${order.orderId}`)}
+                className="hover:cursor-pointer"
+              >
+                <TableCell className="text-center font-medium">
+                  {order.orderId}
+                </TableCell>
+                <TableCell>{order.invoiceNumber}</TableCell>
+                <TableCell>{`${order.contact.firstname} ${order.contact.lastname}`}</TableCell>
+                <TableCell>{order.status}</TableCell>
+                <TableCell>
+                  {order.createdAt
+                    ? dayjs(order.createdAt).format("MM/DD/YYYY")
+                    : "Unknown"}
+                </TableCell>
+                <TableCell>${order.total.toFixed(2)}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6}>
+                {isFiltered ? <TableNoResults /> : <TableEmpty />}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
