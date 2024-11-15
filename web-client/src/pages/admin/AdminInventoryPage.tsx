@@ -55,7 +55,7 @@ export default function AdminInventoryPage() {
   return (
     <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
       <section className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <h1 className="text-3xl font-bold">Inventory Management</h1>
+        <h1 className="text-3xl font-bold">Inventory management</h1>
 
         <Button
           className="ml-auto"
