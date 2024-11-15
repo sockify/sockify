@@ -4,22 +4,51 @@ import InventoryTable from "@/components/InventoryTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
 import { Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SOCKS_RESULTS_LIMIT = 8;
+const SOCKS_RESULTS_LIMIT = 16;
 
 export default function AdminInventoryPage() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const offset = (page - 1) * SOCKS_RESULTS_LIMIT;
-  const { data, error, isLoading } = useGetSocks(SOCKS_RESULTS_LIMIT, offset);
+  const { data, error, isLoading } = useGetSocks(
+    SOCKS_RESULTS_LIMIT,
+    (page - 1) * SOCKS_RESULTS_LIMIT,
+  );
+  const totalPages = Math.ceil((data?.total ?? 0) / SOCKS_RESULTS_LIMIT);
+
+  const renderPaginationButtons = useMemo(() => {
+    const buttons: JSX.Element[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <PaginationItem key={i}>
+          <PaginationLink isActive={i === page} onClick={() => setPage(i)}>
+            {i}
+          </PaginationLink>
+        </PaginationItem>,
+      );
+    }
+    return buttons;
+  }, [totalPages, page]);
+
+  const handleRowClick = (sockId: number) => {
+    navigate(`/admin/socks/${sockId}`);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -38,20 +67,6 @@ export default function AdminInventoryPage() {
     return <div>No socks available in the inventory.</div>;
   }
 
-  const handleRowClick = (sockId: number) => {
-    navigate(`/admin/socks/${sockId}`);
-  };
-
-  const totalSocks = data.total;
-  const totalPages = Math.ceil(totalSocks / SOCKS_RESULTS_LIMIT);
-
-  const handleNextPage = () => {
-    if (page < totalPages) setPage((prev) => prev + 1);
-  };
-  const handlePreviousPage = () => {
-    if (page > 1) setPage((prev) => prev - 1);
-  };
-
   return (
     <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
       <section className="flex flex-col items-center justify-between gap-4 sm:flex-row">
@@ -62,7 +77,7 @@ export default function AdminInventoryPage() {
           onClick={() => console.log("Navigate to Add New Product page")}
         >
           <Plus className="mr-2" />
-          Add New Product
+          Add product
         </Button>
       </section>
 
@@ -95,17 +110,27 @@ export default function AdminInventoryPage() {
         <InventoryTable socks={data.items} onRowClick={handleRowClick} />
       </section>
 
-      <section className="mt-4 flex justify-center pb-8">
-        <Button onClick={handlePreviousPage} disabled={page === 1}>
-          Previous
-        </Button>
-        <span className="mx-4">
-          Page {page} of {totalPages}
-        </span>
-        <Button onClick={handleNextPage} disabled={page === totalPages}>
-          Next
-        </Button>
-      </section>
+      {totalPages >= 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              />
+            </PaginationItem>
+
+            {renderPaginationButtons}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  setPage((prev) => Math.min(prev + 1, totalPages))
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }
