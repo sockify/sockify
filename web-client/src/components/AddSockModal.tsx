@@ -15,7 +15,6 @@ const AddSockModal: React.FC<AddSockModalProps> = ({ isOpen, onClose, onAddSock 
                 <DialogHeader>
                     <DialogTitle>Add New Sock</DialogTitle>
                 </DialogHeader>
-                {/* Accessible description for the dialog */}
                 <p id="add-sock-description" className="text-sm text-gray-500">
                     Fill out the form below to add a new sock to the inventory.
                 </p>

@@ -38,7 +38,7 @@ export default function AdminInventoryPage() {
 
   const totalPages = Math.ceil((data?.total ?? 0) / SOCKS_RESULTS_LIMIT);
 
-  // Memoized pagination buttons
+
   const renderPaginationButtons = useMemo(() => {
     const buttons: JSX.Element[] = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -59,17 +59,17 @@ export default function AdminInventoryPage() {
 
   const handleAddSock = (newSock: Sock) => {
     console.log("New sock added:", newSock);
-    setModalOpen(false); // Close the modal after adding
-    // Optionally trigger a refetch or update the UI here
+    setModalOpen(false);
+
   };
 
   return (
     <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
-      {/* Header Section */}
+
       <section className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <h1 className="text-3xl font-bold">Inventory Management</h1>
 
-        {/* Add New Product Button */}
+
         <Button
           className="bg-black text-white hover:bg-gray-800 border-black flex items-center ml-auto"
           onClick={() => setModalOpen(true)}
@@ -79,16 +79,15 @@ export default function AdminInventoryPage() {
         </Button>
       </section>
 
-      {/* Add Sock Modal */}
+
       <AddSockModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onAddSock={handleAddSock}
       />
 
-      {/* Search and Filter Section */}
+
       <section className="relative flex w-full flex-col justify-between gap-4 md:flex-row">
-        {/* Search Input */}
         <div className="relative md:w-1/2">
           <Input
             type="text"
@@ -100,7 +99,7 @@ export default function AdminInventoryPage() {
           </div>
         </div>
 
-        {/* Filter Select */}
+
         <Select onValueChange={(value) => console.log(`Filter by ${value}`)}>
           <SelectTrigger className="md:w-64">
             Filter by category
@@ -113,7 +112,7 @@ export default function AdminInventoryPage() {
         </Select>
       </section>
 
-      {/* Inventory Table Section */}
+
       <div className="flex min-h-[34rem] flex-col justify-between space-y-6">
         {isLoading ? (
           <TableSkeleton />
@@ -126,7 +125,7 @@ export default function AdminInventoryPage() {
           <InventoryTable socks={data?.items ?? []} onRowClick={handleRowClick} />
         )}
 
-        {/* Pagination Section */}
+
         {totalPages >= 1 && (
           <Pagination>
             <PaginationContent>
@@ -153,7 +152,7 @@ export default function AdminInventoryPage() {
   );
 }
 
-// Skeleton Component for Loading State
+
 function TableSkeleton() {
   return (
     <div className="space-y-6">

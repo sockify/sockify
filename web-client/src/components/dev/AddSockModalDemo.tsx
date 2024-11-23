@@ -9,7 +9,7 @@ export default function AddSockModalDemo() {
 
     const handleAddSock = (newSock: Sock) => {
         console.log("New sock added:", newSock);
-        setIsOpen(false); // Close the dialog after adding the sock
+        setIsOpen(false);
     };
 
     return (

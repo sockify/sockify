@@ -9,8 +9,8 @@ import { useCreateSockMutation } from "@/api/inventory/queries";
 const availableSizes: SockSize[] = ["S", "M", "LG", "XL"];
 
 interface AddSockFormProps {
-    onAddSock: (response: any) => void; // Callback to notify parent of successful submission
-    onClose?: () => void; // Optional callback for modal closing
+    onAddSock: (response: any) => void;
+    onClose?: () => void;
 }
 
 interface FormData {
@@ -27,7 +27,7 @@ interface FormData {
 export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
     const [step, setStep] = useState(1);
 
-    // Mutation hook to create a sock
+
     const { mutate: createSock } = useCreateSockMutation();
 
     const {
@@ -54,7 +54,7 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
     const selectedSizes = watch("sizes").map((item) => item.size);
 
     const onSubmit = (data: FormData) => {
-        // Construct payload matching backend expectations
+
         const payload = {
             sock: {
                 name: data.name.trim(),
@@ -98,7 +98,7 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                 Add New Item - Step {step} of 3
             </h2>
 
-            {/* Step 1: Basic Details */}
+
             {step === 1 && (
                 <div className="space-y-4">
                     <Input
@@ -123,7 +123,7 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                 </div>
             )}
 
-            {/* Step 2: Variants */}
+
             {step === 2 && (
                 <div className="space-y-4">
                     <div className="grid grid-cols-4 gap-2 text-sm font-medium text-gray-700">
@@ -206,7 +206,7 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                 </div>
             )}
 
-            {/* Step 3: Preview Image */}
+
             {step === 3 && (
                 <div className="space-y-4">
                     <label className="block text-sm font-medium text-black">
@@ -231,7 +231,7 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                 </div>
             )}
 
-            {/* Navigation Buttons */}
+
             <div className="flex justify-between">
                 {step > 1 && (
                     <Button

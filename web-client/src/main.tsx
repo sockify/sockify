@@ -36,13 +36,11 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <BrowserRouter>
-          {/* Scroll to the top of the page with navigation route changes */}
           <ScrollToTop />
 
           <AuthProvider>
             <TooltipProvider>
               <Routes>
-                {/* ----- User-facing routes (no auth) ----- */}
                 <Route path="/" element={<RootLayout />}>
                   <Route index element={<Navigate to="/home" replace />} />
                   <Route path="home" element={<HomePage />} />
@@ -57,8 +55,6 @@ createRoot(document.getElementById("root")!).render(
                     element={<PaymentCanceledPage />}
                   />
                   <Route path="socks/:sockId" element={<SockDetailsPage />} />
-
-                  {/* -- Post MVP -- */}
                   <Route
                     path="about-us"
                     element={<UnderConstruction pageName="About us" />}
@@ -83,15 +79,12 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/admin/login" element={<AdminLoginPage />} />
-
-                {/* ----- Admin dashboard ----- */}
                 <Route element={<AuthProtectedRoutes />}>
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route
                       index
                       element={<Navigate to="/admin/home" replace />}
                     />
-                    {/* For MVP, the inventory page will act as the home page */}
                     <Route
                       path="home"
                       element={<Navigate to="/admin/inventory" replace />}
@@ -109,14 +102,12 @@ createRoot(document.getElementById("root")!).render(
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
-
-                {/* --- Development-only routes --- */}
                 {process.env.NODE_ENV !== "production" && (
                   <Route path="/dev">
                     <Route path="cart-demo" element={<CartDemo />} />
                     <Route
                       path="add-sock-modal-demo"
-                      element={<AddSockModalDemo />} // Add AddSockModalDemo route
+                      element={<AddSockModalDemo />}
                     />
                   </Route>
                 )}

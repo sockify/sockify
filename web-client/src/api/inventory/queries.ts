@@ -79,9 +79,9 @@ export function useDeleteSockMutation(): UseMutationResult<
 }
 
 export function useCreateSockMutation(): UseMutationResult<
-  Sock,                          // The type of the data returned by the mutation
-  AxiosError,                    // The type of the error returned by the mutation
-  {                             // The type of the variables (input) for the mutation
+  Sock,
+  AxiosError,
+  {
     sock: {
       name: string;
       description: string;
