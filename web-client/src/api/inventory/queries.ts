@@ -1,8 +1,15 @@
-import { UseQueryResult, queryOptions, useQuery, UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  UseQueryResult,
+  queryOptions,
+  useQuery,
+  UseMutationResult,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 import { ServerMessage } from "@/shared/types";
 import { HttpInventoryService } from "./service";
-
 import { SimilarSock, Sock, SocksPaginatedResponse } from "./model";
 
 const sockService = new HttpInventoryService();
@@ -29,6 +36,7 @@ export function useGetSocksOptions(
     enabled,
   });
 }
+
 export function useGetSocks(
   limit: number,
   offset: number,
@@ -43,11 +51,13 @@ export function useGetSimilarSocksOptions(sockId: number) {
     queryFn: () => sockService.getSimilarSocks(sockId),
   });
 }
+
 export function useGetSimilarSocks(
   sockId: number,
 ): UseQueryResult<SimilarSock[]> {
   return useQuery(useGetSimilarSocksOptions(sockId));
 }
+
 
 export function useDeleteSockMutation(): UseMutationResult<
   ServerMessage,
@@ -58,15 +68,47 @@ export function useDeleteSockMutation(): UseMutationResult<
 
   return useMutation({
     mutationFn: (sockId: number) => sockService.deleteSock(sockId),
-    onSuccess: (_, sockId) => {
+    onSuccess: () => {
       toast.success("Sock successfully deleted");
-
-      queryClient.invalidateQueries({
-        queryKey: ["socks"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["socks"] });
     },
     onError: () => {
       toast.error("Unable to delete sock");
+    },
+  });
+}
+
+export function useCreateSockMutation(): UseMutationResult<
+  Sock,                          // The type of the data returned by the mutation
+  AxiosError,                    // The type of the error returned by the mutation
+  {                             // The type of the variables (input) for the mutation
+    sock: {
+      name: string;
+      description: string;
+      previewImageUrl: string;
+    };
+    variants: Array<{
+      size: string;
+      price: number;
+      quantity: number;
+    }>;
+  }
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => sockService.createSock(payload),
+    onSuccess: (createdSock) => {
+      toast.success("Sock successfully added");
+      queryClient.invalidateQueries({ queryKey: ["socks"] });
+    },
+    onError: (error) => {
+      const errorMessage =
+        (error.response?.data as { message?: string })?.message ||
+        "An unexpected error occurred.";
+      toast.error(`Unable to add sock: ${errorMessage}`);
+      toast.error(`Unable to add sock: ${errorMessage}`);
+      console.error("Error creating sock:", error.response?.data || error.message);
     },
   });
 }

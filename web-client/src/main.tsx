@@ -10,6 +10,7 @@ import NotFound from "./components/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import UnderConstruction from "./components/UnderConstruction";
 import CartDemo from "./components/dev/CartDemo";
+import AddSockModalDemo from "./components/dev/AddSockModalDemo"; // Import the AddSockModalDemo
 import { TooltipProvider } from "./components/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -35,13 +36,13 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <BrowserRouter>
-          {/* Scroll to the top of the page with navigation route changes. */}
+          {/* Scroll to the top of the page with navigation route changes */}
           <ScrollToTop />
 
           <AuthProvider>
             <TooltipProvider>
               <Routes>
-                {/* ----- User facing routes (no auth) ----- */}
+                {/* ----- User-facing routes (no auth) ----- */}
                 <Route path="/" element={<RootLayout />}>
                   <Route index element={<Navigate to="/home" replace />} />
                   <Route path="home" element={<HomePage />} />
@@ -90,7 +91,7 @@ createRoot(document.getElementById("root")!).render(
                       index
                       element={<Navigate to="/admin/home" replace />}
                     />
-                    {/* For MVP, the inventory page will acts as the home page. */}
+                    {/* For MVP, the inventory page will act as the home page */}
                     <Route
                       path="home"
                       element={<Navigate to="/admin/inventory" replace />}
@@ -109,10 +110,14 @@ createRoot(document.getElementById("root")!).render(
 
                 <Route path="*" element={<NotFound />} />
 
-                {/* --- Development only routes --- */}
+                {/* --- Development-only routes --- */}
                 {process.env.NODE_ENV !== "production" && (
                   <Route path="/dev">
                     <Route path="cart-demo" element={<CartDemo />} />
+                    <Route
+                      path="add-sock-modal-demo"
+                      element={<AddSockModalDemo />} // Add AddSockModalDemo route
+                    />
                   </Route>
                 )}
               </Routes>
@@ -126,5 +131,5 @@ createRoot(document.getElementById("root")!).render(
         )}
       </CartProvider>
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
