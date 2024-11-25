@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Search } from "lucide-react";
-import { Sock } from "@/api/inventory/model";
 
 const SOCKS_RESULTS_LIMIT = 16;
 
@@ -37,7 +36,6 @@ export default function AdminInventoryPage() {
   );
 
   const totalPages = Math.ceil((data?.total ?? 0) / SOCKS_RESULTS_LIMIT);
-
 
   const renderPaginationButtons = useMemo(() => {
     const buttons: JSX.Element[] = [];
@@ -57,10 +55,8 @@ export default function AdminInventoryPage() {
     navigate(`/admin/socks/${sockId}`);
   };
 
-  const handleAddSock = (newSock: Sock) => {
-    console.log("New sock added:", newSock);
+  const handleAddSock = () => {
     setModalOpen(false);
-
   };
 
   return (
@@ -71,11 +67,10 @@ export default function AdminInventoryPage() {
 
 
         <Button
-          className="bg-black text-white hover:bg-gray-800 border-black flex items-center ml-auto"
           onClick={() => setModalOpen(true)}
         >
-          <Plus className="mr-2 text-white" />
-          Add New Product
+          <Plus className="mr-2" />
+          Add Product
         </Button>
       </section>
 
@@ -90,6 +85,7 @@ export default function AdminInventoryPage() {
       <section className="relative flex w-full flex-col justify-between gap-4 md:flex-row">
         <div className="relative md:w-1/2">
           <Input
+            disabled
             type="text"
             placeholder="Search by product name or ID"
             className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4"
@@ -101,7 +97,7 @@ export default function AdminInventoryPage() {
 
 
         <Select onValueChange={(value) => console.log(`Filter by ${value}`)}>
-          <SelectTrigger className="md:w-64">
+          <SelectTrigger disabled className="md:w-64">
             Filter by category
           </SelectTrigger>
           <SelectContent>

@@ -7,6 +7,9 @@
     "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
-    "@types/react-router": "^5.1.20"
+    "@types/react-router": "^5.1.20",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "globals": "^15.12.0"
   }
 }

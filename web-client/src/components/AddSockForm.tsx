@@ -2,33 +2,14 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
-import { SockSize } from "@/api/inventory/model";
+import { Trash2, Plus } from "lucide-react";
+import { CreateSockRequest, availableSizes } from "@/api/inventory/model";
 import { useCreateSockMutation } from "@/api/inventory/queries";
 
-const availableSizes: SockSize[] = ["S", "M", "LG", "XL"];
-
-interface AddSockFormProps {
-    onAddSock: (response: any) => void;
-    onClose?: () => void;
-}
-
-interface FormData {
-    name: string;
-    description: string;
-    sizes: {
-        size: SockSize;
-        quantity: number;
-        price: number;
-    }[];
-    previewImageUrl: string;
-}
-
-export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
+export default function AddSockForm({ onAddSock, onClose }: { onAddSock: (response: any) => void; onClose?: () => void }) {
     const [step, setStep] = useState(1);
 
-
-    const { mutate: createSock } = useCreateSockMutation();
+    const createSockMutation = useCreateSockMutation();
 
     const {
         register,
@@ -36,52 +17,34 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
         handleSubmit,
         watch,
         formState: { errors, isValid },
-    } = useForm<FormData>({
-        mode: "onChange",
+    } = useForm<CreateSockRequest>({
         defaultValues: {
-            name: "",
-            description: "",
-            sizes: [],
-            previewImageUrl: "",
+            sock: {
+                name: "",
+                description: "",
+                previewImageUrl: "",
+            },
+            variants: [],
         },
     });
 
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "sizes",
+        name: "variants",
     });
 
-    const selectedSizes = watch("sizes").map((item) => item.size);
 
-    const onSubmit = (data: FormData) => {
+    const selectedSizes = watch("variants").map((item) => item.size);
 
-        const payload = {
-            sock: {
-                name: data.name.trim(),
-                description: data.description.trim(),
-                previewImageUrl: data.previewImageUrl.trim(),
-            },
-            variants: data.sizes.map((variant) => ({
-                size: variant.size,
-                price: Number(variant.price),
-                quantity: Number(variant.quantity),
-            })),
-        };
+    const nextSizesToSelect = availableSizes.filter(
+        (size) => !selectedSizes.includes(size),
+    );
 
-        console.log("Payload being sent to API:", payload);
-
-        createSock(payload, {
+    const onSubmit = (data: CreateSockRequest) => {
+        createSockMutation.mutate(data, {
             onSuccess: (response) => {
-                console.log("Sock created successfully:", response);
                 onAddSock(response);
                 onClose?.();
-            },
-            onError: (error: any) => {
-                if (error.response?.data) {
-                    console.error("Validation error from server:", error.response.data);
-                } else {
-                    console.error("Unexpected error:", error.message);
-                }
             },
         });
     };
@@ -90,53 +53,44 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
     const prevStep = () => setStep((prev) => prev - 1);
 
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-6 p-4 bg-white border rounded-md max-w-lg mx-auto text-black"
-        >
-            <h2 className="text-xl font-bold text-center">
-                Add New Item - Step {step} of 3
-            </h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <h2 className="text-right text-sm text-muted-foreground">Step {step} of 3</h2>
 
-
+            {/* Step 1: Basic Details */}
             {step === 1 && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <Input
-                        {...register("name", { required: "Name is required" })}
+                        {...register("sock.name", { required: "Name is required" })}
                         placeholder="Name"
-                        className="w-full border-black"
                     />
-                    {errors.name && (
-                        <p className="text-red-500 text-sm">{errors.name.message}</p>
+                    {errors.sock?.name && (
+                        <p className="text-red-500 text-sm">{errors.sock.name.message}</p>
                     )}
 
                     <Input
-                        {...register("description", { required: "Description is required" })}
+                        {...register("sock.description", { required: "Description is required" })}
                         placeholder="Description"
-                        className="w-full border-black"
                     />
-                    {errors.description && (
-                        <p className="text-red-500 text-sm">
-                            {errors.description.message}
-                        </p>
+                    {errors.sock?.description && (
+                        <p className="text-red-500 text-sm">{errors.sock.description.message}</p>
                     )}
                 </div>
             )}
 
-
+            {/* Step 2: Variants */}
             {step === 2 && (
-                <div className="space-y-4">
-                    <div className="grid grid-cols-4 gap-2 text-sm font-medium text-gray-700">
+                <div className="space-y-3">
+                    <div className="grid grid-cols-4 gap-2 text-sm font-medium text-muted-foreground">
                         <span>Size</span>
                         <span>Quantity</span>
                         <span>Price</span>
-                        <span className="text-center"></span>
+                        <span></span>
                     </div>
 
                     {fields.map((field, index) => (
                         <div key={field.id} className="grid grid-cols-4 gap-2 items-center">
                             <select
-                                {...register(`sizes.${index}.size`, {
+                                {...register(`variants.${index}.size`, {
                                     required: "Size is required",
                                     validate: (value) => {
                                         const occurrences = selectedSizes.filter((s) => s === value).length;
@@ -144,7 +98,6 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                                     },
                                 })}
                                 defaultValue={field.size || ""}
-                                className="border p-2 text-black text-sm"
                             >
                                 <option value="" disabled>
                                     Select Size
@@ -153,9 +106,7 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                                     <option
                                         key={size}
                                         value={size}
-                                        disabled={
-                                            selectedSizes.includes(size) && field.size !== size
-                                        }
+                                        disabled={selectedSizes.includes(size) && field.size !== size}
                                     >
                                         {size}
                                     </option>
@@ -163,32 +114,29 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                             </select>
 
                             <Input
-                                {...register(`sizes.${index}.quantity`, {
+                                {...register(`variants.${index}.quantity`, {
                                     required: "Quantity is required",
                                     valueAsNumber: true,
                                     min: 1,
                                 })}
                                 placeholder="Quantity"
                                 type="number"
-                                className="border p-2 text-black"
                             />
 
                             <Input
-                                {...register(`sizes.${index}.price`, {
+                                {...register(`variants.${index}.price`, {
                                     required: "Price is required",
                                     valueAsNumber: true,
                                     min: 0.01,
                                 })}
                                 placeholder="Price"
                                 type="number"
-                                className="border p-2 text-black"
                             />
 
                             <Button
                                 size="icon"
                                 variant="destructive"
                                 onClick={() => remove(index)}
-                                className="h-8 w-8 flex items-center justify-center bg-red-500 border-red-500 text-white"
                             >
                                 <Trash2 className="h-4 w-4" />
                             </Button>
@@ -198,65 +146,58 @@ export default function AddSockForm({ onAddSock, onClose }: AddSockFormProps) {
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-black text-black"
-                        onClick={() => append({ size: "S", quantity: 1, price: 0 })}
+                        className="w-full"
+                        onClick={() => {
+                            if (nextSizesToSelect.length > 0) {
+                                append({ size: nextSizesToSelect[0], quantity: 1, price: 0 });
+                            } else {
+                                console.error("Unable to add another size, no sizes available.");
+                            }
+                        }}
+                        disabled={nextSizesToSelect.length < 1}
                     >
-                        + Add Size
+                        <Plus className="mr-2 h-4 w-4" /> Add Size
                     </Button>
                 </div>
             )}
 
 
             {step === 3 && (
-                <div className="space-y-4">
-                    <label className="block text-sm font-medium text-black">
+                <div className="space-y-3">
+                    <label className="text-sm font-medium text-muted-foreground">
                         Preview Image URL
                     </label>
                     <Input
-                        {...register("previewImageUrl", {
+                        {...register("sock.previewImageUrl", {
                             required: "Image URL is required",
                             pattern: {
-                                value: /^(https?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+                                value: /^https?:\/\//,
                                 message: "Invalid URL format",
                             },
                         })}
-                        placeholder="Image URL"
-                        className="w-full border-black"
+                        placeholder="https://example.com/image.jpg"
                     />
-                    {errors.previewImageUrl && (
+                    {errors.sock?.previewImageUrl && (
                         <p className="text-red-500 text-sm">
-                            {errors.previewImageUrl.message}
+                            {errors.sock.previewImageUrl.message}
                         </p>
                     )}
                 </div>
             )}
 
-
+            {/* Navigation Buttons */}
             <div className="flex justify-between">
                 {step > 1 && (
-                    <Button
-                        type="button"
-                        className="bg-black text-white hover:bg-gray-800 border-black"
-                        onClick={prevStep}
-                    >
+                    <Button type="button" onClick={prevStep}>
                         Previous
                     </Button>
                 )}
                 {step < 3 ? (
-                    <Button
-                        type="button"
-                        className="bg-black text-white hover:bg-gray-800 border-black"
-                        onClick={nextStep}
-                        disabled={!isValid}
-                    >
+                    <Button type="button" onClick={nextStep} disabled={!isValid}>
                         Next
                     </Button>
                 ) : (
-                    <Button
-                        type="submit"
-                        className="bg-black text-white hover:bg-gray-800 border-black"
-                        disabled={!isValid}
-                    >
+                    <Button type="submit" disabled={!isValid}>
                         Submit
                     </Button>
                 )}

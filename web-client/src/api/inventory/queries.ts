@@ -10,7 +10,14 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { ServerMessage } from "@/shared/types";
 import { HttpInventoryService } from "./service";
-import { SimilarSock, Sock, SocksPaginatedResponse } from "./model";
+import {
+  SimilarSock,
+  Sock,
+  SocksPaginatedResponse,
+  createSockRequestSchema,
+  CreateSockRequest,
+  CreateSockResponse,
+} from "./model";
 
 const sockService = new HttpInventoryService();
 
@@ -79,25 +86,17 @@ export function useDeleteSockMutation(): UseMutationResult<
 }
 
 export function useCreateSockMutation(): UseMutationResult<
-  Sock,
+  CreateSockResponse,
   AxiosError,
-  {
-    sock: {
-      name: string;
-      description: string;
-      previewImageUrl: string;
-    };
-    variants: Array<{
-      size: string;
-      price: number;
-      quantity: number;
-    }>;
-  }
+  CreateSockRequest
 > {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload) => sockService.createSock(payload),
+    mutationFn: (payload) => {
+      createSockRequestSchema.parse(payload); // Validate payload before sending
+      return sockService.createSock(payload);
+    },
     onSuccess: (createdSock) => {
       toast.success("Sock successfully added");
       queryClient.invalidateQueries({ queryKey: ["socks"] });
@@ -106,7 +105,6 @@ export function useCreateSockMutation(): UseMutationResult<
       const errorMessage =
         (error.response?.data as { message?: string })?.message ||
         "An unexpected error occurred.";
-      toast.error(`Unable to add sock: ${errorMessage}`);
       toast.error(`Unable to add sock: ${errorMessage}`);
       console.error("Error creating sock:", error.response?.data || error.message);
     },
