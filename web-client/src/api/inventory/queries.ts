@@ -94,7 +94,7 @@ export function useCreateSockMutation(): UseMutationResult<
 
   return useMutation({
     mutationFn: (payload) => {
-      createSockRequestSchema.parse(payload); // Validate payload before sending
+      createSockRequestSchema.parse(payload);
       return sockService.createSock(payload);
     },
     onSuccess: (createdSock) => {

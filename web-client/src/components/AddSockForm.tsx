@@ -56,7 +56,6 @@ export default function AddSockForm({ onAddSock, onClose }: { onAddSock: (respon
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <h2 className="text-right text-sm text-muted-foreground">Step {step} of 3</h2>
 
-            {/* Step 1: Basic Details */}
             {step === 1 && (
                 <div className="space-y-3">
                     <Input
@@ -76,8 +75,6 @@ export default function AddSockForm({ onAddSock, onClose }: { onAddSock: (respon
                     )}
                 </div>
             )}
-
-            {/* Step 2: Variants */}
             {step === 2 && (
                 <div className="space-y-3">
                     <div className="grid grid-cols-4 gap-2 text-sm font-medium text-muted-foreground">
@@ -185,7 +182,7 @@ export default function AddSockForm({ onAddSock, onClose }: { onAddSock: (respon
                 </div>
             )}
 
-            {/* Navigation Buttons */}
+
             <div className="flex justify-between">
                 {step > 1 && (
                     <Button type="button" onClick={prevStep}>

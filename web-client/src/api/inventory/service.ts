@@ -22,30 +22,30 @@ export interface InventoryService {
 export class HttpInventoryService implements InventoryService {
   async getSockById(sockId: number): Promise<Sock> {
     const { data } = await axiosInstance.get(`/api/v1/socks/${sockId}`);
-    return sockSchema.parse(data); // Validate response with schema
+    return sockSchema.parse(data);
   }
 
   async getSocks(limit: number, offset: number): Promise<SocksPaginatedResponse> {
     const { data } = await axiosInstance.get(`/api/v1/socks`, {
       params: { limit, offset },
     });
-    return socksPaginatedResponseSchema.parse(data); // Validate response with schema
+    return socksPaginatedResponseSchema.parse(data);
   }
 
   async getSimilarSocks(sockId: number): Promise<SimilarSock[]> {
     const { data } = await axiosInstance.get(
       `/api/v1/socks/${sockId}/similar-socks`
     );
-    return similarSockListSchema.parse(data); // Validate response with schema
+    return similarSockListSchema.parse(data);
   }
 
   async deleteSock(sockId: number): Promise<ServerMessage> {
     const { data } = await axiosInstance.delete(`/api/v1/socks/${sockId}`);
-    return serverMessageSchema.parse(data); // Validate response with schema
+    return serverMessageSchema.parse(data);
   }
 
   async createSock(payload: CreateSockRequest): Promise<CreateSockResponse> {
     const { data } = await axiosInstance.post(`/api/v1/socks`, payload);
-    return createSockResponseSchema.parse(data); // Validate response with schema
+    return createSockResponseSchema.parse(data);
   }
 }
