@@ -23,6 +23,7 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import PaymentCanceledPage from "./pages/PaymentCanceledPage";
 import SockDetailsPage from "./pages/SockDetailsPage";
 import AdminInventoryPage from "./pages/admin/AdminInventoryPage";
+import AdminSockDetailsPage from "./pages/admin/AdminSockDetailsPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
@@ -96,13 +97,13 @@ createRoot(document.getElementById("root")!).render(
                       element={<Navigate to="/admin/inventory" replace />}
                     />
                     <Route path="inventory" element={<AdminInventoryPage />} />
+                    <Route path="inventory/:sockId" element={<AdminSockDetailsPage />} />
                     <Route path="orders" element={<AdminOrdersPage />} />
                     <Route
                       path="orders/:orderId"
                       element={<AdminOrderDetailsPage />}
                     />
                     <Route path="profile" element={<AdminProfilePage />} />
-
                     <Route path="*" element={<NotFound />} />
                   </Route>
                 </Route>
