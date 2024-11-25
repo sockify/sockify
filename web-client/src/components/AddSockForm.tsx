@@ -109,7 +109,7 @@ export default function AddSockForm({
                   },
                 })}
                 defaultValue={field.size || ""}
-                className="rounded-md border p-2.5 text-sm"
+                className="rounded-md border p-2.5 text-sm dark:bg-inherit"
               >
                 <option value="" disabled>
                   Select size
