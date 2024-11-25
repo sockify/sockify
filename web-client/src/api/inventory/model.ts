@@ -48,3 +48,27 @@ export const similarSockSchema = z.object({
 });
 export type SimilarSock = z.infer<typeof similarSockSchema>;
 export const similarSockListSchema = z.array(similarSockSchema);
+
+export const updateSockSchema = z.object({
+  sock: z.object({
+    name: z.string(),
+    description: z.string().optional(),
+    previewImageUrl: z.string().url(),
+  }),
+  variants: z.array(
+    z.object({
+      size: z.enum(["S", "M", "LG", "XL"]),
+      price: z.number(),
+      quantity: z.number(),
+    })
+  ),
+});
+export type UpdateSock = z.infer<typeof updateSockSchema>;
+
+export const addEditVariantSchema = z.object({
+  sockId: z.number().optional(),
+  size: sockSizeEnumSchema,
+  price: z.number(),
+  quantity: z.number(),
+});
+export type AddEditVariant = z.infer<typeof addEditVariantSchema>;
