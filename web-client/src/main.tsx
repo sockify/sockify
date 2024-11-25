@@ -106,7 +106,7 @@ createRoot(document.getElementById("root")!).render(
                         element={<AdminInventoryPage />}
                       />
                       <Route
-                        path="inventory/:sockId"
+                        path="socks/:sockId"
                         element={<AdminSockDetailsPage />}
                       />
                       <Route path="orders" element={<AdminOrdersPage />} />
