@@ -7,6 +7,8 @@ import {
   similarSockListSchema,
   sockSchema,
   socksPaginatedResponseSchema,
+  UpdateSock, 
+  AddEditVariant,
 } from "./model";
 
 export interface InventoryService {
@@ -43,4 +45,27 @@ export class HttpInventoryService implements InventoryService {
     const { data } = await axiosInstance.delete(`/api/v1/socks/${sockId}`);
     return serverMessageSchema.parse(data);
   }
+
+  async updateSockDetails(updatedSock: UpdateSock & { id: number }): Promise<ServerMessage> {
+    const { data } = await axiosInstance.patch(`/api/v1/socks/${updatedSock.id}`, {
+      sock: updatedSock.sock, 
+      variants: updatedSock.variants, 
+    });
+    return serverMessageSchema.parse(data);
+  }
+  
+  async addEditSockVariant(sockId: number, variant: AddEditVariant): Promise<ServerMessage> {
+    const { data } = await axiosInstance.patch(`/api/v1/socks/${sockId}/variants`, {
+      size: variant.size,
+      price: variant.price,
+      quantity: variant.quantity,
+    });
+    return serverMessageSchema.parse(data);
+  }
+  
+  async updateSockWithVariant(sockId: number, updatedSock: UpdateSock): Promise<ServerMessage> {
+    const { data } = await axiosInstance.patch(`/api/v1/socks/${sockId}`, updatedSock);
+    return serverMessageSchema.parse(data);
+  }  
+
 }
