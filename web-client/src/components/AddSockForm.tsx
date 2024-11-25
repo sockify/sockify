@@ -93,7 +93,7 @@ export default function AddSockForm({
             <span>Size</span>
             <span>Quantity</span>
             <span>Price</span>
-            <span></span>
+            <span>Actions</span>
           </div>
 
           {fields.map((field, index) => (
@@ -112,7 +112,7 @@ export default function AddSockForm({
                 className="rounded-md border p-2.5 text-sm"
               >
                 <option value="" disabled>
-                  Select Size
+                  Select size
                 </option>
                 {availableSizes.map((size) => (
                   <option
@@ -176,7 +176,7 @@ export default function AddSockForm({
             }}
             disabled={nextSizesToSelect.length < 1}
           >
-            <Plus className="mr-2 h-4 w-4" /> Add Size
+            <Plus className="mr-2 h-4 w-4" /> Add size
           </Button>
         </div>
       )}
@@ -215,8 +215,11 @@ export default function AddSockForm({
             Next
           </Button>
         ) : (
-          <Button type="submit" disabled={!isValid}>
-            Submit
+          <Button
+            type="submit"
+            disabled={!isValid || createSockMutation.isPending}
+          >
+            {createSockMutation.isPending ? "Submitting..." : "Submit"}
           </Button>
         )}
       </div>
