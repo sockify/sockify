@@ -56,7 +56,7 @@ type SockDTO struct {
 }
 type SockVariantDTO struct {
 	Size  string  `json:"size" validate:"required,oneof=S M LG XL"`
-	Price float64 `json:"price" validate:"required,gt=0,lt=101"`
+	Price float64 `json:"price" validate:"required,gt=0"`
 	// Quantity must be a pointer for the "required" validator to work with 0 as an input.
 	Quantity *int `json:"quantity" validate:"required,gte=0"`
 }

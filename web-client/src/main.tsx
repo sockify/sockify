@@ -10,6 +10,7 @@ import NotFound from "./components/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import UnderConstruction from "./components/UnderConstruction";
 import CartDemo from "./components/dev/CartDemo";
+import AddSockModalDemo from "./components/dev/AddSockModalDemo";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -83,6 +84,7 @@ createRoot(document.getElementById("root")!).render(
                 </Route>
                 <Route path="/admin/login" element={<AdminLoginPage />} />
 
+
                 {/* ----- Admin dashboard ----- */}
                 <Route element={<AuthProtectedRoutes />}>
                   <Route path="/admin" element={<AdminLayout />}>
@@ -113,6 +115,10 @@ createRoot(document.getElementById("root")!).render(
                 {process.env.NODE_ENV !== "production" && (
                   <Route path="/dev">
                     <Route path="cart-demo" element={<CartDemo />} />
+                    <Route
+                      path="add-sock-modal-demo"
+                      element={<AddSockModalDemo />}
+                    />
                   </Route>
                 )}
               </Routes>
@@ -126,5 +132,5 @@ createRoot(document.getElementById("root")!).render(
         )}
       </CartProvider>
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
