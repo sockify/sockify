@@ -14,11 +14,18 @@ export type SockCategory = z.infer<typeof sockCategoryEnumSchema>;
 export const sockVariantSchema = z.object({
   id: z.number().optional(),
   size: sockSizeEnumSchema,
-  price: z.number(),
-  quantity: z.number(),
+  price: z.number().positive(),
+  quantity: z.number().int().min(0),
   createdAt: z.string().optional(),
 });
 export type SockVariant = z.infer<typeof sockVariantSchema>;
+
+export const sockMetadataSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().min(1, "Description is required"),
+  previewImageUrl: z.string().url("Invalid URL format"),
+});
+export type SockMetadata = z.infer<typeof sockMetadataSchema>;
 
 export const sockSchema = z.object({
   id: z.number().optional(),
@@ -49,19 +56,20 @@ export const similarSockSchema = z.object({
 export type SimilarSock = z.infer<typeof similarSockSchema>;
 export const similarSockListSchema = z.array(similarSockSchema);
 
+export const createSockRequestSchema = z.object({
+  sock: sockMetadataSchema,
+  variants: z.array(sockVariantSchema),
+});
+export type CreateSockRequest = z.infer<typeof createSockRequestSchema>;
+
+export const createSockResponseSchema = z.object({
+  sockId: z.number(),
+});
+export type CreateSockResponse = z.infer<typeof createSockResponseSchema>;
+
 export const updateSockSchema = z.object({
-  sock: z.object({
-    name: z.string(),
-    description: z.string().optional(),
-    previewImageUrl: z.string().url(),
-  }),
-  variants: z.array(
-    z.object({
-      size: z.enum(["S", "M", "LG", "XL"]),
-      price: z.number(),
-      quantity: z.number(),
-    })
-  ),
+  sock: sockMetadataSchema,
+  variants: z.array(sockVariantSchema),
 });
 export type UpdateSock = z.infer<typeof updateSockSchema>;
 

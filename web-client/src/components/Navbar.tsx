@@ -2,6 +2,7 @@ import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Button } from "./ui/button";
+import ThemeToggleButton from "./ui/theme-toggle-button";
 
 export default function Navbar() {
   return (
@@ -17,7 +18,9 @@ export default function Navbar() {
           {/* Center nav items */}
         </nav>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <ThemeToggleButton />
+
           <Button variant="ghost" size="icon" asChild>
             <Link to="/cart">
               <ShoppingCart className="h-6 w-6" />

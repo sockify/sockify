@@ -1,9 +1,26 @@
-import { UseQueryResult, queryOptions, useQuery, UseMutationResult, useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { ServerMessage } from "@/shared/types";
-import { HttpInventoryService } from "./service";
+import {
+  UseMutationResult,
+  UseQueryResult,
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
-import { SimilarSock, Sock, SocksPaginatedResponse, UpdateSock, AddEditVariant } from "./model";
+import {
+  AddEditVariant,
+  CreateSockRequest,
+  CreateSockResponse,
+  SimilarSock,
+  Sock,
+  SocksPaginatedResponse,
+  UpdateSock,
+  createSockRequestSchema,
+} from "./model";
+import { HttpInventoryService } from "./service";
 
 const sockService = new HttpInventoryService();
 
@@ -29,6 +46,7 @@ export function useGetSocksOptions(
     enabled,
   });
 }
+
 export function useGetSocks(
   limit: number,
   offset: number,
@@ -43,6 +61,7 @@ export function useGetSimilarSocksOptions(sockId: number) {
     queryFn: () => sockService.getSimilarSocks(sockId),
   });
 }
+
 export function useGetSimilarSocks(
   sockId: number,
 ): UseQueryResult<SimilarSock[]> {
@@ -58,12 +77,9 @@ export function useDeleteSockMutation(): UseMutationResult<
 
   return useMutation({
     mutationFn: (sockId: number) => sockService.deleteSock(sockId),
-    onSuccess: (_, sockId) => {
+    onSuccess: () => {
       toast.success("Sock successfully deleted");
-
-      queryClient.invalidateQueries({
-        queryKey: ["socks"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["socks"] });
     },
     onError: () => {
       toast.error("Unable to delete sock");
@@ -71,10 +87,39 @@ export function useDeleteSockMutation(): UseMutationResult<
   });
 }
 
+export function useCreateSockMutation(): UseMutationResult<
+  CreateSockResponse,
+  AxiosError,
+  CreateSockRequest
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => {
+      createSockRequestSchema.parse(payload);
+      return sockService.createSock(payload);
+    },
+    onSuccess: () => {
+      toast.success("Sock successfully added");
+      queryClient.invalidateQueries({ queryKey: ["socks"] });
+    },
+    onError: (error) => {
+      const errorMessage =
+        (error.response?.data as { message?: string })?.message ||
+        "An unexpected error occurred.";
+      toast.error(`Unable to add sock: ${errorMessage}`);
+      console.error(
+        "Error creating sock:",
+        error.response?.data || error.message,
+      );
+    },
+  });
+}
+
 export function useUpdateSockMutation(): UseMutationResult<
   ServerMessage,
   Error,
-  UpdateSock & { id: number } 
+  UpdateSock & { id: number }
 > {
   return useMutation({
     mutationFn: (updatedSock: UpdateSock & { id: number }) =>
