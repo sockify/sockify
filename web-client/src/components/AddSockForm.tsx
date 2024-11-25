@@ -6,6 +6,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
+import { Textarea } from "./ui/textarea";
+
 const availableSizes = sockSizeEnumSchema.options;
 
 export default function AddSockForm({
@@ -16,7 +18,6 @@ export default function AddSockForm({
   onClose?: () => void;
 }) {
   const createSockMutation = useCreateSockMutation();
-
   const [step, setStep] = useState(1);
 
   const {
@@ -35,14 +36,12 @@ export default function AddSockForm({
       variants: [],
     },
   });
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "variants",
   });
 
   const selectedSizes = watch("variants").map((item) => item.size);
-
   const nextSizesToSelect = availableSizes.filter(
     (size) => !selectedSizes.includes(size),
   );
@@ -75,7 +74,7 @@ export default function AddSockForm({
             <p className="text-sm text-red-500">{errors.sock.name.message}</p>
           )}
 
-          <Input
+          <Textarea
             {...register("sock.description", {
               required: "Description is required",
             })}
@@ -110,6 +109,7 @@ export default function AddSockForm({
                   },
                 })}
                 defaultValue={field.size || ""}
+                className="rounded-md border p-2.5 text-sm"
               >
                 <option value="" disabled>
                   Select Size
@@ -131,10 +131,12 @@ export default function AddSockForm({
                 {...register(`variants.${index}.quantity`, {
                   required: "Quantity is required",
                   valueAsNumber: true,
-                  min: 1,
+                  min: 0,
                 })}
                 placeholder="Quantity"
                 type="number"
+                min={0}
+                step={1}
               />
 
               <Input
@@ -145,6 +147,8 @@ export default function AddSockForm({
                 })}
                 placeholder="Price"
                 type="number"
+                min={0.01}
+                step={0.01}
               />
 
               <Button
@@ -163,7 +167,7 @@ export default function AddSockForm({
             className="w-full"
             onClick={() => {
               if (nextSizesToSelect.length > 0) {
-                append({ size: nextSizesToSelect[0], quantity: 1, price: 0 });
+                append({ size: nextSizesToSelect[0], quantity: 0, price: 0 });
               } else {
                 console.error(
                   "Unable to add another size, no sizes available.",

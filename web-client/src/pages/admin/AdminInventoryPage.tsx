@@ -1,9 +1,7 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGetSocks } from "@/api/inventory/queries";
+import AddSockModal from "@/components/AddSockModal";
 import GenericError from "@/components/GenericError";
 import InventoryTable from "@/components/InventoryTable";
-import AddSockModal from "@/components/AddSockModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,6 +20,8 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SOCKS_RESULTS_LIMIT = 16;
 
@@ -32,7 +32,7 @@ export default function AdminInventoryPage() {
 
   const { data, isError, error, isLoading } = useGetSocks(
     SOCKS_RESULTS_LIMIT,
-    (page - 1) * SOCKS_RESULTS_LIMIT
+    (page - 1) * SOCKS_RESULTS_LIMIT,
   );
 
   const totalPages = Math.ceil((data?.total ?? 0) / SOCKS_RESULTS_LIMIT);
@@ -45,7 +45,7 @@ export default function AdminInventoryPage() {
           <PaginationLink isActive={i === page} onClick={() => setPage(i)}>
             {i}
           </PaginationLink>
-        </PaginationItem>
+        </PaginationItem>,
       );
     }
     return buttons;
@@ -61,26 +61,20 @@ export default function AdminInventoryPage() {
 
   return (
     <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
-
       <section className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <h1 className="text-3xl font-bold">Inventory Management</h1>
 
-
-        <Button
-          onClick={() => setModalOpen(true)}
-        >
-          <Plus className="mr-2" />
-          Add Product
+        <Button onClick={() => setModalOpen(true)}>
+          <Plus className="mr-2 h-5 w-5" />
+          Add product
         </Button>
       </section>
-
 
       <AddSockModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onAddSock={handleAddSock}
       />
-
 
       <section className="relative flex w-full flex-col justify-between gap-4 md:flex-row">
         <div className="relative md:w-1/2">
@@ -95,7 +89,6 @@ export default function AdminInventoryPage() {
           </div>
         </div>
 
-
         <Select onValueChange={(value) => console.log(`Filter by ${value}`)}>
           <SelectTrigger disabled className="md:w-64">
             Filter by category
@@ -108,7 +101,6 @@ export default function AdminInventoryPage() {
         </Select>
       </section>
 
-
       <div className="flex min-h-[34rem] flex-col justify-between space-y-6">
         {isLoading ? (
           <TableSkeleton />
@@ -118,9 +110,11 @@ export default function AdminInventoryPage() {
             message={error instanceof Error ? error.message : "Unknown error"}
           />
         ) : (
-          <InventoryTable socks={data?.items ?? []} onRowClick={handleRowClick} />
+          <InventoryTable
+            socks={data?.items ?? []}
+            onRowClick={handleRowClick}
+          />
         )}
-
 
         {totalPages >= 1 && (
           <Pagination>
@@ -147,7 +141,6 @@ export default function AdminInventoryPage() {
     </div>
   );
 }
-
 
 function TableSkeleton() {
   return (

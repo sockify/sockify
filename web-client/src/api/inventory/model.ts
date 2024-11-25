@@ -14,7 +14,7 @@ export type SockCategory = z.infer<typeof sockCategoryEnumSchema>;
 export const sockVariantSchema = z.object({
   id: z.number().optional(),
   size: sockSizeEnumSchema,
-  price: z.number().positive().max(100),
+  price: z.number().positive(),
   quantity: z.number().int().min(0),
   createdAt: z.string().optional(),
 });
