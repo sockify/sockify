@@ -1,4 +1,5 @@
 import { useGetSocks } from "@/api/inventory/queries";
+import AddSockModal from "@/components/AddSockModal";
 import GenericError from "@/components/GenericError";
 import InventoryTable from "@/components/InventoryTable";
 import { Button } from "@/components/ui/button";
@@ -27,10 +28,13 @@ const SOCKS_RESULTS_LIMIT = 16;
 export default function AdminInventoryPage() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const { data, isError, error, isLoading } = useGetSocks(
     SOCKS_RESULTS_LIMIT,
     (page - 1) * SOCKS_RESULTS_LIMIT,
   );
+
   const totalPages = Math.ceil((data?.total ?? 0) / SOCKS_RESULTS_LIMIT);
 
   const renderPaginationButtons = useMemo(() => {
@@ -51,19 +55,26 @@ export default function AdminInventoryPage() {
     navigate(`/admin/socks/${sockId}`);
   };
 
+  const handleAddSock = () => {
+    setModalOpen(false);
+  };
+
   return (
     <div className="admin-inventory-page h-full space-y-6 px-4 py-6 md:px-8">
-      <section className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <h1 className="text-3xl font-bold">Inventory management</h1>
+      <section className="flex flex-col justify-between gap-4 sm:flex-row">
+        <h1 className="text-3xl font-bold">Inventory Management</h1>
 
-        <Button
-          className="ml-auto"
-          onClick={() => console.log("Navigate to Add New Product page")}
-        >
-          <Plus className="mr-2" />
+        <Button onClick={() => setModalOpen(true)}>
+          <Plus className="mr-2 h-5 w-5" />
           Add product
         </Button>
       </section>
+
+      <AddSockModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onAddSock={handleAddSock}
+      />
 
       <section className="relative flex w-full flex-col justify-between gap-4 md:flex-row">
         <div className="relative md:w-1/2">
@@ -99,7 +110,10 @@ export default function AdminInventoryPage() {
             message={error instanceof Error ? error.message : "Unknown error"}
           />
         ) : (
-          <InventoryTable socks={data!.items} onRowClick={handleRowClick} />
+          <InventoryTable
+            socks={data?.items ?? []}
+            onRowClick={handleRowClick}
+          />
         )}
 
         {totalPages >= 1 && (

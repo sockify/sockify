@@ -9,6 +9,7 @@ import AuthProtectedRoutes from "./components/AuthProtectedRoutes";
 import NotFound from "./components/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import UnderConstruction from "./components/UnderConstruction";
+import AddSockModalDemo from "./components/dev/AddSockModalDemo";
 import CartDemo from "./components/dev/CartDemo";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
@@ -120,6 +121,10 @@ createRoot(document.getElementById("root")!).render(
                   {process.env.NODE_ENV !== "production" && (
                     <Route path="/dev">
                       <Route path="cart-demo" element={<CartDemo />} />
+                      <Route
+                        path="add-sock-modal-demo"
+                        element={<AddSockModalDemo />}
+                      />
                     </Route>
                   )}
                 </Routes>
