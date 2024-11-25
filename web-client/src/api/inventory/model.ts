@@ -42,7 +42,9 @@ export const socksPaginatedResponseSchema = z.object({
   limit: z.number(),
   offset: z.number(),
 });
-export type SocksPaginatedResponse = z.infer<typeof socksPaginatedResponseSchema>;
+export type SocksPaginatedResponse = z.infer<
+  typeof socksPaginatedResponseSchema
+>;
 
 export const similarSockSchema = z.object({
   sockId: z.number(),
@@ -64,4 +66,3 @@ export const createSockResponseSchema = z.object({
   sockId: z.number(),
 });
 export type CreateSockResponse = z.infer<typeof createSockResponseSchema>;
-export const availableSizes = sockSizeEnumSchema.options; 

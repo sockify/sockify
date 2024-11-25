@@ -1,23 +1,24 @@
+import { ServerMessage } from "@/shared/types";
 import {
+  UseMutationResult,
   UseQueryResult,
   queryOptions,
-  useQuery,
-  UseMutationResult,
   useMutation,
-  useQueryClient
+  useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { ServerMessage } from "@/shared/types";
-import { HttpInventoryService } from "./service";
+import toast from "react-hot-toast";
+
 import {
+  CreateSockRequest,
+  CreateSockResponse,
   SimilarSock,
   Sock,
   SocksPaginatedResponse,
   createSockRequestSchema,
-  CreateSockRequest,
-  CreateSockResponse,
 } from "./model";
+import { HttpInventoryService } from "./service";
 
 const sockService = new HttpInventoryService();
 
@@ -65,7 +66,6 @@ export function useGetSimilarSocks(
   return useQuery(useGetSimilarSocksOptions(sockId));
 }
 
-
 export function useDeleteSockMutation(): UseMutationResult<
   ServerMessage,
   Error,
@@ -97,7 +97,7 @@ export function useCreateSockMutation(): UseMutationResult<
       createSockRequestSchema.parse(payload);
       return sockService.createSock(payload);
     },
-    onSuccess: (createdSock) => {
+    onSuccess: () => {
       toast.success("Sock successfully added");
       queryClient.invalidateQueries({ queryKey: ["socks"] });
     },
@@ -106,7 +106,10 @@ export function useCreateSockMutation(): UseMutationResult<
         (error.response?.data as { message?: string })?.message ||
         "An unexpected error occurred.";
       toast.error(`Unable to add sock: ${errorMessage}`);
-      console.error("Error creating sock:", error.response?.data || error.message);
+      console.error(
+        "Error creating sock:",
+        error.response?.data || error.message,
+      );
     },
   });
 }
