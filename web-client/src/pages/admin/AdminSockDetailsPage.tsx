@@ -1,18 +1,32 @@
-import { Sock, SockVariant, UpdateSockRequest } from "@/api/inventory/model";
+import {
+  Sock,
+  SockVariant,
+  UpdateSockRequest,
+  sockSizeEnumSchema,
+} from "@/api/inventory/model";
 import { useGetSockById, useUpdateSockMutation } from "@/api/inventory/queries";
 import AddSizeModal from "@/components/AddSizeModal";
 import EditItemModal from "@/components/EditItemModal";
 import EditVariantModal from "@/components/EditVariantModal";
 import GenericError from "@/components/GenericError";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table } from "@/components/ui/table";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
+import dayjs from "dayjs";
 import { Edit, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
+
+const UNKNOWN = "Unknown";
+const availableSizes = sockSizeEnumSchema.options;
 
 export default function AdminSockDetailsPage() {
   const { sockId } = useParams<{ sockId: string }>();
@@ -48,12 +62,12 @@ export default function AdminSockDetailsPage() {
         },
         variants: updatedSock.variants,
       };
-  
+
       await updateSockMutation.mutateAsync({
         id: numericSockId,
         ...payload,
       });
-  
+
       refetch();
       setEditSockOpen(false);
       toast.success("Sock updated successfully!");
@@ -61,7 +75,7 @@ export default function AdminSockDetailsPage() {
       console.error("Error updating sock:", error);
       toast.error("Failed to update sock details.");
     }
-  };    
+  };
 
   const handleAddVariant = async (newVariant: SockVariant) => {
     try {
@@ -126,43 +140,57 @@ export default function AdminSockDetailsPage() {
     return <GenericError message="Unable to fetch sock details" />;
   }
 
-  const availableSizes = ["S", "M", "LG", "XL"].filter(
+  const nextSizesToSelect = availableSizes.filter(
     (size) => !currentVariants.some((variant) => variant.size === size),
   );
+  const dateAdded =
+    sock.variants.length > 0
+      ? (sock.variants[0]?.createdAt ?? UNKNOWN)
+      : UNKNOWN;
 
   return (
     <div className="space-y-6 px-4 py-6 md:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Item Details: {sock.name}</h1>
+      <div className="flex flex-col justify-between gap-4 sm:flex-row">
+        <h1 className="text-2xl font-bold md:text-3xl">
+          <span>Item details: </span>
+          <code className="rounded bg-muted p-1">{sock.name}</code>
+        </h1>
         <Button variant="default" onClick={() => setEditSockOpen(true)}>
-          <Edit className="mr-2" size={16} /> Edit Item
+          <Edit className="mr-2 h-4 w-4" /> Edit item
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      <Card>
-        <CardContent className="flex justify-center">
-          <div className="w-full max-w-[700px] aspect-video flex items-center justify-center rounded-lg">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <h2 className="text-xl font-bold">Preview image</h2>
+          </CardHeader>
+          <CardContent>
             <img
-              src={sock.previewImageUrl || NO_IMAGE_PLACEHOLDER}
+              src={sock.previewImageUrl}
               alt={sock.name}
-              className="h-auto max-h-full object-contain"
+              className="h-[450px] w-full rounded-lg object-cover object-center"
               onError={(e) => {
                 e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
               }}
             />
-          </div>
-        </CardContent>
-      </Card>
-      
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
-            <h2 className="text-xl font-bold">Basic Information</h2>
+            <h2 className="text-xl font-bold">Basic information</h2>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-muted-foreground">
               <li>
                 <strong>Description:</strong> {sock.description}
+              </li>
+              <li>
+                <strong>Date added:</strong>{" "}
+                {dateAdded === UNKNOWN
+                  ? "N/A"
+                  : dayjs(dateAdded).format("MM/DD/YYYY")}
               </li>
             </ul>
           </CardContent>
@@ -171,9 +199,7 @@ export default function AdminSockDetailsPage() {
 
       <Card>
         <CardHeader>
-          <h2 className="mb-4 text-xl font-bold">
-            Size, Quantity, and Price Information
-          </h2>
+          <h2 className="mb-4 text-xl font-bold">Stock information</h2>
         </CardHeader>
         <CardContent>
           <Table>
@@ -205,16 +231,18 @@ export default function AdminSockDetailsPage() {
               ))}
             </tbody>
           </Table>
-          <div className="mt-4">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => setAddVariantOpen(true)}
-            >
-              <Plus className="mr-2" size={16} /> Add New Size
-            </Button>
-          </div>
         </CardContent>
+
+        <CardFooter>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => setAddVariantOpen(true)}
+            disabled={nextSizesToSelect.length < 1}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Add new size
+          </Button>
+        </CardFooter>
       </Card>
 
       {isEditSockOpen && (
@@ -251,7 +279,7 @@ export default function AdminSockDetailsPage() {
       {isAddVariantOpen && (
         <AddSizeModal
           isOpen={isAddVariantOpen}
-          availableSizes={availableSizes}
+          availableSizes={nextSizesToSelect}
           onClose={() => setAddVariantOpen(false)}
           onSubmit={(data) => {
             const parsedPrice = parseFloat(data.price.toString());
@@ -284,13 +312,13 @@ function LoadingSkeleton() {
         <Skeleton className="h-10 w-24" />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <Skeleton className="h-8 w-3/5" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-[400px] w-full rounded-md" />
+            <Skeleton className="h-[450px] w-full rounded-lg" />
           </CardContent>
         </Card>
         <Card>
