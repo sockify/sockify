@@ -1,5 +1,5 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import { SockVariant } from "@/api/inventory/model";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,12 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
 
 interface EditVariantModalProps {
-  variant: { size: string; price: number; quantity: number };
+  variant: SockVariant;
   onClose: () => void;
-  onSave: (data: { size: string; price: number; quantity: number }) => void;
+  onSave: (data: SockVariant) => void;
 }
 
 export default function EditVariantModal({
@@ -41,10 +41,10 @@ export default function EditVariantModal({
               <input
                 type="text"
                 {...register("size", { required: "Size is required" })}
-                className="w-full border rounded p-2"
+                className="w-full rounded border p-2"
               />
               {errors.size && (
-                <p className="text-red-500 text-sm">{errors.size.message}</p>
+                <p className="text-sm text-red-500">{errors.size.message}</p>
               )}
             </div>
             <div>
@@ -52,11 +52,14 @@ export default function EditVariantModal({
               <input
                 type="number"
                 step="0.01"
-                {...register("price", { required: "Price is required", min: 0 })}
-                className="w-full border rounded p-2"
+                {...register("price", {
+                  required: "Price is required",
+                  min: 0,
+                })}
+                className="w-full rounded border p-2"
               />
               {errors.price && (
-                <p className="text-red-500 text-sm">{errors.price.message}</p>
+                <p className="text-sm text-red-500">{errors.price.message}</p>
               )}
             </div>
             <div>
@@ -67,10 +70,10 @@ export default function EditVariantModal({
                   required: "Quantity is required",
                   min: 0,
                 })}
-                className="w-full border rounded p-2"
+                className="w-full rounded border p-2"
               />
               {errors.quantity && (
-                <p className="text-red-500 text-sm">
+                <p className="text-sm text-red-500">
                   {errors.quantity.message}
                 </p>
               )}
