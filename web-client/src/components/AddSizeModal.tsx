@@ -1,31 +1,32 @@
-import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; 
+import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select"; 
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Label } from "./ui/label";
 
 interface AddSizeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: SockVariantForm) => void;
   availableSizes: string[];
 }
 
-interface FormData {
+interface SockVariantForm {
   size: string;
   quantity: number;
   price: number;
@@ -37,10 +38,11 @@ export default function AddSizeModal({
   onSubmit,
   availableSizes,
 }: AddSizeModalProps) {
-  const { register, handleSubmit, setValue, formState } = useForm<FormData>();
+  const { register, handleSubmit, setValue, formState } =
+    useForm<SockVariantForm>();
   const { errors } = formState;
 
-  const handleFormSubmit: SubmitHandler<FormData> = (data) => {
+  const handleFormSubmit: SubmitHandler<SockVariantForm> = (data) => {
     onSubmit(data);
   };
 
@@ -48,17 +50,20 @@ export default function AddSizeModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Size</DialogTitle>
-          <DialogDescription>Add a new size, quantity, and price.</DialogDescription>
+          <DialogTitle>Add new size</DialogTitle>
+          <DialogDescription>
+            Add a new size, quantity, and price.
+          </DialogDescription>
         </DialogHeader>
+
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Size</label>
+            <Label htmlFor="size">Size</Label>
             <Select
-              onValueChange={(value: string) => setValue("size", value)} 
+              onValueChange={(value: string) => setValue("size", value)}
               defaultValue=""
             >
-              <SelectTrigger>
+              <SelectTrigger id="size">
                 <SelectValue placeholder="Select a size" />
               </SelectTrigger>
               <SelectContent>
@@ -70,39 +75,52 @@ export default function AddSizeModal({
               </SelectContent>
             </Select>
             {errors.size && (
-              <p className="text-red-500 text-sm">{errors.size.message}</p>
+              <p className="text-sm text-red-500">{errors.size.message}</p>
             )}
           </div>
+
           <div>
-            <label className="block text-sm font-medium">Quantity</label>
+            <Label htmlFor="quantity">Quantity</Label>
             <Input
               type="number"
-              {...register("quantity", { required: "Quantity is required", min: 0 })}
+              {...register("quantity", {
+                required: "Quantity is required",
+                min: 0,
+              })}
               placeholder="Enter quantity"
+              id="quantity"
+              min={0}
             />
             {errors.quantity && (
-              <p className="text-red-500 text-sm">{errors.quantity.message}</p>
+              <p className="text-sm text-red-500">{errors.quantity.message}</p>
             )}
           </div>
+
           <div>
-            <label className="block text-sm font-medium">Price</label>
+            <Label htmlFor="price">Price</Label>
             <Input
               type="number"
               step="0.01"
-              {...register("price", { required: "Price is required", min: 0.01 })}
+              {...register("price", {
+                required: "Price is required",
+                min: 0.01,
+              })}
               placeholder="Enter price"
+              id="price"
+              min={0.01}
             />
             {errors.price && (
-              <p className="text-red-500 text-sm">{errors.price.message}</p>
+              <p className="text-sm text-red-500">{errors.price.message}</p>
             )}
           </div>
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit">Add Size</Button>
-          </DialogFooter>
         </form>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit">Add size</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
