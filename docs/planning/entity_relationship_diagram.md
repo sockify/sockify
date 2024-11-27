@@ -41,6 +41,7 @@ erDiagram
         VARCHAR phone
         VARCHAR street "NOT NULL"
         VARCHAR apt_unit
+        VARCHAR city "NOT NULL"
         CHAR state "Check IN ('FL', 'OH', etc.), NOT NULL"
         VARCHAR zipcode "NOT NULL"
         TIMESTAMP created_at "NOT NULL, Default CURRENT_TIMESTAMP"

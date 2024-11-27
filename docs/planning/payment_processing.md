@@ -23,6 +23,7 @@ Will be used to create a Stripe checkout session after the "pending" order has b
 {
   "address": {
     "aptUnit": "string",
+    "city": "string",
     "state": "string",
     "street": "string",
     "zipcode": "string"
@@ -60,6 +61,7 @@ Will be used to validate the payment status for the associated Stripe checkout `
 {
   "address": {
     "aptUnit": "string",
+    "city": "string",
     "state": "string",
     "street": "string",
     "zipcode": "string"

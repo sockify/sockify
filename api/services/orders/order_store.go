@@ -49,7 +49,7 @@ func (s *OrderStore) GetOrders(limit int, offset int, status string) ([]types.Or
 		if err := rows.Scan(
 			&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
 			&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
-			&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
+			&order.Address.Street, &order.Address.AptUnit, &order.Address.City, &order.Address.State, &order.Address.Zipcode,
 			&order.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -72,7 +72,7 @@ func (s *OrderStore) GetOrderById(orderID int) (*types.Order, error) {
 	err := s.db.QueryRow("SELECT * FROM orders WHERE order_id = $1",
 		orderID).Scan(&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
 		&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
-		&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
+		&order.Address.Street, &order.Address.AptUnit, &order.Address.City, &order.Address.State, &order.Address.Zipcode,
 		&order.CreatedAt,
 	)
 
@@ -151,8 +151,8 @@ func (s *OrderStore) UpdateOrderAddress(orderID int, address types.UpdateAddress
 		}
 	}()
 
-	updateQuery := `UPDATE orders SET street = $1, apt_unit = $2, state = $3, zipcode = $4 WHERE order_id = $5`
-	_, err = tx.Exec(updateQuery, address.Street, address.AptUnit, address.State, address.Zipcode, orderID)
+	updateQuery := `UPDATE orders SET street = $1, apt_unit = $2, city = $3, state = $4, zipcode = $5 WHERE order_id = $6`
+	_, err = tx.Exec(updateQuery, address.Street, address.AptUnit, address.City, address.State, address.Zipcode, orderID)
 	if err != nil {
 		log.Printf("Error updating order address: %v", err)
 		return err
@@ -340,7 +340,7 @@ func (s *OrderStore) GetOrderByInvoice(invoiceNumber string) (*types.Order, erro
 	err := s.db.QueryRow(query, invoiceNumber).Scan(
 		&order.ID, &order.InvoiceNumber, &order.Total, &order.Status,
 		&order.Contact.FirstName, &order.Contact.LastName, &order.Contact.Email, &order.Contact.Phone,
-		&order.Address.Street, &order.Address.AptUnit, &order.Address.State, &order.Address.Zipcode,
+		&order.Address.Street, &order.Address.AptUnit, &order.Address.City, &order.Address.State, &order.Address.Zipcode,
 		&order.CreatedAt,
 	)
 
@@ -368,10 +368,10 @@ func (s *OrderStore) CreateOrder(items []types.CheckoutItem, total float64, addr
 	}
 
 	err = s.db.QueryRow(`
-    INSERT INTO orders (invoice_number, total_price, firstname, lastname, email, phone, street, apt_unit, state, zipcode)
+    INSERT INTO orders (invoice_number, total_price, firstname, lastname, email, phone, street, apt_unit, city, state, zipcode)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     RETURNING order_id
-  `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.State, addr.Zipcode,
+  `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.City, addr.State, addr.Zipcode,
 	).Scan(&orderID)
 
 	if err != nil {

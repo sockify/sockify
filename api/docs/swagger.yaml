@@ -4,6 +4,8 @@ definitions:
     properties:
       aptUnit:
         type: string
+      city:
+        type: string
       state:
         type: string
       street:
@@ -349,6 +351,8 @@ definitions:
     properties:
       aptUnit:
         type: string
+      city:
+        type: string
       state:
         enum:
         - AL
@@ -358,6 +362,7 @@ definitions:
         - CA
         - CO
         - CT
+        - DC
         - DE
         - FL
         - GA
