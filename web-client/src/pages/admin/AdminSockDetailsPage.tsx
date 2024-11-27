@@ -1,4 +1,4 @@
-import { SockVariant, UpdateSock } from "@/api/inventory/model";
+import { Sock, SockVariant, UpdateSockRequest } from "@/api/inventory/model";
 import { useGetSockById, useUpdateSockMutation } from "@/api/inventory/queries";
 import AddSizeModal from "@/components/AddSizeModal";
 import EditItemModal from "@/components/EditItemModal";
@@ -38,13 +38,22 @@ export default function AdminSockDetailsPage() {
     }
   }, [sock]);
 
-  const handleUpdateSock = async (updatedSock: UpdateSock) => {
+  const handleUpdateSock = async (updatedSock: Sock) => {
     try {
-      const payload = {
-        id: numericSockId,
-        ...updatedSock,
+      const payload: UpdateSockRequest = {
+        sock: {
+          name: updatedSock.name,
+          description: updatedSock.description,
+          previewImageUrl: updatedSock.previewImageUrl,
+        },
+        variants: updatedSock.variants,
       };
-      await updateSockMutation.mutateAsync(payload);
+  
+      await updateSockMutation.mutateAsync({
+        id: numericSockId,
+        ...payload,
+      });
+  
       refetch();
       setEditSockOpen(false);
       toast.success("Sock updated successfully!");
@@ -52,7 +61,7 @@ export default function AdminSockDetailsPage() {
       console.error("Error updating sock:", error);
       toast.error("Failed to update sock details.");
     }
-  };
+  };    
 
   const handleAddVariant = async (newVariant: SockVariant) => {
     try {
@@ -123,7 +132,6 @@ export default function AdminSockDetailsPage() {
 
   return (
     <div className="space-y-6 px-4 py-6 md:px-8">
-      {/* Header Section */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Item Details: {sock.name}</h1>
         <Button variant="default" onClick={() => setEditSockOpen(true)}>
@@ -131,75 +139,84 @@ export default function AdminSockDetailsPage() {
         </Button>
       </div>
 
-      {/* Image and Basic Information */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        {/* Item Image */}
-        <div className="flex items-center justify-center">
-          <img
-            src={sock.previewImageUrl || NO_IMAGE_PLACEHOLDER}
-            alt={sock.name}
-            className="h-auto w-full max-w-[500px] rounded-lg border object-contain shadow-md md:max-w-[700px]"
-          />
-        </div>
-
-        {/* Basic Information */}
-        <div>
-          <h2 className="mb-4 text-xl font-bold">Basic Information</h2>
-          <ul className="space-y-2 text-muted-foreground">
-            <li>
-              <strong>Description:</strong> {sock.description}
-            </li>
-          </ul>
-        </div>
+      <Card>
+        <CardContent className="flex justify-center">
+          <div className="w-full max-w-[700px] aspect-video flex items-center justify-center rounded-lg">
+            <img
+              src={sock.previewImageUrl || NO_IMAGE_PLACEHOLDER}
+              alt={sock.name}
+              className="h-auto max-h-full object-contain"
+              onError={(e) => {
+                e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
+      
+        <Card>
+          <CardHeader>
+            <h2 className="text-xl font-bold">Basic Information</h2>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-muted-foreground">
+              <li>
+                <strong>Description:</strong> {sock.description}
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Variants Section */}
-      <div className="mt-10">
-        <h2 className="mb-4 text-xl font-bold">
-          Size, Quantity, and Price Information
-        </h2>
-        <Table>
-          <thead className="text-left text-muted-foreground">
-            <tr>
-              <th className="px-4 py-2">Size</th>
-              <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Price</th>
-              <th className="px-4 py-2 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentVariants.map((variant) => (
-              <tr key={variant.id} className="border-t">
-                <td className="px-4 py-2">{variant.size}</td>
-                <td className="px-4 py-2">{variant.quantity}</td>
-                <td className="px-4 py-2">${variant.price.toFixed(2)}</td>
-                <td className="px-4 py-2 text-center">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mx-auto flex items-center justify-center"
-                    onClick={() => setEditVariant(variant)}
-                  >
-                    <Edit className="mr-1" size={16} /> Edit
-                  </Button>
-                </td>
+      <Card>
+        <CardHeader>
+          <h2 className="mb-4 text-xl font-bold">
+            Size, Quantity, and Price Information
+          </h2>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <thead className="text-left text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2">Size</th>
+                <th className="px-4 py-2">Quantity</th>
+                <th className="px-4 py-2">Price</th>
+                <th className="px-4 py-2 text-center">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {currentVariants.map((variant) => (
+                <tr key={variant.id} className="border-t">
+                  <td className="px-4 py-2">{variant.size}</td>
+                  <td className="px-4 py-2">{variant.quantity}</td>
+                  <td className="px-4 py-2">${variant.price.toFixed(2)}</td>
+                  <td className="px-4 py-2 text-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mx-auto flex items-center justify-center"
+                      onClick={() => setEditVariant(variant)}
+                    >
+                      <Edit className="mr-1" size={16} /> Edit
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <div className="mt-4">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setAddVariantOpen(true)}
+            >
+              <Plus className="mr-2" size={16} /> Add New Size
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-        <div className="mt-4 flex justify-end">
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => setAddVariantOpen(true)}
-          >
-            <Plus className="mr-2" size={16} /> Add New Size
-          </Button>
-        </div>
-      </div>
-
-      {/* Modals */}
       {isEditSockOpen && (
         <EditItemModal
           isOpen={isEditSockOpen}
