@@ -56,7 +56,11 @@ export default function AddSizeModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="space-y-4"
+          id="add-size-form"
+        >
           <div>
             <Label htmlFor="size">Size</Label>
             <Select
@@ -119,7 +123,9 @@ export default function AddSizeModal({
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit">Add size</Button>
+          <Button type="submit" form="add-size-form">
+            Add size
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
