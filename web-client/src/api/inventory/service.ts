@@ -1,14 +1,13 @@
 import axiosInstance from "@/shared/axios";
 import { ServerMessage, serverMessageSchema } from "@/shared/types";
-
 import {
-  AddEditVariant,
+  AddEditVariantRequest,
   CreateSockRequest,
   CreateSockResponse,
   SimilarSock,
   Sock,
   SocksPaginatedResponse,
-  UpdateSock,
+  UpdateSockRequest,
   createSockResponseSchema,
   similarSockListSchema,
   sockSchema,
@@ -21,6 +20,14 @@ export interface InventoryService {
   getSimilarSocks(sockId: number): Promise<SimilarSock[]>;
   deleteSock(sockId: number): Promise<ServerMessage>;
   createSock(payload: CreateSockRequest): Promise<CreateSockResponse>;
+  updateSockDetails(
+    sockId: number,
+    updatedSock: UpdateSockRequest
+  ): Promise<ServerMessage>;
+  addEditSockVariant(
+    sockId: number,
+    variant: AddEditVariantRequest
+  ): Promise<ServerMessage>;
 }
 
 export class HttpInventoryService implements InventoryService {
@@ -31,7 +38,7 @@ export class HttpInventoryService implements InventoryService {
 
   async getSocks(
     limit: number,
-    offset: number,
+    offset: number
   ): Promise<SocksPaginatedResponse> {
     const { data } = await axiosInstance.get(`/api/v1/socks`, {
       params: { limit, offset },
@@ -41,7 +48,7 @@ export class HttpInventoryService implements InventoryService {
 
   async getSimilarSocks(sockId: number): Promise<SimilarSock[]> {
     const { data } = await axiosInstance.get(
-      `/api/v1/socks/${sockId}/similar-socks`,
+      `/api/v1/socks/${sockId}/similar-socks`
     );
     return similarSockListSchema.parse(data);
   }
@@ -57,40 +64,23 @@ export class HttpInventoryService implements InventoryService {
   }
 
   async updateSockDetails(
-    updatedSock: UpdateSock & { id: number },
+    sockId: number,
+    updatedSock: UpdateSockRequest
   ): Promise<ServerMessage> {
     const { data } = await axiosInstance.patch(
-      `/api/v1/socks/${updatedSock.id}`,
-      {
-        sock: updatedSock.sock,
-        variants: updatedSock.variants,
-      },
+      `/api/v1/socks/${sockId}`,
+      updatedSock
     );
     return serverMessageSchema.parse(data);
   }
 
   async addEditSockVariant(
     sockId: number,
-    variant: AddEditVariant,
+    variant: AddEditVariantRequest
   ): Promise<ServerMessage> {
     const { data } = await axiosInstance.patch(
       `/api/v1/socks/${sockId}/variants`,
-      {
-        size: variant.size,
-        price: variant.price,
-        quantity: variant.quantity,
-      },
-    );
-    return serverMessageSchema.parse(data);
-  }
-
-  async updateSockWithVariant(
-    sockId: number,
-    updatedSock: UpdateSock,
-  ): Promise<ServerMessage> {
-    const { data } = await axiosInstance.patch(
-      `/api/v1/socks/${sockId}`,
-      updatedSock,
+      variant
     );
     return serverMessageSchema.parse(data);
   }

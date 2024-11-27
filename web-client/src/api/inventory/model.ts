@@ -71,12 +71,11 @@ export const updateSockSchema = z.object({
   sock: sockMetadataSchema,
   variants: z.array(sockVariantSchema),
 });
-export type UpdateSock = z.infer<typeof updateSockSchema>;
+export type UpdateSockRequest = z.infer<typeof updateSockSchema>;
 
 export const addEditVariantSchema = z.object({
-  sockId: z.number().optional(),
   size: sockSizeEnumSchema,
-  price: z.number(),
-  quantity: z.number(),
+  price: z.number().min(0.01),
+  quantity: z.number().min(0),
 });
-export type AddEditVariant = z.infer<typeof addEditVariantSchema>;
+export type AddEditVariantRequest = z.infer<typeof addEditVariantSchema>;
