@@ -10,6 +10,7 @@ export const stateEnumSchema = z.enum([
   "CA",
   "CO",
   "CT",
+  "DC",
   "DE",
   "FL",
   "GA",
@@ -59,7 +60,7 @@ export type StateEnum = z.infer<typeof stateEnumSchema>;
 export const orderAddressSchema = z.object({
   street: z.string(),
   aptUnit: z.string().optional().nullable(),
-  //   city: z.string(),
+  city: z.string(),
   state: stateEnumSchema,
   zipcode: z.string(),
 });

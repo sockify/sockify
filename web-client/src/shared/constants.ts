@@ -23,9 +23,8 @@ export const US_STATES: State[] = [
   { value: "CA", label: "California" },
   { value: "CO", label: "Colorado" },
   { value: "CT", label: "Connecticut" },
+  { value: "DC", label: "District of Columbia" },
   { value: "DE", label: "Delaware" },
-  //   TODO: add support for D.C.
-  //   { value: "DC", label: "District of Columbia" },
   { value: "FL", label: "Florida" },
   { value: "GA", label: "Georgia" },
   { value: "HI", label: "Hawaii" },

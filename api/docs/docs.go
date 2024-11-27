@@ -875,6 +875,9 @@ const docTemplate = `{
                 "aptUnit": {
                     "type": "string"
                 },
+                "city": {
+                    "type": "string"
+                },
                 "state": {
                     "type": "string"
                 },
@@ -1397,6 +1400,9 @@ const docTemplate = `{
                 "aptUnit": {
                     "type": "string"
                 },
+                "city": {
+                    "type": "string"
+                },
                 "state": {
                     "type": "string",
                     "enum": [
@@ -1407,6 +1413,7 @@ const docTemplate = `{
                         "CA",
                         "CO",
                         "CT",
+                        "DC",
                         "DE",
                         "FL",
                         "GA",

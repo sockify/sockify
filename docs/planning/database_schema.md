@@ -74,6 +74,7 @@ Track user purchases and order details.
 | `phone`          | VARCHAR(16)    |                                                                     |
 | `street`         | VARCHAR(100)   | NOT NULL                                                            |
 | `apt_unit`       | VARCHAR(16)    |                                                                     |
+| `city`           | VARCHAR(100)   | NOT NULL                                                            |
 | `state`          | CHAR(2)        | CHECK IN ENUM('FL', 'OH', etc.), NOT NULL                           |
 | `zipcode`        | VARCHAR(10)    | NOT NULL                                                            |
 | `created_at`     | TIMESTAMP      | NOT NULL, DEFAULT CURRENT_TIMESTAMP                                 |

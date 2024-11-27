@@ -60,6 +60,7 @@ type OrderConfirmation struct {
 type Address struct {
 	Street  string  `json:"street"`
 	AptUnit *string `json:"aptUnit"`
+	City    string  `json:"city"`
 	State   string  `json:"state"`
 	Zipcode string  `json:"zipcode"`
 }

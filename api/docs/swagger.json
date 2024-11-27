@@ -868,6 +868,9 @@
                 "aptUnit": {
                     "type": "string"
                 },
+                "city": {
+                    "type": "string"
+                },
                 "state": {
                     "type": "string"
                 },
@@ -1390,6 +1393,9 @@
                 "aptUnit": {
                     "type": "string"
                 },
+                "city": {
+                    "type": "string"
+                },
                 "state": {
                     "type": "string",
                     "enum": [
@@ -1400,6 +1406,7 @@
                         "CA",
                         "CO",
                         "CT",
+                        "DC",
                         "DE",
                         "FL",
                         "GA",

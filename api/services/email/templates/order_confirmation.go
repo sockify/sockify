@@ -8,7 +8,6 @@ import (
 )
 
 func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText string, htmlContent string) {
-	// TODO: need to add "city" to address
 	aptUnit := ""
 	if order.Address.AptUnit != nil && len(*order.Address.AptUnit) > 0 {
 		aptUnit = ", " + *order.Address.AptUnit
@@ -28,7 +27,7 @@ func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText s
   
   Shipping address:
   %s%s
-  %s, %s
+  %s, %s, %s
   
   Items:
   %s
@@ -44,6 +43,7 @@ func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText s
 		order.CreatedAt,
 		order.Address.Street,
 		aptUnit,
+		order.Address.City,
 		order.Address.State,
 		order.Address.Zipcode,
 		formatItemsPlain(order.Items),
@@ -59,7 +59,7 @@ func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText s
     <p><strong>Date:</strong> %s</p>
 
     <h3>Shipping address:</h3>
-    <p>%s%s<br>%s, %s</p>
+    <p>%s%s<br>%s, %s, %s</p>
 
     <h3>Items:</h3>
     <table style="width:100%%; border-collapse: collapse;">
@@ -87,6 +87,7 @@ func CreateOrderConfirmationTemplate(order types.OrderConfirmation) (plainText s
 		order.CreatedAt,
 		order.Address.Street,
 		aptUnit,
+		order.Address.City,
 		order.Address.State,
 		order.Address.Zipcode,
 		formatItemsHTML(order.Items),
