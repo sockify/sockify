@@ -20,15 +20,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table } from "@/components/ui/table";
 import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
 import dayjs from "dayjs";
-import { Edit, Plus } from "lucide-react";
+import { ChevronLeft, Edit, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const UNKNOWN = "Unknown";
 const availableSizes = sockSizeEnumSchema.options;
 
 export default function AdminSockDetailsPage() {
+  const navigate = useNavigate();
   const { sockId } = useParams<{ sockId: string }>();
   const numericSockId = Number(sockId);
 
@@ -151,10 +152,16 @@ export default function AdminSockDetailsPage() {
   return (
     <div className="space-y-6 px-4 py-6 md:px-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row">
-        <h1 className="text-2xl font-bold md:text-3xl">
-          <span>Item details: </span>
-          <code className="rounded bg-muted p-1">{sock.name}</code>
-        </h1>
+        <div className="flex gap-3">
+          <Button variant="ghost" onClick={() => navigate("/admin/inventory")}>
+            <ChevronLeft className="h-5 w-5 animate-pulse" />
+          </Button>
+          <h1 className="text-2xl font-bold md:text-3xl">
+            <span>Item details: </span>
+            <code className="rounded bg-muted p-1">{sock.name}</code>
+          </h1>
+        </div>
+
         <Button variant="default" onClick={() => setEditSockOpen(true)}>
           <Edit className="mr-2 h-4 w-4" /> Edit item
         </Button>
