@@ -9,19 +9,16 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { SockVariant, UpdateSock } from "@/api/inventory/model";
+import { Input } from "@/components/ui/input"; 
+import { Textarea } from "@/components/ui/textarea"; 
+import { Sock } from "@/api/inventory/model";
 
 interface EditItemModalProps {
   isOpen: boolean;
-  id: number; 
-  sock: {
-    name: string;
-    description: string;
-    previewImageUrl: string;
-    variants: SockVariant[];
-  };
+  id: number;
+  sock: Sock;
   onClose: () => void;
-  onSubmit: (data: UpdateSock & { id: number }) => void;
+  onSubmit: (updatedSock: Sock) => void;
 }
 
 export default function EditItemModal({
@@ -31,20 +28,15 @@ export default function EditItemModal({
   onClose,
   onSubmit,
 }: EditItemModalProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UpdateSock>({
+  const { register, handleSubmit, formState } = useForm<Sock>({
     defaultValues: {
-      sock: {
-        name: sock.name,
-        description: sock.description || "",
-        previewImageUrl: sock.previewImageUrl,
-      },
+      name: sock.name,
+      description: sock.description || "",
+      previewImageUrl: sock.previewImageUrl,
       variants: sock.variants || [],
     },
   });
+  const { errors } = formState;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -59,56 +51,43 @@ export default function EditItemModal({
           onSubmit={handleSubmit((data) =>
             onSubmit({
               ...data,
-              id, 
+              id,
             })
           )}
+          className="space-y-4"
         >
-          <div className="space-y-4">
-            {/* Name Field */}
-            <div>
-              <label className="block text-sm font-medium">Name</label>
-              <input
-                type="text"
-                {...register("sock.name", { required: "Name is required" })}
-                className="w-full border rounded p-2"
-              />
-              {errors.sock?.name && (
-                <p className="text-red-500 text-sm">
-                  {errors.sock.name.message}
-                </p>
-              )}
-            </div>
-            {/* Description Field */}
-            <div>
-              <label className="block text-sm font-medium">Description</label>
-              <textarea
-                {...register("sock.description")}
-                className="w-full border rounded p-2"
-              />
-              {errors.sock?.description && (
-                <p className="text-red-500 text-sm">
-                  {errors.sock.description.message}
-                </p>
-              )}
-            </div>
-            {/* Preview Image URL Field */}
-            <div>
-              <label className="block text-sm font-medium">
-                Preview Image URL
-              </label>
-              <input
-                type="text"
-                {...register("sock.previewImageUrl", {
-                  required: "Image URL is required",
-                })}
-                className="w-full border rounded p-2"
-              />
-              {errors.sock?.previewImageUrl && (
-                <p className="text-red-500 text-sm">
-                  {errors.sock.previewImageUrl.message}
-                </p>
-              )}
-            </div>
+          <div>
+            <label className="block text-sm font-medium">Name</label>
+            <Input
+              {...register("name", { required: "Name is required" })}
+              placeholder="Enter name"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Description</label>
+            <Textarea
+              {...register("description")}
+              placeholder="Enter description"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">
+              Preview Image URL
+            </label>
+            <Input
+              {...register("previewImageUrl", {
+                required: "Preview image URL is required",
+              })}
+              placeholder="Enter image URL"
+            />
+            {errors.previewImageUrl && (
+              <p className="text-red-500 text-sm">
+                {errors.previewImageUrl.message}
+              </p>
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
