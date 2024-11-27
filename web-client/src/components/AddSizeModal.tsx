@@ -1,7 +1,22 @@
-import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"; 
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"; 
 
 interface AddSizeModalProps {
   isOpen: boolean;
@@ -16,8 +31,14 @@ interface FormData {
   price: number;
 }
 
-export default function AddSizeModal({ isOpen, onClose, onSubmit, availableSizes }: AddSizeModalProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+export default function AddSizeModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  availableSizes,
+}: AddSizeModalProps) {
+  const { register, handleSubmit, setValue, formState } = useForm<FormData>();
+  const { errors } = formState;
 
   const handleFormSubmit: SubmitHandler<FormData> = (data) => {
     onSubmit(data);
@@ -30,43 +51,55 @@ export default function AddSizeModal({ isOpen, onClose, onSubmit, availableSizes
           <DialogTitle>Add New Size</DialogTitle>
           <DialogDescription>Add a new size, quantity, and price.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Size</label>
-              <select
-                {...register('size', { required: 'Size is required' })}
-                className="w-full border rounded p-2"
-              >
-                <option value="">Select a size</option>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Size</label>
+            <Select
+              onValueChange={(value: string) => setValue("size", value)} 
+              defaultValue=""
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a size" />
+              </SelectTrigger>
+              <SelectContent>
                 {availableSizes.map((size) => (
-                  <option key={size} value={size}>{size}</option>
+                  <SelectItem key={size} value={size}>
+                    {size}
+                  </SelectItem>
                 ))}
-              </select>
-              {errors.size && <p className="text-red-500 text-sm">{errors.size.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Quantity</label>
-              <input
-                type="number"
-                {...register('quantity', { required: 'Quantity is required', min: 1 })}
-                className="w-full border rounded p-2"
-              />
-              {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Price</label>
-              <input
-                type="number"
-                step="0.01"
-                {...register('price', { required: 'Price is required', min: 0 })}
-                className="w-full border rounded p-2"
-              />
-              {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
-            </div>
+              </SelectContent>
+            </Select>
+            {errors.size && (
+              <p className="text-red-500 text-sm">{errors.size.message}</p>
+            )}
           </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+          <div>
+            <label className="block text-sm font-medium">Quantity</label>
+            <Input
+              type="number"
+              {...register("quantity", { required: "Quantity is required", min: 0 })}
+              placeholder="Enter quantity"
+            />
+            {errors.quantity && (
+              <p className="text-red-500 text-sm">{errors.quantity.message}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Price</label>
+            <Input
+              type="number"
+              step="0.01"
+              {...register("price", { required: "Price is required", min: 0.01 })}
+              placeholder="Enter price"
+            />
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price.message}</p>
+            )}
+          </div>
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
             <Button type="submit">Add Size</Button>
           </DialogFooter>
         </form>
