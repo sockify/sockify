@@ -369,7 +369,7 @@ func (s *OrderStore) CreateOrder(items []types.CheckoutItem, total float64, addr
 
 	err = s.db.QueryRow(`
     INSERT INTO orders (invoice_number, total_price, firstname, lastname, email, phone, street, apt_unit, city, state, zipcode)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     RETURNING order_id
   `, invoiceNumber, total, contact.FirstName, contact.LastName, contact.Email, contact.Phone, addr.Street, addr.AptUnit, addr.City, addr.State, addr.Zipcode,
 	).Scan(&orderID)
