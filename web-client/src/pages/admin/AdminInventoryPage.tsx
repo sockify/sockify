@@ -66,7 +66,7 @@ export default function AdminInventoryPage() {
 
         <Button onClick={() => setModalOpen(true)}>
           <Plus className="mr-2 h-5 w-5" />
-          Add product
+          Add sock
         </Button>
       </section>
 

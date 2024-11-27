@@ -119,7 +119,7 @@ export default function AddSizeModal({
           </div>
         </form>
 
-        <DialogFooter>
+        <DialogFooter className="gap-2">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
