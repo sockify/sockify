@@ -56,7 +56,7 @@ type SockDTO struct {
 }
 type SockVariantDTO struct {
 	Size  string  `json:"size" validate:"required,oneof=S M LG XL"`
-	Price float64 `json:"price" validate:"required,gt=0,lt=101"`
+	Price float64 `json:"price" validate:"required,gt=0"`
 	// Quantity must be a pointer for the "required" validator to work with 0 as an input.
 	Quantity *int `json:"quantity" validate:"required,gte=0"`
 }
@@ -69,7 +69,8 @@ type UpdateSockRequest struct {
 type UpdateAddressRequest struct {
 	Street  string `json:"street" validate:"required,max=100"`
 	AptUnit string `json:"aptUnit"`
-	State   string `json:"state" validate:"required,len=2,oneof=AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY"`
+	City    string `json:"city"`
+	State   string `json:"state" validate:"required,len=2,oneof=AL AK AZ AR CA CO CT DC DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY"`
 	Zipcode string `json:"zipcode" validate:"required,max=10"`
 }
 
@@ -102,4 +103,11 @@ type CheckoutItem struct {
 type StripeCheckoutResponse struct {
 	// Stripe payment URL gateway
 	PaymentURL string `json:"paymentUrl"`
+}
+
+type NewsletterSubscribeRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}
+type NewsletterUnsubscribeRequest struct {
+	Email string `json:"email" validate:"required,email"`
 }

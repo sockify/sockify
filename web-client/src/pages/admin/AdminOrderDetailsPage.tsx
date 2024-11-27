@@ -83,7 +83,7 @@ type CreateUpdateForm = z.infer<typeof createUpdateFormSchema>;
 const updateAddressFormSchema = z.object({
   street: z.string().min(1, { message: "Street is required" }),
   aptUnit: z.string().optional(),
-  // TODO: add city
+  city: z.string().min(1, "City is required"),
   state: stateEnumSchema,
   zipcode: z
     .string()
@@ -158,6 +158,7 @@ export default function AdminOrderDetailsPage() {
     const address: OrderAddress = {
       street: data.street.trim(),
       aptUnit: data.aptUnit?.trim(),
+      city: data.city.trim(),
       state: data.state,
       zipcode: data.zipcode.trim(),
     };
@@ -202,6 +203,7 @@ export default function AdminOrderDetailsPage() {
       updateAddressForm.reset({
         street: order.address.street,
         aptUnit: order.address.aptUnit ?? "",
+        city: order.address.city,
         state: order.address.state,
         zipcode: order.address.zipcode,
       });
@@ -444,10 +446,13 @@ export default function AdminOrderDetailsPage() {
           </CardHeader>
           <CardContent>
             <p>{order!.address.street}</p>
-            <p>Apt/unit: {order!.address.aptUnit}</p>
-            {/* TODO: add city */}
             <p>
-              {order!.address.state}, {order!.address.zipcode}
+              Apt/unit:{" "}
+              {order!.address?.aptUnit ? order!.address.aptUnit : "None"}
+            </p>
+            <p>
+              {order!.address.city}, {order!.address.state},{" "}
+              {order!.address.zipcode}
             </p>
 
             <Dialog
@@ -504,7 +509,21 @@ export default function AdminOrderDetailsPage() {
                         )}
                       />
 
-                      <div className="flex gap-6">
+                      <div className="flex flex-col gap-6 md:flex-row">
+                        <FormField
+                          control={updateAddressForm.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>City</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Newport" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
                         <FormField
                           control={updateAddressForm.control}
                           name="state"

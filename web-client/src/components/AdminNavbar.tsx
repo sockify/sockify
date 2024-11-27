@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 
 import NavLink from "./NavLink";
 import { Button } from "./ui/button";
+import ThemeToggleButton from "./ui/theme-toggle-button";
 
 export default function AdminNavbar() {
   const { logout } = useAuth();
@@ -30,7 +31,9 @@ export default function AdminNavbar() {
           <NavLink to="/admin/orders">Orders</NavLink>
         </nav>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <ThemeToggleButton />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="p-2">

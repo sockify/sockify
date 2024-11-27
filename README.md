@@ -2,6 +2,12 @@
 
 An e-commerce web app to sell custom socks.
 
+> **Product owner & tech lead:** [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
+>
+> **Developers:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/)
+
+### Deployments <!-- omit in toc -->
+
 **Production**
 
 - **Store:** <https://sockify.up.railway.app>
@@ -14,9 +20,8 @@ An e-commerce web app to sell custom socks.
 - **Admin dashboard:** <https://sockify-dev.up.railway.app/admin>
   - **Username:** `jdoe`
   - **Password:** `password`
+  - **Credit card (fake):** `4242 4242 4242 4242`
 - **API docs:** <https://sockify-api-dev.up.railway.app/swagger/index.html>
-
-**Core team:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/), [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
 
 ## Table of contents <!-- omit in toc -->
 
@@ -44,7 +49,7 @@ An e-commerce web app to sell custom socks.
   - **Payment processing:** [Stripe](https://stripe.com/)
   - **Blob storage:** [Firebase](https://firebase.google.com/)
   - **API Specification (UI):** [OpenAPI (Swagger)](https://github.com/swaggo/swag?tab=readme-ov-file)
-  - **Email client:** TBD
+  - **Email client:** [SendGrid](https://sendgrid.com/)
 - **Database:** [PostgreSQL](https://www.postgresql.org/)
 - **Hosting:** [Railway](https://railway.app/), [Docker Compose](https://docs.docker.com/compose/)
 - **Design:** [Figma](https://figma.com/)
@@ -54,8 +59,6 @@ An e-commerce web app to sell custom socks.
 We are tracking our progress, working items, and milestones through the [Sockify MVP](https://github.com/orgs/sockify/projects/1/views/1) GitHub project board.
 
 ![project board](./docs/assets/github_project_board.png)
-
-![project board capacity](./docs/assets/github_project_board_capacity.png)
 
 ## Getting started
 
@@ -151,6 +154,8 @@ Both of these environments have their own `web-client`, `api`, and `database` in
 
 We have configured [GitHub autodeploys](https://docs.railway.app/guides/github-autodeploys) within Railway. So, we do not need to worry about manually redeploying changes.
 
+**Note:** changes involving database schema changes/migrations, will need to be _manually_ applied to all relevant Railway databases. (see the `Running database migrations` section)
+
 _For the most part, redeployments should only take a few minutes._
 
 ##### Deploy branch structure <!-- omit in toc -->
@@ -184,4 +189,4 @@ Run all migrations:
 
 `migrate -path ./api/cmd/migrate/migrations -database <Railway database URL> up`
 
-_You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_.
+_You can download the `migrate` CLI from [here](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md)_

@@ -1,6 +1,6 @@
 import { CartItem as CartItemType } from "@/api/cart/model";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -49,28 +49,33 @@ export default function CartPage() {
             />
           ))}
 
-          <Card className="p-4">
-            <div className="flex justify-between text-xl font-extrabold">
-              <span>Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
-            </div>
-          </Card>
+          <Separator className="mb-4" />
+          <div className="flex justify-between text-xl font-extrabold">
+            <span>Subtotal:</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
 
           <div className="mt-6 flex justify-end">
             <Button onClick={handleCheckout}>Proceed to checkout</Button>
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-8 p-4 text-center">
-          <ShoppingCart className="h-64 w-64 text-muted" />
-          <div className="space-y-2 text-center">
-            <h3 className="text-2xl font-semibold">Cart is empty</h3>
-            <p className="text-muted-foreground">
-              Keep browsing to find the pair for you!
-            </p>
-          </div>
-        </div>
+        <EmptyCart />
       )}
+    </div>
+  );
+}
+
+function EmptyCart() {
+  return (
+    <div className="flex flex-col items-center gap-8 p-4 text-center">
+      <ShoppingCart className="h-64 w-64 text-muted" />
+      <div className="space-y-2 text-center">
+        <h3 className="text-2xl font-semibold">Cart is empty</h3>
+        <p className="text-muted-foreground">
+          Keep browsing to find the pair for you!
+        </p>
+      </div>
     </div>
   );
 }

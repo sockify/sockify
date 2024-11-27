@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS newsletter_email_idx ON newsletter(email);

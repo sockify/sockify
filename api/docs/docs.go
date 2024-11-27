@@ -230,6 +230,102 @@ const docTemplate = `{
                 }
             }
         },
+        "/newsletter/emails": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves a list of all newsletter participants.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Newsletter"
+                ],
+                "summary": "Get all newsletter entries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.NewsletterEntry"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/newsletter/subscribe": {
+            "post": {
+                "description": "Adds (opts-in) a new email entry to the newsletter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Newsletter"
+                ],
+                "summary": "Subscribes an email to the newsletter",
+                "parameters": [
+                    {
+                        "description": "entry",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.NewsletterSubscribeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/newsletter/unsubscribe": {
+            "post": {
+                "description": "Removes (opts-out) a new email entry from the newsletter.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Newsletter"
+                ],
+                "summary": "Unsubscribes an email from the newsletter",
+                "parameters": [
+                    {
+                        "description": "entry",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.NewsletterUnsubscribeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "security": [
@@ -738,6 +834,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/socks/{sock_id}/similar-socks": {
+            "get": {
+                "description": "For now, it will retrieve the top 6 products that are not matching the sock_id passed in.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Inventory"
+                ],
+                "summary": "Retrieves the related products for a particular sock",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Sock ID",
+                        "name": "sock_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/types.SimilarSock"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -745,6 +873,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "aptUnit": {
+                    "type": "string"
+                },
+                "city": {
                     "type": "string"
                 },
                 "state": {
@@ -923,6 +1054,36 @@ const docTemplate = `{
                 }
             }
         },
+        "types.NewsletterEntry": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.NewsletterSubscribeRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.NewsletterUnsubscribeRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "types.Order": {
             "type": "object",
             "properties": {
@@ -1087,6 +1248,26 @@ const docTemplate = `{
                 }
             }
         },
+        "types.SimilarSock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "previewImageUrl": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "sockId": {
+                    "type": "integer"
+                }
+            }
+        },
         "types.Sock": {
             "type": "object",
             "properties": {
@@ -1219,6 +1400,9 @@ const docTemplate = `{
                 "aptUnit": {
                     "type": "string"
                 },
+                "city": {
+                    "type": "string"
+                },
                 "state": {
                     "type": "string",
                     "enum": [
@@ -1229,6 +1413,7 @@ const docTemplate = `{
                         "CA",
                         "CO",
                         "CT",
+                        "DC",
                         "DE",
                         "FL",
                         "GA",

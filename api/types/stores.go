@@ -22,6 +22,7 @@ type SockStore interface {
 	GetSockVariantByID(sockVariantID int) (*SockVariant, error)
 	GetSockVariantsByID(sockVariantIDs []int) ([]SockVariant, error)
 	UpdateSockVariantQuantity(sockVariantID int, newQuantity int) error
+	GetSimilarSocks(sockID int) ([]SimilarSock, error)
 }
 
 type OrderStore interface {
@@ -40,4 +41,11 @@ type OrderStore interface {
 	GetOrderByInvoice(invoiceNumber string) (*Order, error)
 	CreateOrder(items []CheckoutItem, total float64, addr Address, contact Contact) (orderID int, err error)
 	CreateOrderItem(orderID int, sockVariantID int, price float64, quantity int) error
+}
+
+type NewsletterStore interface {
+	Subscribe(email string) error
+	Unsubscribe(email string) error
+	EmailExists(email string) (bool, error)
+	GetEmails() ([]NewsletterEntry, error)
 }

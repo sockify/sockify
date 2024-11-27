@@ -1,7 +1,9 @@
 import { CartItem as CartItemType } from "@/api/cart/model";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { NO_IMAGE_PLACEHOLDER } from "@/shared/constants";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface CartItemProps {
   item: CartItemType;
@@ -24,9 +26,14 @@ export default function CartItem({
             src={item.imageUrl}
             alt={item.name}
             className="h-24 w-24 rounded-md object-cover"
+            onError={(e) => {
+              e.currentTarget.src = NO_IMAGE_PLACEHOLDER;
+            }}
           />
           <div className="text-lg font-semibold">
-            <h3 className="mb-1">{item.name}</h3>
+            <Link to={`/socks/${item.sockId}`}>
+              <h3 className="mb-1">{item.name}</h3>
+            </Link>
             <p className="mb-1 text-sm text-gray-400">
               <strong>Size:</strong> {item.size}
             </p>
@@ -37,6 +44,7 @@ export default function CartItem({
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
+              size="icon"
               onClick={onDecrease}
               aria-label={`Decrease quantity of ${item.name} by 1`}
             >
@@ -45,6 +53,7 @@ export default function CartItem({
             <span className="text-lg font-semibold">{item.quantity}</span>
             <Button
               variant="outline"
+              size="icon"
               onClick={onIncrease}
               aria-label={`Increase quantity of ${item.name} by 1`}
             >
@@ -53,6 +62,7 @@ export default function CartItem({
           </div>
           <Button
             variant="destructive"
+            size="icon"
             onClick={onRemove}
             aria-label={`Remove ${item.name} from cart`}
           >

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS orders (
     phone VARCHAR(16),
     street VARCHAR(100) NOT NULL,
     apt_unit VARCHAR(16),
+    city VARCHAR(100) NOT NULL,
     state CHAR(2) NOT NULL CHECK (
         state IN (
             'AL',
@@ -18,7 +19,7 @@ CREATE TABLE IF NOT EXISTS orders (
             'CA',
             'CO',
             'CT',
-            -- TODO: add "DC"
+            'DC',
             'DE',
             'FL',
             'GA',

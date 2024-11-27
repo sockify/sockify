@@ -60,6 +60,7 @@ type OrderConfirmation struct {
 type Address struct {
 	Street  string  `json:"street"`
 	AptUnit *string `json:"aptUnit"`
+	City    string  `json:"city"`
 	State   string  `json:"state"`
 	Zipcode string  `json:"zipcode"`
 }
@@ -82,4 +83,16 @@ type OrderUpdateCreator struct {
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
 	Username  string `json:"username"`
+}
+
+type SimilarSock struct {
+	SockId          int     `json:"sockId"`
+	Name            string  `json:"name"`
+	Price           float64 `json:"price"`
+	PreviewImageURL string  `json:"previewImageUrl"`
+	CreatedAt       string  `json:"createdAt"`
+}
+
+type NewsletterEntry struct {
+	Email string `json:"email"`
 }

@@ -4,6 +4,8 @@ export const LOCAL_STORAGE_CART_ITEMS_KEY = "cartItems";
 
 // URLs
 export const PROJECT_GITHUB_URL = "https://github.com/sockify/sockify";
+export const NO_IMAGE_PLACEHOLDER =
+  "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
 
 // Query params
 export const SESSION_ID_QUERY_PARAM = "session_id";
@@ -21,9 +23,8 @@ export const US_STATES: State[] = [
   { value: "CA", label: "California" },
   { value: "CO", label: "Colorado" },
   { value: "CT", label: "Connecticut" },
+  { value: "DC", label: "District of Columbia" },
   { value: "DE", label: "Delaware" },
-  //   TODO: add support for D.C.
-  //   { value: "DC", label: "District of Columbia" },
   { value: "FL", label: "Florida" },
   { value: "GA", label: "Georgia" },
   { value: "HI", label: "Hawaii" },
