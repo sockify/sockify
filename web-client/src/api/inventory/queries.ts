@@ -11,11 +11,13 @@ import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 import {
+  AddEditVariantRequest,
   CreateSockRequest,
   CreateSockResponse,
   SimilarSock,
   Sock,
   SocksPaginatedResponse,
+  UpdateSockRequest,
   createSockRequestSchema,
 } from "./model";
 import { HttpInventoryService } from "./service";
@@ -29,6 +31,7 @@ export function useGetSockByIdOptions(sockId?: number) {
     enabled: Boolean(sockId),
   });
 }
+
 export function useGetSockById(sockId?: number): UseQueryResult<Sock> {
   return useQuery(useGetSockByIdOptions(sockId));
 }
@@ -36,7 +39,7 @@ export function useGetSockById(sockId?: number): UseQueryResult<Sock> {
 export function useGetSocksOptions(
   limit: number,
   offset: number,
-  enabled = true,
+  enabled = true
 ) {
   return queryOptions({
     queryKey: ["socks", { limit, offset }],
@@ -48,7 +51,7 @@ export function useGetSocksOptions(
 export function useGetSocks(
   limit: number,
   offset: number,
-  enabled = true,
+  enabled = true
 ): UseQueryResult<SocksPaginatedResponse> {
   return useQuery(useGetSocksOptions(limit, offset, enabled));
 }
@@ -61,7 +64,7 @@ export function useGetSimilarSocksOptions(sockId: number) {
 }
 
 export function useGetSimilarSocks(
-  sockId: number,
+  sockId: number
 ): UseQueryResult<SimilarSock[]> {
   return useQuery(useGetSimilarSocksOptions(sockId));
 }
@@ -106,10 +109,45 @@ export function useCreateSockMutation(): UseMutationResult<
         (error.response?.data as { message?: string })?.message ||
         "An unexpected error occurred.";
       toast.error(`Unable to add sock: ${errorMessage}`);
-      console.error(
-        "Error creating sock:",
-        error.response?.data || error.message,
-      );
+    },
+  });
+}
+
+export function useUpdateSockMutation(): UseMutationResult<
+  ServerMessage,
+  Error,
+  UpdateSockRequest & { id: number }
+> {
+  return useMutation({
+    mutationFn: (updatedSock) =>
+      sockService.updateSockDetails(updatedSock.id, updatedSock),
+    onSuccess: () => {
+      toast.success("Sock details updated successfully");
+    },
+    onError: () => {
+      toast.error("Failed to update sock details");
+    },
+  });
+}
+
+export function useAddEditVariantMutation(): UseMutationResult<
+  ServerMessage,
+  AxiosError,
+  { sockId: number; variant: AddEditVariantRequest }
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ sockId, variant }) => {
+      return await sockService.addEditSockVariant(sockId, variant);
+    },
+    onSuccess: () => {
+      toast.success("Variant added/edited successfully");
+      queryClient.invalidateQueries({ queryKey: ["socks"] });
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("Failed to add/edit variant");
     },
   });
 }

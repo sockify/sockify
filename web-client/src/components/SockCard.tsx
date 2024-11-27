@@ -20,7 +20,7 @@ export default function SockCard({ sock }: SockCardProps) {
 
   return (
     <Card
-      className="group hover:cursor-pointer"
+      className="group overflow-hidden hover:cursor-pointer"
       onClick={() => navigate(`/socks/${sock.id!}`)}
     >
       <div className="aspect-square h-64 w-full overflow-hidden bg-gray-100">

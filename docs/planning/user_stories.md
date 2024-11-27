@@ -1,5 +1,7 @@
 # User stories
 
+> **MVP Completed:** 11/26/2024
+
 These are the critical user journeys (CUJs) we will be targeting for our minimum viable product (MVP) release.
 
 Going forward, all major features implemented have to be related to one or more of these CUJs.
@@ -20,7 +22,7 @@ Naturally, each of these user stories will have to be broken down into individua
 
 - [x] As an admin, I want to be able to login into the dashboard with a username and password, so that I can manage the store.
 - [x] As an admin, I want to see and browse all of the products in the store, so that I can better keep up with the stock.
-- [ ] As an admin, I want to to add, remove, and update items, so that I can maintain the latest and greatest in the store.
+- [x] As an admin, I want to to add, remove, and update items, so that I can maintain the latest and greatest in the store.
 - [x] As an admin, I want to see all orders, so that I can ensure we are able to fulfill them.
 - [x] As an admin, I want to update the status of all orders (e.g. pending -> shipped -> delivered), so that I can ensure customers receive their orders.
 - [ ] **(Stretch)** As an admin, I want to be able to login using MFA (2-factor authentication), so that I can ensure the store is secure from bad actors.

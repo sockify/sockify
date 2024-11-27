@@ -29,6 +29,7 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
+import AdminSockDetailsPage from "./pages/admin/AdminSockDetailsPage";
 
 const queryClient = new QueryClient();
 
@@ -104,13 +105,16 @@ createRoot(document.getElementById("root")!).render(
                         path="inventory"
                         element={<AdminInventoryPage />}
                       />
+                      <Route
+                        path="socks/:sockId"
+                        element={<AdminSockDetailsPage />}
+                      />
                       <Route path="orders" element={<AdminOrdersPage />} />
                       <Route
                         path="orders/:orderId"
                         element={<AdminOrderDetailsPage />}
                       />
                       <Route path="profile" element={<AdminProfilePage />} />
-
                       <Route path="*" element={<NotFound />} />
                     </Route>
                   </Route>

@@ -66,3 +66,16 @@ export const createSockResponseSchema = z.object({
   sockId: z.number(),
 });
 export type CreateSockResponse = z.infer<typeof createSockResponseSchema>;
+
+export const updateSockSchema = z.object({
+  sock: sockMetadataSchema,
+  variants: z.array(sockVariantSchema),
+});
+export type UpdateSockRequest = z.infer<typeof updateSockSchema>;
+
+export const addEditVariantSchema = z.object({
+  size: sockSizeEnumSchema,
+  price: z.number().min(0.01),
+  quantity: z.number().min(0),
+});
+export type AddEditVariantRequest = z.infer<typeof addEditVariantSchema>;
