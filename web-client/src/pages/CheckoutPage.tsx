@@ -36,7 +36,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-const checkoutSchema = z.object({
+const checkoutFormSchema = z.object({
   firstname: z
     .string()
     .min(1, "First name is required")
@@ -58,6 +58,10 @@ const checkoutSchema = z.object({
     .string()
     .max(16, "Apartment/Unit must be 16 characters or less")
     .optional(),
+  city: z
+    .string()
+    .min(1, "City is required")
+    .max(100, "City must be must be 100 characters or less"),
   state: stateEnumSchema,
   zipcode: z
     .string()
@@ -65,7 +69,7 @@ const checkoutSchema = z.object({
     .max(10, "Zipcode must be 10 digits or less"),
 });
 
-type CheckoutFormValues = z.infer<typeof checkoutSchema>;
+type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -75,7 +79,7 @@ export default function CheckoutPage() {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm<CheckoutFormValues>({
-    resolver: zodResolver(checkoutSchema),
+    resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
       firstname: "",
       lastname: "",
@@ -83,6 +87,7 @@ export default function CheckoutPage() {
       phone: "",
       street: "",
       aptUnit: "",
+      city: "",
       zipcode: "",
     },
   });
@@ -96,6 +101,7 @@ export default function CheckoutPage() {
     const address: OrderAddress = {
       street: data.street,
       aptUnit: data.aptUnit,
+      city: data.city,
       state: data.state,
       zipcode: data.zipcode,
     };
@@ -245,12 +251,26 @@ export default function CheckoutPage() {
               )}
             />
 
-            <div className="flex space-x-4">
+            <div className="flex flex-col gap-4 md:flex-row">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="w-full" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="state"
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
+                  <FormItem className="w-full">
                     <FormLabel>State</FormLabel>
                     <FormControl>
                       <Select
@@ -285,7 +305,7 @@ export default function CheckoutPage() {
                 control={form.control}
                 name="zipcode"
                 render={({ field }) => (
-                  <FormItem className="w-1/2">
+                  <FormItem className="w-full">
                     <FormLabel>Zipcode</FormLabel>
                     <FormControl>
                       <Input {...field} className="w-full" />

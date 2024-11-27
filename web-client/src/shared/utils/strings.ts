@@ -2,8 +2,7 @@ import { OrderAddress } from "@/api/orders/model";
 
 // Converts an `Address` type to a combined shipping address string
 export function toShippingAddress(address: OrderAddress): string {
-  // TODO: add city
-  return `${address.street}${address.aptUnit && `, Apt/Unit ${address.aptUnit}`}, ${address.state}, ${address.zipcode}`;
+  return `${address.street}${address.aptUnit && `, Apt/Unit ${address.aptUnit}`}, ${address.city}, ${address.state}, ${address.zipcode}`;
 }
 
 // Truncates a string to a limit number of characters.
