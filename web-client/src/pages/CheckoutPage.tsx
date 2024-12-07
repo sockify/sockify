@@ -308,7 +308,12 @@ export default function CheckoutPage() {
                   <FormItem className="w-full">
                     <FormLabel>Zipcode</FormLabel>
                     <FormControl>
-                      <Input {...field} className="w-full" />
+                      <Input
+                        {...field}
+                        className="w-full"
+                        type="number"
+                        min={0}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

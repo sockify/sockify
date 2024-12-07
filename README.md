@@ -1,30 +1,37 @@
 # Sockify <!-- omit in toc -->
 
-An e-commerce web app to sell custom socks.
-
-> **Product owner & tech lead:** [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
+> A two-sided, e-commerce platform designed for small business owners to sell custom socks.
+>
+> On one side, it provides a customer-facing storefront for browsing and purchasing products. On the other, it offers an admin-facing dashboard to manage inventory, orders, and store operations.
+>
+> **Product owner & team lead:** [Sebastian Nunez](https://www.linkedin.com/in/sebastian-nunez-profile/)
 >
 > **Developers:** [Abel Aguillera](https://www.linkedin.com/in/abel-aguilera-09b65b249/), [Bora Dibra](https://www.linkedin.com/in/bora-dibra/), [Charlotte Williams](https://www.linkedin.com/in/charlotte-williams-761510185/)
+>
+> **Course:** Capstone II (Fall 2024) at Florida International University with professor [Masoud Sadjani](https://www.linkedin.com/in/masoudsadjadi/)
 
-### Deployments <!-- omit in toc -->
+### Check it out! <!-- omit in toc -->
 
-**Production**
-
-- **Store:** <https://sockify.up.railway.app>
+- **Customer facing store:** <https://sockify.up.railway.app>
+  - **Credit card**
+    - **CC #:** `4242 4242 4242 4242`
+    - **Security #:** `123`
+    - **Expiration date:** `08/2099`
 - **Admin dashboard:** <https://sockify.up.railway.app/admin>
-- **API docs:** <https://sockify-api.up.railway.app/swagger/index.html>
-
-**Development**
-
-- **Store:** <https://sockify-dev.up.railway.app>
-- **Admin dashboard:** <https://sockify-dev.up.railway.app/admin>
   - **Username:** `jdoe`
   - **Password:** `password`
-  - **Credit card (fake):** `4242 4242 4242 4242`
-- **API docs:** <https://sockify-api-dev.up.railway.app/swagger/index.html>
+- **API docs:** <https://sockify-api.up.railway.app/swagger/index.html>
+
+### Screenshots <!-- omit in toc -->
+
+![demo collage 1](./docs/assets/demo_collage_1.png)
+![demo collage 2](./docs/assets/demo_collage_2.png)
+![demo collage 3](./docs/assets/demo_collage_3.png)
+![demo collage 4](./docs/assets/demo_collage_4.png)
 
 ## Table of contents <!-- omit in toc -->
 
+- [Core features](#core-features)
 - [Tech stack](#tech-stack)
 - [Project board](#project-board)
 - [Getting started](#getting-started)
@@ -32,6 +39,23 @@ An e-commerce web app to sell custom socks.
   - [Database migrations](#database-migrations)
   - [Swagger UI](#swagger-ui)
   - [Deployment (Railway)](#deployment-railway)
+
+## Core features
+
+### Customers <!-- omit in toc -->
+
+- Browse available socks with detailed product information (sizes, prices, etc.).
+- Add items to a cart, update quantities, and checkout securely using Stripe.
+- Review cart items before purchasing.
+- Receive a confirmation email after placing an order.
+
+### Admins <!-- omit in toc -->
+
+- Login to a secure admin dashboard to manage store operations.
+- Browse and manage product inventory (add, update, delete items).
+- View and update order statuses to ensure fulfillment.
+- Access and update customer information as needed.
+- Swagger docs enabling direct access to the backend API
 
 ## Tech stack
 
